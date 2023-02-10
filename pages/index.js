@@ -1,38 +1,15 @@
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
+import Cpu from "@/components/Cpu";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
-import Stack from "react-bootstrap/Stack";
 import Tab from "react-bootstrap/Tab";
-
-function Product() {
-  return (
-    <Card className="mb-2">
-      <Card.Header as="h5">
-        <Stack direction="horizontal">
-          <div className="me-auto">Intel XX-XXXXX</div>
-          <Button variant="primary">追加</Button>
-        </Stack>
-      </Card.Header>
-      <Card.Body>
-        <Card.Title>Special title treatment</Card.Title>
-        <Card.Text>
-          With supporting text below as a natural lead-in to additional content.
-        </Card.Text>
-      </Card.Body>
-    </Card>
-  );
-}
 
 export default function Home() {
   return (
     <>
-      <Navbar className="mb-2" bg="light">
+      <Navbar className="mb-3" bg="light">
         <Container>
           <Navbar.Brand href="/">Brand link</Navbar.Brand>
           <Nav className="ms-auto">
@@ -64,31 +41,7 @@ export default function Home() {
             </Col>
             <Col sm={9}>
               <Tab.Content>
-                <Tab.Pane eventKey="cpu">
-                  <InputGroup className="mb-3">
-                    <Form.Control placeholder="キーワード" />
-                    <Button variant="outline-secondary">クリア</Button>
-                    <Button variant="outline-secondary">検索</Button>
-                  </InputGroup>
-                  <InputGroup className="mb-3">
-                    <InputGroup.Text id="basic-addon1">￥</InputGroup.Text>
-                    <Form.Control placeholder="以上" />
-                    <InputGroup.Text id="basic-addon1">～</InputGroup.Text>
-                    <Form.Control placeholder="以下" />
-                    <Button variant="outline-secondary">クリア</Button>
-                    <Button variant="outline-secondary">検索</Button>
-                  </InputGroup>
-                  <Container
-                    style={{ height: "70vh" }}
-                    className="overflow-auto"
-                  >
-                    <Product />
-                    <Product />
-                    <Product />
-                    <Product />
-                    <Product />
-                  </Container>
-                </Tab.Pane>
+                <Cpu />
               </Tab.Content>
             </Col>
           </Row>
