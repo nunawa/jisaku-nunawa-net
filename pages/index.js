@@ -5,7 +5,10 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
 import Tab from "react-bootstrap/Tab";
-import { CosmosClient } from "@azure/cosmos";
+import Memory from "@/components/Memory";
+import Motherboard from "@/components/Motherboard";
+import Gpu from "@/components/Gpu";
+import Ssd from "@/components/Ssd";
 
 export default function Home() {
   return (
@@ -42,7 +45,21 @@ export default function Home() {
             </Col>
             <Col sm={9}>
               <Tab.Content>
-                <Cpu />
+                <Tab.Pane eventKey="cpu">
+                  <Cpu />
+                </Tab.Pane>
+                <Tab.Pane eventKey="memory">
+                  <Memory />
+                </Tab.Pane>
+                <Tab.Pane eventKey="motherboard">
+                  <Motherboard />
+                </Tab.Pane>
+                <Tab.Pane eventKey="gpu">
+                  <Gpu />
+                </Tab.Pane>
+                <Tab.Pane eventKey="ssd">
+                  <Ssd />
+                </Tab.Pane>
               </Tab.Content>
             </Col>
           </Row>

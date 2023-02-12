@@ -10,7 +10,7 @@ import useSWR from "swr";
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 function useProducts() {
-  const { data, error, isLoading } = useSWR("/api/products?type=cpu", fetcher);
+  const { data, error, isLoading } = useSWR("/api/products?type=ssd", fetcher);
 
   return {
     products: data,
@@ -33,7 +33,7 @@ function Products() {
 
   let productList = [];
 
-  for (const iterator of products) {
+  for (const iterator of products.slice(0, 30)) {
     productList.push(
       <Card className="mb-2">
         <Card.Header as="h5">
@@ -47,11 +47,11 @@ function Products() {
         <Card.Body>
           <Card.Title>￥{iterator.price.toLocaleString()}</Card.Title>
           <Card.Text style={{ wordBreak: "keep-all" }}>
-            売れ筋:&nbsp;{iterator.sales_rank}位&emsp;クロック:&nbsp;
-            {iterator.frequency}GHz&emsp;ソケット:&nbsp;{iterator.socket}
-            &emsp;コア:&nbsp;
-            {iterator.core_count}
-            &emsp;スレッド:&nbsp;{iterator.thread_count}
+            売れ筋:&nbsp;{iterator.sales_rank}位&emsp;容量:&nbsp;
+            {iterator.capacity}&emsp;タイプ:&nbsp;{iterator.cell_type}
+            &emsp;サイズ:&nbsp;
+            {iterator.size}
+            &emsp;インターフェース:&nbsp;{iterator.interface}
           </Card.Text>
         </Card.Body>
       </Card>
@@ -61,7 +61,7 @@ function Products() {
   return productList;
 }
 
-export default function Cpu() {
+export default function Ssd() {
   return (
     <>
       <InputGroup size="sm" className="mb-3">

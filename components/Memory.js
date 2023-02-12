@@ -10,7 +10,10 @@ import useSWR from "swr";
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 function useProducts() {
-  const { data, error, isLoading } = useSWR("/api/products?type=cpu", fetcher);
+  const { data, error, isLoading } = useSWR(
+    "/api/products?type=memory",
+    fetcher
+  );
 
   return {
     products: data,
@@ -23,8 +26,8 @@ function Products() {
   const { products, isLoading } = useProducts();
   if (isLoading) {
     return (
-      <Container>
-        <Spinner className="mx-auto my-auto" animation="border" />
+      <Container className="px-auto py-auto">
+        <Spinner animation="border" />
       </Container>
     );
   }
@@ -47,11 +50,11 @@ function Products() {
         <Card.Body>
           <Card.Title>￥{iterator.price.toLocaleString()}</Card.Title>
           <Card.Text style={{ wordBreak: "keep-all" }}>
-            売れ筋:&nbsp;{iterator.sales_rank}位&emsp;クロック:&nbsp;
-            {iterator.frequency}GHz&emsp;ソケット:&nbsp;{iterator.socket}
-            &emsp;コア:&nbsp;
-            {iterator.core_count}
-            &emsp;スレッド:&nbsp;{iterator.thread_count}
+            売れ筋:&nbsp;{iterator.sales_rank}位&emsp;容量:&nbsp;
+            {iterator.capacity}&emsp;枚数:&nbsp;{iterator.pcs}
+            &emsp;規格:&nbsp;
+            {iterator.standard}
+            &emsp;インターフェース:&nbsp;{iterator.interface}
           </Card.Text>
         </Card.Body>
       </Card>
@@ -61,7 +64,7 @@ function Products() {
   return productList;
 }
 
-export default function Cpu() {
+export default function Memory() {
   return (
     <>
       <InputGroup size="sm" className="mb-3">

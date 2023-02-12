@@ -10,7 +10,7 @@ import useSWR from "swr";
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 function useProducts() {
-  const { data, error, isLoading } = useSWR("/api/products?type=cpu", fetcher);
+  const { data, error, isLoading } = useSWR("/api/products?type=gpu", fetcher);
 
   return {
     products: data,
@@ -34,6 +34,10 @@ function Products() {
   let productList = [];
 
   for (const iterator of products) {
+    let monitor = "";
+    if (iterator.monitor) {
+      monitor = iterator.monitor.join(" ");
+    }
     productList.push(
       <Card className="mb-2">
         <Card.Header as="h5">
@@ -47,11 +51,11 @@ function Products() {
         <Card.Body>
           <Card.Title>￥{iterator.price.toLocaleString()}</Card.Title>
           <Card.Text style={{ wordBreak: "keep-all" }}>
-            売れ筋:&nbsp;{iterator.sales_rank}位&emsp;クロック:&nbsp;
-            {iterator.frequency}GHz&emsp;ソケット:&nbsp;{iterator.socket}
-            &emsp;コア:&nbsp;
-            {iterator.core_count}
-            &emsp;スレッド:&nbsp;{iterator.thread_count}
+            売れ筋:&nbsp;{iterator.sales_rank}
+            位&emsp;バスインターフェース:&nbsp;
+            {iterator.bus_interface}&emsp;メモリ:&nbsp;{iterator.memory}
+            &emsp;モニター端子:&nbsp;
+            {monitor}
           </Card.Text>
         </Card.Body>
       </Card>
@@ -61,7 +65,7 @@ function Products() {
   return productList;
 }
 
-export default function Cpu() {
+export default function Gpu() {
   return (
     <>
       <InputGroup size="sm" className="mb-3">
