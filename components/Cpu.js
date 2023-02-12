@@ -5,11 +5,36 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Stack from "react-bootstrap/Stack";
 import Tab from "react-bootstrap/Tab";
+import Spinner from "react-bootstrap/Spinner";
+import useSWR from "swr";
 
-function Products(data) {
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
+function useProducts() {
+  const { data, error, isLoading } = useSWR("/api/products?type=cpu", fetcher);
+
+  return {
+    products: data,
+    isLoading,
+    isError: error,
+  };
+}
+
+function Products() {
+  const { products, isLoading } = useProducts();
+  if (isLoading) {
+    return (
+      <Container>
+        <Spinner className="mx-auto my-auto" animation="border" />
+      </Container>
+    );
+  }
+
+  console.log(products);
+
   let productList = [];
 
-  for (const iterator of data.children.slice(0, 30)) {
+  for (const iterator of products.slice(0, 30)) {
     productList.push(
       <Card className="mb-2">
         <Card.Header as="h5">
@@ -37,10 +62,7 @@ function Products(data) {
   return productList;
 }
 
-export default function Cpu(prop) {
-  const data = prop.children;
-  console.log(data);
-
+export default function Cpu() {
   return (
     <Tab.Pane eventKey="cpu">
       <InputGroup size="sm" className="mb-3">
@@ -61,7 +83,7 @@ export default function Cpu(prop) {
         <Button variant="outline-secondary">検索</Button>
       </InputGroup>
       <Container style={{ height: "70vh" }} className="overflow-auto">
-        <Products>{data}</Products>
+        <Products />
       </Container>
     </Tab.Pane>
   );

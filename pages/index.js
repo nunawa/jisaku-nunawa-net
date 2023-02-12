@@ -7,7 +7,7 @@ import Row from "react-bootstrap/Row";
 import Tab from "react-bootstrap/Tab";
 import { CosmosClient } from "@azure/cosmos";
 
-export default function Home({ results }) {
+export default function Home() {
   return (
     <>
       <Navbar className="mb-3" bg="light">
@@ -42,7 +42,7 @@ export default function Home({ results }) {
             </Col>
             <Col sm={9}>
               <Tab.Content>
-                <Cpu>{results}</Cpu>
+                <Cpu />
               </Tab.Content>
             </Col>
           </Row>
@@ -50,29 +50,4 @@ export default function Home({ results }) {
       </Container>
     </>
   );
-}
-
-export async function getStaticProps() {
-  const key = process.env.COSMOS_KEY;
-  const endpoint = process.env.COSMOS_ENDPOINT;
-  const client = new CosmosClient({ endpoint, key });
-
-  //SELECT * FROM PcParts c WHERE c.id = "98203aef-7f87-454c-8bfb-987f7b79158d"
-  const query = {
-    query:
-      "SELECT c.name, c.price, c.sales_rank, c.manufacturer, c.frequency, c.socket, c.core_count, c.thread_count FROM PcParts p JOIN c IN p.cpu ",
-  };
-  const { resources: results } = await client
-    .database("Main")
-    .container("PcParts")
-    .items.query(query)
-    .fetchAll();
-
-  //console.log(results);
-
-  return {
-    props: {
-      results,
-    },
-  };
 }
