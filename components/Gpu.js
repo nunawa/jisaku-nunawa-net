@@ -20,7 +20,7 @@ function useProducts() {
   };
 }
 
-function Products({ products }) {
+function Products({ products, setSelected }) {
   let productList = [];
   console.log(products);
 
@@ -38,7 +38,9 @@ function Products({ products }) {
               <div className="me-auto">
                 {iterator.manufacturer} {iterator.name}
               </div>
-              <Button variant="primary">追加</Button>
+              <Button variant="primary" onClick={() => setSelected(iterator)}>
+                追加
+              </Button>
             </Stack>
           </Card.Header>
           <Card.Body>
@@ -65,6 +67,51 @@ function Products({ products }) {
   }
 }
 
+function SelectedProduct({ product }) {
+  if (product) {
+    let monitor = "";
+    if (product.monitor) {
+      monitor = product.monitor.join(" ");
+    }
+
+    return (
+      <Card className="mb-3">
+        <Card.Header as="h5">
+          <Stack direction="horizontal">
+            <div className="me-auto">
+              {product.manufacturer} {product.name}
+            </div>
+            <div className="text-muted">選択中</div>
+          </Stack>
+        </Card.Header>
+        <Card.Body>
+          <Card.Title>￥{product.price.toLocaleString()}</Card.Title>
+          <Card.Text style={{ wordBreak: "keep-all" }}>
+            売れ筋:&nbsp;{product.sales_rank}
+            位&emsp;バスインターフェース:&nbsp;
+            {product.bus_interface}&emsp;メモリ:&nbsp;{product.memory}
+            &emsp;モニター端子:&nbsp;
+            {monitor}
+          </Card.Text>
+        </Card.Body>
+      </Card>
+    );
+  } else {
+    return (
+      <Card className="mb-3">
+        <Card.Body>
+          <Card.Text
+            className="text-muted"
+            style={{ wordBreak: "keep-all", textAlign: "center" }}
+          >
+            未選択
+          </Card.Text>
+        </Card.Body>
+      </Card>
+    );
+  }
+}
+
 export default function Gpu() {
   const { products } = useProducts();
   const [convertedProducts, setProducts] = useState();
@@ -72,6 +119,8 @@ export default function Gpu() {
   useEffect(() => {
     setProducts(products);
   }, [products]);
+
+  const [selectedProduct, setSelected] = useState();
 
   const sort = useRef();
 
@@ -120,6 +169,7 @@ export default function Gpu() {
 
   return (
     <>
+      <SelectedProduct product={selectedProduct} />
       <InputGroup size="sm" className="mb-3">
         <Form.Select
           style={{ maxWidth: "100px" }}
@@ -165,7 +215,7 @@ export default function Gpu() {
         </Button>
       </InputGroup>
       <Container style={{ height: "70vh" }} className="overflow-auto">
-        <Products products={convertedProducts} />
+        <Products products={convertedProducts} setSelected={setSelected} />
       </Container>
     </>
   );
