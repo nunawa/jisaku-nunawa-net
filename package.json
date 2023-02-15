@@ -20,5 +20,10 @@
     "react-bootstrap": "^2.7.0",
     "react-dom": "18.2.0",
     "swr": "^2.0.3"
+  },
+  "devDependencies": {
+    "@cloudflare/next-on-pages": "^0.3.0",
+    "vercel": "^28.15.5",
+    "wrangler": "^2.9.1"
   }
 }

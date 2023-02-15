@@ -1,11 +1,21 @@
 import { CosmosClient } from "@azure/cosmos";
 
-export default async function handler(req, res) {
+export default async function handler(req) {
   let query;
-  const type = req.query.type;
+  const { searchParams } = new URL(req.url);
+  const type = searchParams.get("type");
   if (!type) {
-    res.status(500).json({ error: "type param is not set" });
-    return;
+    return new Response(
+      JSON.stringify({
+        error: "type param is not set",
+      }),
+      {
+        status: 400,
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
   } else if (type == "cpu") {
     query = {
       query:
@@ -32,8 +42,17 @@ export default async function handler(req, res) {
         "SELECT c.name, c.price, c.sales_rank, c.manufacturer, c.capacity, c.cell_type, c.size, c.interface FROM PcParts p JOIN c IN p.ssd",
     };
   } else {
-    res.status(500).json({ error: "type param error" });
-    return;
+    return new Response(
+      JSON.stringify({
+        error: "type param error",
+      }),
+      {
+        status: 400,
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
   }
 
   const key = process.env.COSMOS_KEY;
@@ -45,10 +64,21 @@ export default async function handler(req, res) {
     .items.query(query)
     .fetchAll()
     .then(({ resources: results }) => {
-      res.status(200).json(results);
+      return new Response(JSON.stringify(results), {
+        status: 200,
+        headers: {
+          "content-type": "application/json",
+          "cache-control": "public, s-maxage=1200, stale-while-revalidate=600",
+        },
+      });
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ error: "DB server error" });
+      return new Response(JSON.stringify({ error: "DB server error" }), {
+        status: 500,
+        headers: {
+          "content-type": "application/json",
+        },
+      });
     });
 }
