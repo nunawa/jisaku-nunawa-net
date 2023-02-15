@@ -20,7 +20,7 @@ function useProducts() {
   };
 }
 
-function Products({ products, setSelected }) {
+function Products({ products, selectedProducts, setSelected }) {
   let productList = [];
   console.log(products);
 
@@ -38,7 +38,14 @@ function Products({ products, setSelected }) {
               <div className="me-auto">
                 {iterator.manufacturer} {iterator.name}
               </div>
-              <Button variant="primary" onClick={() => setSelected(iterator)}>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  let newSelectedProducts = Object.assign({}, selectedProducts);
+                  newSelectedProducts.gpu = iterator;
+                  setSelected(newSelectedProducts);
+                }}
+              >
                 追加
               </Button>
             </Stack>
@@ -112,15 +119,13 @@ function SelectedProduct({ product }) {
   }
 }
 
-export default function Gpu() {
+export default function Gpu({ selectedProducts, setSelected }) {
   const { products } = useProducts();
   const [convertedProducts, setProducts] = useState();
 
   useEffect(() => {
     setProducts(products);
   }, [products]);
-
-  const [selectedProduct, setSelected] = useState();
 
   const sort = useRef();
 
@@ -169,7 +174,7 @@ export default function Gpu() {
 
   return (
     <>
-      <SelectedProduct product={selectedProduct} />
+      <SelectedProduct product={selectedProducts.gpu} />
       <InputGroup size="sm" className="mb-3">
         <Form.Select
           style={{ maxWidth: "100px" }}
@@ -215,7 +220,11 @@ export default function Gpu() {
         </Button>
       </InputGroup>
       <Container style={{ height: "70vh" }} className="overflow-auto">
-        <Products products={convertedProducts} setSelected={setSelected} />
+        <Products
+          products={convertedProducts}
+          selectedProducts={selectedProducts}
+          setSelected={setSelected}
+        />
       </Container>
     </>
   );
