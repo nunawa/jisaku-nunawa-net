@@ -168,12 +168,11 @@ export default function Ssd({ selectedProducts, setSelected }) {
       <InputGroup size="sm" className="mb-3">
         <Form.Select
           style={{ maxWidth: "100px" }}
+          defaultValue="sales_rank_asc"
           ref={sort}
           onChange={() => handleSearch()}
         >
-          <option value="sales_rank_asc" selected>
-            売上順
-          </option>
+          <option value="sales_rank_asc">売上順</option>
           <option value="price_asc">価格順</option>
         </Form.Select>
         <Form.Control ref={keyword} placeholder="キーワード" />
