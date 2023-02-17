@@ -17,7 +17,7 @@ export default async function handler(req) {
       }
     );
   } else if (type == "cpu") {
-    query = `SELECT c.name, c.price, c.sales_rank, c.manufacturer, c.frequency, c.socket, c.core_count, c.thread_count FROM ROOT p JOIN c IN p.cpu`;
+    query = `SELECT c.name, c.price, c.sales_rank, c.manufacturer, c.frequency, c.socket, c.core_count, c.thread_count FROM PcParts p JOIN c IN p.cpu`;
   } else if (type == "memory") {
     query = `SELECT c.name, c.price, c.sales_rank, c.manufacturer, c.capacity, c.pcs, c.standard, c.interface FROM PcParts p JOIN c IN p.memory`;
   } else if (type == "motherboard") {
@@ -40,11 +40,12 @@ export default async function handler(req) {
     );
   }
 
-  const accountKey = process.env.COSMOS_KEY;
-  const endpoint = process.env.COSMOS_ENDPOINT;
+  // node_modules/rfc4648/lib/index.js (23:0) @ parse
+  // 上記のエラーを解決するため、accountKey / endpoint ではなく connectionString を使用
+  const connectionString = process.env.COSMOS_CONNECTION_STRING;
   const dbId = "Main";
   const collId = "PcParts";
-  const client = new CosmosClient({ endpoint, accountKey, dbId, collId });
+  const client = new CosmosClient({ connectionString, dbId, collId });
 
   const res = await client.queryDocuments({ query });
   return new Response(res.body, {

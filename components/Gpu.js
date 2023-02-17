@@ -11,7 +11,8 @@ import { useState, useEffect, useRef } from "react";
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 function useProducts() {
-  const { data, error, isLoading } = useSWR("/api/products?type=gpu", fetcher);
+  let { data, error, isLoading } = useSWR("/api/products?type=gpu", fetcher);
+  if (data) data = data.Documents;
 
   return {
     products: data,

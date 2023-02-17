@@ -11,10 +11,8 @@ import { useState, useEffect, useRef } from "react";
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 function useProducts() {
-  const { data, error, isLoading } = useSWR(
-    "/api/products?type=memory",
-    fetcher
-  );
+  let { data, error, isLoading } = useSWR("/api/products?type=memory", fetcher);
+  if (data) data = data.Documents;
 
   return {
     products: data,
