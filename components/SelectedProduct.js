@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+import Link from "next/link";
 import Card from "react-bootstrap/Card";
 import Stack from "react-bootstrap/Stack";
 
@@ -61,10 +64,33 @@ export default function SelectedProduct({ id, product }) {
       <Card className="mb-3">
         <Card.Header as="h5">
           <Stack direction="horizontal">
-            <div className="me-auto">
-              {product.manufacturer} {product.name}
+            <div
+              className="me-auto"
+              css={css({
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                maxWidth: "700px",
+                textOverflow: "ellipsis",
+              })}
+            >
+              <Link
+                href={"https://kakaku.com/item/" + product.id}
+                css={css({
+                  textDecoration: "none",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                })}
+              >
+                {product.manufacturer} {product.name}
+              </Link>
             </div>
-            <div className="text-muted">選択中</div>
+            <div
+              className="text-muted ms-2"
+              css={css({ fontWeight: "normal", wordBreak: "keep-all" })}
+            >
+              選択中
+            </div>
           </Stack>
         </Card.Header>
         <Card.Body>
