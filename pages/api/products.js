@@ -17,15 +17,15 @@ export default async function handler(req) {
       }
     );
   } else if (type == "cpu") {
-    query = `SELECT c.name, c.price, c.sales_rank, c.manufacturer, c.frequency, c.socket, c.core_count, c.thread_count FROM PcParts p JOIN c IN p.cpu`;
+    query = `SELECT c.id, c.name, c.price, c.sales_rank, c.manufacturer, c.frequency, c.socket, c.core_count, c.thread_count FROM PcParts p JOIN c IN p.cpu`;
   } else if (type == "memory") {
-    query = `SELECT c.name, c.price, c.sales_rank, c.manufacturer, c.capacity, c.pcs, c.standard, c.interface FROM PcParts p JOIN c IN p.memory`;
+    query = `SELECT c.id, c.name, c.price, c.sales_rank, c.manufacturer, c.capacity, c.pcs, c.standard, c.interface FROM PcParts p JOIN c IN p.memory`;
   } else if (type == "motherboard") {
-    query = `SELECT c.name, c.price, c.sales_rank, c.manufacturer, c.form_factor, c.socket, c.chipset, c.memory FROM PcParts p JOIN c IN p.motherboard`;
+    query = `SELECT c.id, c.name, c.price, c.sales_rank, c.manufacturer, c.form_factor, c.socket, c.chipset, c.memory FROM PcParts p JOIN c IN p.motherboard`;
   } else if (type == "gpu") {
-    query = `SELECT c.name, c.price, c.sales_rank, c.manufacturer, c.gpu_name, c.bus_interface, c.memory, c.monitor FROM PcParts p JOIN c IN p.gpu`;
+    query = `SELECT c.id, c.name, c.price, c.sales_rank, c.manufacturer, c.gpu_name, c.bus_interface, c.memory, c.monitor FROM PcParts p JOIN c IN p.gpu`;
   } else if (type == "ssd") {
-    query = `SELECT c.name, c.price, c.sales_rank, c.manufacturer, c.capacity, c.cell_type, c.size, c.interface FROM PcParts p JOIN c IN p.ssd`;
+    query = `SELECT c.id, c.name, c.price, c.sales_rank, c.manufacturer, c.capacity, c.cell_type, c.size, c.interface FROM PcParts p JOIN c IN p.ssd`;
   } else {
     return new Response(
       JSON.stringify({

@@ -1,8 +1,12 @@
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+import Link from "next/link";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Spinner from "react-bootstrap/Spinner";
 import Stack from "react-bootstrap/Stack";
+import { BsPlusLg } from "react-icons/bs";
 
 export default function Products({
   id,
@@ -73,18 +77,37 @@ export default function Products({
         <Card className="mb-2">
           <Card.Header as="h5">
             <Stack direction="horizontal">
-              <div className="me-auto">
-                {iterator.manufacturer} {iterator.name}
+              <div
+                className="me-auto"
+                css={css({
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  maxWidth: "700px",
+                  textOverflow: "ellipsis",
+                })}
+              >
+                <Link
+                  href={"https://kakaku.com/item/" + iterator.id}
+                  css={css({
+                    textDecoration: "none",
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                  })}
+                >
+                  {iterator.manufacturer} {iterator.name}
+                </Link>
               </div>
               <Button
                 variant="primary"
+                className="ms-2"
                 onClick={() => {
                   let newSelectedProducts = Object.assign({}, selectedProducts);
                   newSelectedProducts[id] = iterator;
                   setSelected(newSelectedProducts);
                 }}
               >
-                追加
+                <BsPlusLg />
               </Button>
             </Stack>
           </Card.Header>
