@@ -1,19 +1,15 @@
-import Cpu from "@/components/Cpu";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
 import Tab from "react-bootstrap/Tab";
-import Memory from "@/components/Memory";
-import Motherboard from "@/components/Motherboard";
-import Gpu from "@/components/Gpu";
-import Ssd from "@/components/Ssd";
 import Card from "react-bootstrap/Card";
 import Stack from "react-bootstrap/Stack";
 import Form from "react-bootstrap/Form";
 import { useState } from "react";
 import { Accordion } from "react-bootstrap";
+import Parts from "@/components/Parts";
 
 function Build({ selectedProducts, setTotal }) {
   console.log(selectedProducts);
@@ -785,31 +781,36 @@ export default function Home() {
             <Col sm={9}>
               <Tab.Content>
                 <Tab.Pane eventKey="cpu">
-                  <Cpu
+                  <Parts
+                    type="cpu"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="memory">
-                  <Memory
+                  <Parts
+                    type="memory"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="motherboard">
-                  <Motherboard
+                  <Parts
+                    type="motherboard"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="gpu">
-                  <Gpu
+                  <Parts
+                    type="gpu"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="ssd">
-                  <Ssd
+                  <Parts
+                    type="ssd"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
                   />

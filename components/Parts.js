@@ -9,8 +9,11 @@ import SelectedProduct from "./SelectedProduct";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-function useProducts() {
-  let { data, error, isLoading } = useSWR("/api/products?type=memory", fetcher);
+function useProducts(type) {
+  let { data, error, isLoading } = useSWR(
+    "/api/products?type=" + type,
+    fetcher
+  );
   if (data) data = data.Documents;
 
   return {
@@ -20,8 +23,8 @@ function useProducts() {
   };
 }
 
-export default function Memory({ selectedProducts, setSelected }) {
-  const { products } = useProducts();
+export default function Parts({ type, selectedProducts, setSelected }) {
+  const { products } = useProducts(type);
   const [convertedProducts, setProducts] = useState();
 
   useEffect(() => {
@@ -75,7 +78,7 @@ export default function Memory({ selectedProducts, setSelected }) {
 
   return (
     <>
-      <SelectedProduct id="memory" product={selectedProducts.memory} />
+      <SelectedProduct id={type} product={selectedProducts[type]} />
       <InputGroup size="sm" className="mb-3">
         <Form.Select
           style={{ maxWidth: "100px" }}
@@ -121,7 +124,7 @@ export default function Memory({ selectedProducts, setSelected }) {
       </InputGroup>
       <Container style={{ height: "70vh" }} className="overflow-auto">
         <Products
-          id="memory"
+          id={type}
           products={convertedProducts}
           selectedProducts={selectedProducts}
           setSelected={setSelected}
