@@ -6,13 +6,14 @@ import InputGroup from "react-bootstrap/InputGroup";
 import useSWR from "swr";
 import Products from "./Products";
 import SelectedProduct from "./SelectedProduct";
+import FilterOption from "./FilterOption";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 function useProducts(type) {
   let { data, error, isLoading } = useSWR(
     "/api/products?type=" + type,
-    fetcher
+    fetcher,
   );
   if (data) data = data.Documents;
 
@@ -65,7 +66,7 @@ export default function Parts({ type, selectedProducts, setSelected }) {
     const minNum = Number(min.current.value);
     if (maxNum && minNum) {
       filteredProducts = filteredProducts.filter(
-        (e) => e.price >= minNum && e.price <= maxNum
+        (e) => e.price >= minNum && e.price <= maxNum,
       );
     } else if (maxNum) {
       filteredProducts = filteredProducts.filter((e) => e.price <= maxNum);
@@ -75,6 +76,11 @@ export default function Parts({ type, selectedProducts, setSelected }) {
 
     setProducts(filteredProducts);
   }
+
+  const [show, setShow] = useState(false);
+
+  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
 
   return (
     <>
@@ -121,6 +127,14 @@ export default function Parts({ type, selectedProducts, setSelected }) {
         <Button variant="outline-secondary" onClick={() => handleSearch()}>
           検索
         </Button>
+        <Button variant="outline-secondary" onClick={() => handleShow()}>
+          オプション
+        </Button>
+        <FilterOption
+          show={show}
+          handleClose={() => handleClose()}
+          type={type}
+        />
       </InputGroup>
       <Container style={{ height: "70vh" }} className="overflow-auto">
         <Products
