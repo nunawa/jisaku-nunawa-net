@@ -1,5 +1,5 @@
-import Build from "@/components/Build";
-import Parts from "@/components/Parts";
+import BuildTab from "@/components/BuildTab";
+import PartsTab from "@/components/PartsTab";
 import { useState } from "react";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -58,42 +58,42 @@ export default function Home() {
             <Col sm={9}>
               <Tab.Content>
                 <Tab.Pane eventKey="cpu">
-                  <Parts
+                  <PartsTab
                     type="cpu"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="memory">
-                  <Parts
+                  <PartsTab
                     type="memory"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="motherboard">
-                  <Parts
+                  <PartsTab
                     type="motherboard"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="gpu">
-                  <Parts
+                  <PartsTab
                     type="gpu"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="ssd">
-                  <Parts
+                  <PartsTab
                     type="ssd"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="build">
-                  <Build
+                  <BuildTab
                     selectedProducts={selectedProducts}
                     setTotal={setTotal}
                   />

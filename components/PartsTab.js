@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import useSWR from "swr";
-import Products from "./Products";
+import ProductList from "./ProductList";
 import SelectedProduct from "./SelectedProduct";
 import FilterOption from "./FilterOption";
 
@@ -24,7 +24,7 @@ function useProducts(type) {
   };
 }
 
-export default function Parts({ type, selectedProducts, setSelected }) {
+export default function PartsTab({ type, selectedProducts, setSelected }) {
   const { products } = useProducts(type);
   const [convertedProducts, setProducts] = useState();
 
@@ -137,7 +137,7 @@ export default function Parts({ type, selectedProducts, setSelected }) {
         />
       </InputGroup>
       <Container style={{ height: "70vh" }} className="overflow-auto">
-        <Products
+        <ProductList
           id={type}
           products={convertedProducts}
           selectedProducts={selectedProducts}

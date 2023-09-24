@@ -2,7 +2,7 @@ import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import Stack from "react-bootstrap/Stack";
 
-export default function Build({ selectedProducts, setTotal }) {
+export default function BuildTab({ selectedProducts, setTotal }) {
   console.log(selectedProducts);
   let buildList = [];
 
@@ -34,13 +34,13 @@ export default function Build({ selectedProducts, setTotal }) {
             </Card.Text>
           </Card.Body>
         </Card>
-      </Container>
+      </Container>,
     );
   } else {
     buildList.push(
       <Container>
         <h5>CPU</h5>未選択
-      </Container>
+      </Container>,
     );
   }
 
@@ -73,13 +73,13 @@ export default function Build({ selectedProducts, setTotal }) {
             </Card.Text>
           </Card.Body>
         </Card>
-      </Container>
+      </Container>,
     );
   } else {
     buildList.push(
       <Container>
         <h5>メモリ</h5>未選択
-      </Container>
+      </Container>,
     );
   }
 
@@ -112,13 +112,13 @@ export default function Build({ selectedProducts, setTotal }) {
             </Card.Text>
           </Card.Body>
         </Card>
-      </Container>
+      </Container>,
     );
   } else {
     buildList.push(
       <Container>
         <h5>マザーボード</h5>未選択
-      </Container>
+      </Container>,
     );
   }
 
@@ -154,13 +154,13 @@ export default function Build({ selectedProducts, setTotal }) {
             </Card.Text>
           </Card.Body>
         </Card>
-      </Container>
+      </Container>,
     );
   } else {
     buildList.push(
       <Container>
         <h5>GPU</h5>未選択
-      </Container>
+      </Container>,
     );
   }
 
@@ -191,25 +191,25 @@ export default function Build({ selectedProducts, setTotal }) {
             </Card.Text>
           </Card.Body>
         </Card>
-      </Container>
+      </Container>,
     );
   } else {
     buildList.push(
       <Container>
         <h5>SSD</h5>未選択
-      </Container>
+      </Container>,
     );
   }
 
   const selectedProductsValues = Object.values(selectedProducts);
   const total = selectedProductsValues.reduce(
     (acc, cur) => (cur === null ? acc : cur.price + acc),
-    0
+    0,
   );
   buildList.push(
     <Container className="mb-5">
       <h5>合計 ￥{total.toLocaleString()}</h5>
-    </Container>
+    </Container>,
   );
   setTotal(total);
 
