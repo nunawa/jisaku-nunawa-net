@@ -7,6 +7,21 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
 import Tab from "react-bootstrap/Tab";
+import useSWR from "swr";
+
+const fetcher = (...args) => fetch(...args).then((res) => res.arrayBuffer());
+
+function useDB() {
+  let { data, error } = useSWR(
+    "https://bucket.nunawa.net/parts_20230923_181511.db",
+    fetcher,
+  );
+
+  return {
+    db: data,
+    isError: error,
+  };
+}
 
 export default function Home() {
   const [selectedProducts, setSelected] = useState({
@@ -17,6 +32,8 @@ export default function Home() {
     ssd: null,
   });
   const [total, setTotal] = useState(0);
+
+  const { db } = useDB();
 
   return (
     <>
@@ -62,6 +79,7 @@ export default function Home() {
                     type="cpu"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
+                    db={db}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="memory">
@@ -69,6 +87,7 @@ export default function Home() {
                     type="memory"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
+                    db={db}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="motherboard">
@@ -76,6 +95,7 @@ export default function Home() {
                     type="motherboard"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
+                    db={db}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="gpu">
@@ -83,6 +103,7 @@ export default function Home() {
                     type="gpu"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
+                    db={db}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="ssd">
@@ -90,6 +111,7 @@ export default function Home() {
                     type="ssd"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
+                    db={db}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="build">

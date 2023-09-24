@@ -15,7 +15,6 @@ export default function ProductList({
   setSelected,
 }) {
   let productList = [];
-  //console.log(products);
 
   if (products) {
     for (const iterator of products.slice(0, 30)) {
@@ -51,14 +50,13 @@ export default function ProductList({
           </Card.Text>
         );
       } else if (id == "gpu") {
-        const monitor = iterator.monitor.join(" ");
         text = (
           <Card.Text style={{ wordBreak: "keep-all" }}>
             売れ筋:&nbsp;{iterator.sales_rank}
             位&emsp;バスインターフェース:&nbsp;
             {iterator.bus_interface}&emsp;メモリ:&nbsp;{iterator.memory}
             &emsp;モニター端子:&nbsp;
-            {monitor}
+            {iterator.monitor}
           </Card.Text>
         );
       } else if (id == "ssd") {
