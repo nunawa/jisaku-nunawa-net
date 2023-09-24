@@ -3,34 +3,32 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
-import useSWR from "swr";
 import ProductList from "./ProductList";
 import SelectedProduct from "./SelectedProduct";
 import FilterOption from "./FilterOption";
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
-
-function useProducts(type) {
-  let { data, error, isLoading } = useSWR(
-    "/api/products?type=" + type,
-    fetcher,
-  );
-  if (data) data = data.Documents;
-
-  return {
-    products: data,
-    isLoading,
-    isError: error,
-  };
-}
-
-export default function PartsTab({ type, selectedProducts, setSelected }) {
-  const { products } = useProducts(type);
-  const [convertedProducts, setProducts] = useState();
-
+export default function PartsTab({ type, selectedProducts, setSelected, db }) {
   useEffect(() => {
-    setProducts(products);
-  }, [products]);
+    window
+      .initSqlJs({
+        locateFile: (file) => `https://sql.js.org/dist/${file}`,
+      })
+      .then((sql) => {
+        if (db) {
+          const dbf = new sql.Database(new Uint8Array(db));
+          let productList = [];
+          dbf.each(`SELECT * FROM ${type} LIMIT 30`, (row) => {
+            productList.push(row);
+          });
+          console.log(productList);
+          setOriginProducts(productList);
+          setConvertedProducts(productList);
+        }
+      });
+  }, [type, db]);
+
+  const [originProducts, setOriginProducts] = useState();
+  const [convertedProducts, setConvertedProducts] = useState();
 
   const sort = useRef();
 
@@ -40,7 +38,7 @@ export default function PartsTab({ type, selectedProducts, setSelected }) {
   const min = useRef();
 
   function handleSearch() {
-    let filteredProducts = products;
+    let filteredProducts = originProducts;
 
     if (sort.current.value == "sales_rank_asc") {
       filteredProducts = filteredProducts.slice().sort((a, b) => {
@@ -74,7 +72,7 @@ export default function PartsTab({ type, selectedProducts, setSelected }) {
       filteredProducts = filteredProducts.filter((e) => e.price >= minNum);
     }
 
-    setProducts(filteredProducts);
+    setConvertedProducts(filteredProducts);
   }
 
   const [show, setShow] = useState(false);
