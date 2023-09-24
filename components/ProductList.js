@@ -8,14 +8,14 @@ import Spinner from "react-bootstrap/Spinner";
 import Stack from "react-bootstrap/Stack";
 import { BsPlusLg } from "react-icons/bs";
 
-export default function Products({
+export default function ProductList({
   id,
   products,
   selectedProducts,
   setSelected,
 }) {
   let productList = [];
-  console.log(products);
+  //console.log(products);
 
   if (products) {
     for (const iterator of products.slice(0, 30)) {
@@ -115,7 +115,7 @@ export default function Products({
             <Card.Title>￥{iterator.price.toLocaleString()}</Card.Title>
             {text}
           </Card.Body>
-        </Card>
+        </Card>,
       );
     }
 
