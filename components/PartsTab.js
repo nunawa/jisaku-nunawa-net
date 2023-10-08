@@ -11,7 +11,8 @@ export default function PartsTab({ type, selectedProducts, setSelected, db }) {
   useEffect(() => {
     window
       .initSqlJs({
-        locateFile: (file) => `https://sql.js.org/dist/${file}`,
+        locateFile: (file) =>
+          `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`,
       })
       .then((sql) => {
         if (db) {

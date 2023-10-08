@@ -7,12 +7,12 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Row from "react-bootstrap/Row";
 import Tab from "react-bootstrap/Tab";
-import useSWR from "swr";
+import useSWRImmutable from "swr";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.arrayBuffer());
 
 function useDB() {
-  let { data, error } = useSWR(
+  let { data, error } = useSWRImmutable(
     "https://bucket.nunawa.net/parts_20230923_181511.db",
     fetcher,
   );
