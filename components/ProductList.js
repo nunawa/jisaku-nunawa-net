@@ -72,7 +72,7 @@ export default function ProductList({
       }
 
       productList.push(
-        <Card className="mb-2">
+        <Card key={iterator.id} className="mb-2">
           <Card.Header as="h5">
             <Stack direction="horizontal">
               <div

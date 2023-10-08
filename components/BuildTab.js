@@ -8,7 +8,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
 
   if (selectedProducts.cpu) {
     buildList.push(
-      <Container>
+      <Container key="cpu">
         <h5>CPU</h5>
         <Card className="mb-3">
           <Card.Header as="h5">
@@ -38,7 +38,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
     );
   } else {
     buildList.push(
-      <Container>
+      <Container key="cpu">
         <h5>CPU</h5>未選択
       </Container>,
     );
@@ -46,7 +46,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
 
   if (selectedProducts.memory) {
     buildList.push(
-      <Container>
+      <Container key="memory">
         <h5>メモリ</h5>
         <Card className="mb-3">
           <Card.Header as="h5">
@@ -77,7 +77,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
     );
   } else {
     buildList.push(
-      <Container>
+      <Container key="memory">
         <h5>メモリ</h5>未選択
       </Container>,
     );
@@ -85,7 +85,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
 
   if (selectedProducts.motherboard) {
     buildList.push(
-      <Container>
+      <Container key="motherboard">
         <h5>マザーボード</h5>
         <Card className="mb-3">
           <Card.Header as="h5">
@@ -116,7 +116,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
     );
   } else {
     buildList.push(
-      <Container>
+      <Container key="motherboard">
         <h5>マザーボード</h5>未選択
       </Container>,
     );
@@ -129,7 +129,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
     }
 
     buildList.push(
-      <Container>
+      <Container key="gpu">
         <h5>GPU</h5>
         <Card className="mb-3">
           <Card.Header as="h5">
@@ -158,7 +158,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
     );
   } else {
     buildList.push(
-      <Container>
+      <Container key="gpu">
         <h5>GPU</h5>未選択
       </Container>,
     );
@@ -166,7 +166,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
 
   if (selectedProducts.ssd) {
     buildList.push(
-      <Container>
+      <Container key="ssd">
         <h5>SSD</h5>
         <Card className="mb-3">
           <Card.Header as="h5">
@@ -195,7 +195,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
     );
   } else {
     buildList.push(
-      <Container>
+      <Container key="ssd">
         <h5>SSD</h5>未選択
       </Container>,
     );
@@ -207,7 +207,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
     0,
   );
   buildList.push(
-    <Container className="mb-5">
+    <Container key="total" className="mb-5">
       <h5>合計 ￥{total.toLocaleString()}</h5>
     </Container>,
   );
