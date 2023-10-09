@@ -8,6 +8,8 @@ export default function FilterOption({
   type,
   db,
   setConvertedProducts,
+  submittedFilterOption,
+  setSubmittedFilterOption,
 }) {
   function Accordions({ type }) {
     switch (type) {
@@ -481,10 +483,11 @@ export default function FilterOption({
     }
   }
 
-  const { register, handleSubmit, resetField } = useForm();
+  const { register, handleSubmit, resetField, setValue } = useForm();
 
   function onSubmit(data) {
     console.log(data);
+    setSubmittedFilterOption(data);
 
     let sort = "";
     if (data.sort == "sales_rank_asc") {
@@ -537,8 +540,16 @@ export default function FilterOption({
     handleClose();
   }
 
+  function onHide() {
+    setValue("sort", submittedFilterOption.sort);
+    setValue("keyword", submittedFilterOption.keyword);
+    setValue("min", submittedFilterOption.min);
+    setValue("max", submittedFilterOption.max);
+    handleClose();
+  }
+
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={onHide}>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Body>
           <InputGroup className="mb-3">
@@ -585,7 +596,7 @@ export default function FilterOption({
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={onHide}>
             キャンセル
           </Button>
           <Button type="submit" variant="primary">

@@ -28,6 +28,13 @@ export default function PartsTab({ type, selectedProducts, setSelected, db }) {
   const [originProducts, setOriginProducts] = useState();
   const [convertedProducts, setConvertedProducts] = useState();
 
+  const [submittedFilterOption, setSubmittedFilterOption] = useState({
+    sort: "sales_rank_asc",
+    keyword: "",
+    min: "",
+    max: "",
+  });
+
   const [show, setShow] = useState(false);
 
   const handleShow = () => setShow(true);
@@ -47,6 +54,8 @@ export default function PartsTab({ type, selectedProducts, setSelected, db }) {
         type={type}
         db={db}
         setConvertedProducts={setConvertedProducts}
+        submittedFilterOption={submittedFilterOption}
+        setSubmittedFilterOption={setSubmittedFilterOption}
       />
       <Container style={{ height: "70vh" }} className="overflow-auto">
         <ProductList
