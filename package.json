@@ -9,23 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@next/font": "13.1.6",
-    "bootstrap": "^5.2.3",
-    "eslint": "8.34.0",
-    "eslint-config-next": "13.1.6",
-    "next": "13.1.6",
+    "@emotion/react": "^11.11.1",
+    "@next/font": "13.5.4",
+    "bootstrap": "^5.3.2",
+    "eslint": "8.51.0",
+    "eslint-config-next": "13.5.4",
+    "next": "13.5.4",
     "react": "18.2.0",
-    "react-bootstrap": "^2.7.2",
+    "react-bootstrap": "^2.9.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.47.0",
-    "react-icons": "^4.7.1",
+    "react-icons": "^4.11.0",
     "sql.js": "^1.8.0",
-    "swr": "^2.0.3"
+    "swr": "^2.2.4"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^0.3.0",
-    "vercel": "^28.16.2",
-    "wrangler": "^2.10.0"
+    "@cloudflare/next-on-pages": "^1.6.3",
+    "vercel": "^32.4.1",
+    "wrangler": "^3.11.0"
   }
 }
