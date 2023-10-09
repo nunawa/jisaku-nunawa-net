@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
-    "@next/font": "13.5.4",
     "bootstrap": "^5.3.2",
     "eslint": "8.51.0",
     "eslint-config-next": "13.5.4",
