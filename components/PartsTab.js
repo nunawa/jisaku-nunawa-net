@@ -1,11 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
+import { useEffect, useState } from "react";
+import { Button, Container } from "react-bootstrap";
+import FilterOption from "./FilterOption";
 import ProductList from "./ProductList";
 import SelectedProduct from "./SelectedProduct";
-import FilterOption from "./FilterOption";
 
 export default function PartsTab({ type, selectedProducts, setSelected, db }) {
   useEffect(() => {
@@ -31,51 +28,6 @@ export default function PartsTab({ type, selectedProducts, setSelected, db }) {
   const [originProducts, setOriginProducts] = useState();
   const [convertedProducts, setConvertedProducts] = useState();
 
-  const sort = useRef();
-
-  const keyword = useRef();
-
-  const max = useRef();
-  const min = useRef();
-
-  function handleSearch() {
-    let filteredProducts = originProducts;
-
-    if (sort.current.value == "sales_rank_asc") {
-      filteredProducts = filteredProducts.slice().sort((a, b) => {
-        if (a.sales_rank === b.sales_rank) return 0;
-        if (a.sales_rank === null) return 1;
-        if (b.sales_rank === null) return -1;
-        return a.sales_rank < b.sales_rank ? -1 : 1;
-      });
-    } else if (sort.current.value == "price_asc") {
-      filteredProducts = filteredProducts
-        .slice()
-        .sort((a, b) => a.price - b.price);
-    }
-
-    if (keyword.current.value) {
-      filteredProducts = filteredProducts.filter((e) => {
-        const name = e.manufacturer + " " + e.name;
-        return name.indexOf(keyword.current.value) != -1;
-      });
-    }
-
-    const maxNum = Number(max.current.value);
-    const minNum = Number(min.current.value);
-    if (maxNum && minNum) {
-      filteredProducts = filteredProducts.filter(
-        (e) => e.price >= minNum && e.price <= maxNum,
-      );
-    } else if (maxNum) {
-      filteredProducts = filteredProducts.filter((e) => e.price <= maxNum);
-    } else if (minNum) {
-      filteredProducts = filteredProducts.filter((e) => e.price >= minNum);
-    }
-
-    setConvertedProducts(filteredProducts);
-  }
-
   const [show, setShow] = useState(false);
 
   const handleShow = () => setShow(true);
@@ -84,57 +36,18 @@ export default function PartsTab({ type, selectedProducts, setSelected, db }) {
   return (
     <>
       <SelectedProduct id={type} product={selectedProducts[type]} />
-      <InputGroup size="sm" className="mb-3">
-        <Form.Select
-          style={{ maxWidth: "100px" }}
-          defaultValue="sales_rank_asc"
-          ref={sort}
-          onChange={() => handleSearch()}
-        >
-          <option value="sales_rank_asc">売上順</option>
-          <option value="price_asc">価格順</option>
-        </Form.Select>
-        <Form.Control ref={keyword} placeholder="キーワード" />
-        <Button
-          variant="outline-secondary"
-          onClick={() => {
-            keyword.current.value = "";
-            handleSearch();
-          }}
-        >
-          クリア
-        </Button>
-        <Button variant="outline-secondary" onClick={() => handleSearch()}>
-          検索
-        </Button>
-      </InputGroup>
-      <InputGroup size="sm" className="mb-3">
-        <InputGroup.Text>￥</InputGroup.Text>
-        <Form.Control ref={min} type="number" placeholder="以上" />
-        <InputGroup.Text>～</InputGroup.Text>
-        <Form.Control ref={max} type="number" placeholder="以下" />
-        <Button
-          variant="outline-secondary"
-          onClick={() => {
-            min.current.value = "";
-            max.current.value = "";
-            handleSearch();
-          }}
-        >
-          クリア
-        </Button>
-        <Button variant="outline-secondary" onClick={() => handleSearch()}>
-          検索
-        </Button>
-        <Button variant="outline-secondary" onClick={() => handleShow()}>
+      <div className="d-grid gap-2 mb-3">
+        <Button variant="secondary" onClick={() => handleShow()}>
           オプション
         </Button>
-        <FilterOption
-          show={show}
-          handleClose={() => handleClose()}
-          type={type}
-        />
-      </InputGroup>
+      </div>
+      <FilterOption
+        show={show}
+        handleClose={() => handleClose()}
+        type={type}
+        db={db}
+        setConvertedProducts={setConvertedProducts}
+      />
       <Container style={{ height: "70vh" }} className="overflow-auto">
         <ProductList
           id={type}
