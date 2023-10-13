@@ -123,11 +123,6 @@ export default function BuildTab({ selectedProducts, setTotal }) {
   }
 
   if (selectedProducts.gpu) {
-    let monitor = "";
-    if (selectedProducts.gpu.monitor) {
-      monitor = selectedProducts.gpu.monitor.join(" ");
-    }
-
     buildList.push(
       <Container key="gpu">
         <h5>GPU</h5>
@@ -150,7 +145,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
               {selectedProducts.gpu.bus_interface}&emsp;メモリ:&nbsp;
               {selectedProducts.gpu.memory}
               &emsp;モニター端子:&nbsp;
-              {monitor}
+              {selectedProducts.gpu.monitor}
             </Card.Text>
           </Card.Body>
         </Card>

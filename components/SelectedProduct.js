@@ -38,14 +38,13 @@ export default function SelectedProduct({ id, product }) {
         </Card.Text>
       );
     } else if (id == "gpu") {
-      const monitor = product.monitor.join(" ");
       text = (
         <Card.Text style={{ wordBreak: "keep-all" }}>
           売れ筋:&nbsp;{product.sales_rank}
           位&emsp;バスインターフェース:&nbsp;
           {product.bus_interface}&emsp;メモリ:&nbsp;{product.memory}
           &emsp;モニター端子:&nbsp;
-          {monitor}
+          {product.monitor}
         </Card.Text>
       );
     } else if (id == "ssd") {
