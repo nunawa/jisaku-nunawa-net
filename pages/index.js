@@ -1,25 +1,19 @@
 import BuildTab from "@/components/BuildTab";
 import PartsTab from "@/components/PartsTab";
 import { useState } from "react";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import Row from "react-bootstrap/Row";
-import Tab from "react-bootstrap/Tab";
-import useSWRImmutable from "swr";
+import { Col, Container, Nav, Navbar, Row, Tab } from "react-bootstrap";
+import useSWRImmutable from "swr/immutable";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.arrayBuffer());
 
-function useDB() {
-  let { data, error } = useSWRImmutable(
+function useBuf() {
+  let { data } = useSWRImmutable(
     "https://bucket.nunawa.net/parts_20230923_181511.db",
     fetcher,
   );
 
   return {
-    db: data,
-    isError: error,
+    buf: data,
   };
 }
 
@@ -33,7 +27,17 @@ export default function Home() {
   });
   const [total, setTotal] = useState(0);
 
-  const { db } = useDB();
+  const { buf } = useBuf();
+  const [sql, setSql] = useState();
+
+  if (typeof window !== "undefined") {
+    window
+      .initSqlJs({
+        locateFile: (file) =>
+          `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`,
+      })
+      .then((SQL) => setSql(SQL));
+  }
 
   return (
     <>
@@ -79,7 +83,8 @@ export default function Home() {
                     type="cpu"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
-                    db={db}
+                    buf={buf}
+                    sql={sql}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="memory">
@@ -87,7 +92,8 @@ export default function Home() {
                     type="memory"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
-                    db={db}
+                    buf={buf}
+                    sql={sql}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="motherboard">
@@ -95,7 +101,8 @@ export default function Home() {
                     type="motherboard"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
-                    db={db}
+                    buf={buf}
+                    sql={sql}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="gpu">
@@ -103,7 +110,8 @@ export default function Home() {
                     type="gpu"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
-                    db={db}
+                    buf={buf}
+                    sql={sql}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="ssd">
@@ -111,7 +119,8 @@ export default function Home() {
                     type="ssd"
                     selectedProducts={selectedProducts}
                     setSelected={setSelected}
-                    db={db}
+                    buf={buf}
+                    sql={sql}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="build">
