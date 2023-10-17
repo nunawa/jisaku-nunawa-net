@@ -1,4 +1,4 @@
-import { Accordion, Modal, Button, InputGroup, Form } from "react-bootstrap";
+import { Accordion, Button, Form, InputGroup, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
 // WIP: ソート・フィルタ機能
@@ -6,7 +6,8 @@ export default function FilterOption({
   show,
   handleClose,
   type,
-  db,
+  buf,
+  sql,
   setConvertedProducts,
   submittedFilterOption,
   setSubmittedFilterOption,
@@ -521,22 +522,16 @@ export default function FilterOption({
       where = `WHERE ${minMax}`;
     }
 
-    window
-      .initSqlJs({
-        locateFile: (file) =>
-          `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`,
-      })
-      .then((sql) => {
-        if (db) {
-          const dbf = new sql.Database(new Uint8Array(db));
-          let productList = [];
-          dbf.each(`SELECT * FROM ${type} ${where} ${sort} LIMIT 30`, (row) => {
-            productList.push(row);
-          });
-          console.log(productList);
-          setConvertedProducts(productList);
-        }
+    if (buf && sql) {
+      const db = new sql.Database(new Uint8Array(buf));
+      let productList = [];
+      db.each(`SELECT * FROM ${type} ${where} ${sort} LIMIT 30`, (row) => {
+        productList.push(row);
       });
+      console.log(productList);
+      setConvertedProducts(productList);
+    }
+
     handleClose();
   }
 

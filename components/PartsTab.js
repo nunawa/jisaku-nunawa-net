@@ -4,29 +4,28 @@ import FilterOption from "./FilterOption";
 import ProductList from "./ProductList";
 import SelectedProduct from "./SelectedProduct";
 
-export default function PartsTab({ type, selectedProducts, setSelected, db }) {
-  useEffect(() => {
-    window
-      .initSqlJs({
-        locateFile: (file) =>
-          `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`,
-      })
-      .then((sql) => {
-        if (db) {
-          const dbf = new sql.Database(new Uint8Array(db));
-          let productList = [];
-          dbf.each(`SELECT * FROM ${type} LIMIT 30`, (row) => {
-            productList.push(row);
-          });
-          console.log(productList);
-          setOriginProducts(productList);
-          setConvertedProducts(productList);
-        }
-      });
-  }, [type, db]);
-
+export default function PartsTab({
+  type,
+  selectedProducts,
+  setSelected,
+  buf,
+  sql,
+}) {
   const [originProducts, setOriginProducts] = useState();
   const [convertedProducts, setConvertedProducts] = useState();
+
+  useEffect(() => {
+    if (buf && sql) {
+      const db = new sql.Database(new Uint8Array(buf));
+      let productList = [];
+      db.each(`SELECT * FROM ${type} LIMIT 30`, (row) => {
+        productList.push(row);
+      });
+      console.log(productList);
+      setOriginProducts(productList);
+      setConvertedProducts(productList);
+    }
+  }, [buf, sql, type]);
 
   const [submittedFilterOption, setSubmittedFilterOption] = useState({
     sort: "sales_rank_asc",
@@ -52,7 +51,8 @@ export default function PartsTab({ type, selectedProducts, setSelected, db }) {
         show={show}
         handleClose={() => handleClose()}
         type={type}
-        db={db}
+        buf={buf}
+        sql={sql}
         setConvertedProducts={setConvertedProducts}
         submittedFilterOption={submittedFilterOption}
         setSubmittedFilterOption={setSubmittedFilterOption}
