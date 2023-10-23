@@ -1,9 +1,10 @@
-import Container from "react-bootstrap/Container";
-import Card from "react-bootstrap/Card";
-import Stack from "react-bootstrap/Stack";
+import { Container, Card, Stack } from "react-bootstrap";
+import { selectedProductsAtom, totalPriceAtom } from "@/jotai/atom";
+import { useAtomValue, useSetAtom } from "jotai";
 
-export default function BuildTab({ selectedProducts, setTotal }) {
-  console.log(selectedProducts);
+export default function BuildTab() {
+  const selectedProducts = useAtomValue(selectedProductsAtom);
+  const setTotalPrice = useSetAtom(totalPriceAtom);
   let buildList = [];
 
   if (selectedProducts.cpu) {
@@ -206,7 +207,7 @@ export default function BuildTab({ selectedProducts, setTotal }) {
       <h5>合計 ￥{total.toLocaleString()}</h5>
     </Container>,
   );
-  setTotal(total);
+  setTotalPrice(total);
 
   return buildList;
 }

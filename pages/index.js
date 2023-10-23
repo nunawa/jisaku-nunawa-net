@@ -1,5 +1,6 @@
 import BuildTab from "@/components/BuildTab";
 import PartsTab from "@/components/PartsTab";
+import TotalPrice from "@/components/TotalPrice";
 import { useState } from "react";
 import { Col, Container, Nav, Navbar, Row, Tab } from "react-bootstrap";
 import useSWRImmutable from "swr/immutable";
@@ -18,15 +19,6 @@ function useBuf() {
 }
 
 export default function Home() {
-  const [selectedProducts, setSelected] = useState({
-    cpu: null,
-    memory: null,
-    motherboard: null,
-    gpu: null,
-    ssd: null,
-  });
-  const [total, setTotal] = useState(0);
-
   const { buf } = useBuf();
   const [sql, setSql] = useState();
 
@@ -71,7 +63,7 @@ export default function Home() {
                 </Nav.Item>
                 <Nav.Item className="mb-2">
                   <Nav.Link eventKey="build">
-                    ￥{total.toLocaleString()}
+                    <TotalPrice />
                   </Nav.Link>
                 </Nav.Item>
               </Nav>
@@ -79,55 +71,22 @@ export default function Home() {
             <Col sm={9}>
               <Tab.Content>
                 <Tab.Pane eventKey="cpu">
-                  <PartsTab
-                    type="cpu"
-                    selectedProducts={selectedProducts}
-                    setSelected={setSelected}
-                    buf={buf}
-                    sql={sql}
-                  />
+                  <PartsTab type="cpu" buf={buf} sql={sql} />
                 </Tab.Pane>
                 <Tab.Pane eventKey="memory">
-                  <PartsTab
-                    type="memory"
-                    selectedProducts={selectedProducts}
-                    setSelected={setSelected}
-                    buf={buf}
-                    sql={sql}
-                  />
+                  <PartsTab type="memory" buf={buf} sql={sql} />
                 </Tab.Pane>
                 <Tab.Pane eventKey="motherboard">
-                  <PartsTab
-                    type="motherboard"
-                    selectedProducts={selectedProducts}
-                    setSelected={setSelected}
-                    buf={buf}
-                    sql={sql}
-                  />
+                  <PartsTab type="motherboard" buf={buf} sql={sql} />
                 </Tab.Pane>
                 <Tab.Pane eventKey="gpu">
-                  <PartsTab
-                    type="gpu"
-                    selectedProducts={selectedProducts}
-                    setSelected={setSelected}
-                    buf={buf}
-                    sql={sql}
-                  />
+                  <PartsTab type="gpu" buf={buf} sql={sql} />
                 </Tab.Pane>
                 <Tab.Pane eventKey="ssd">
-                  <PartsTab
-                    type="ssd"
-                    selectedProducts={selectedProducts}
-                    setSelected={setSelected}
-                    buf={buf}
-                    sql={sql}
-                  />
+                  <PartsTab type="ssd" buf={buf} sql={sql} />
                 </Tab.Pane>
                 <Tab.Pane eventKey="build">
-                  <BuildTab
-                    selectedProducts={selectedProducts}
-                    setTotal={setTotal}
-                  />
+                  <BuildTab />
                 </Tab.Pane>
               </Tab.Content>
             </Col>
