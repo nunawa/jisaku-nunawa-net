@@ -4,13 +4,7 @@ import FilterOption from "./FilterOption";
 import ProductList from "./ProductList";
 import SelectedProduct from "./SelectedProduct";
 
-export default function PartsTab({
-  type,
-  selectedProducts,
-  setSelected,
-  buf,
-  sql,
-}) {
+export default function PartsTab({ type, buf, sql }) {
   const [originProducts, setOriginProducts] = useState();
   const [convertedProducts, setConvertedProducts] = useState();
 
@@ -41,7 +35,7 @@ export default function PartsTab({
 
   return (
     <>
-      <SelectedProduct id={type} product={selectedProducts[type]} />
+      <SelectedProduct id={type} />
       <div className="d-grid gap-2 mb-3">
         <Button variant="secondary" onClick={() => handleShow()}>
           オプション
@@ -58,12 +52,7 @@ export default function PartsTab({
         setSubmittedFilterOption={setSubmittedFilterOption}
       />
       <Container style={{ height: "70vh" }} className="overflow-auto">
-        <ProductList
-          id={type}
-          products={convertedProducts}
-          selectedProducts={selectedProducts}
-          setSelected={setSelected}
-        />
+        <ProductList id={type} products={convertedProducts} />
       </Container>
     </>
   );

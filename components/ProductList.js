@@ -1,19 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Link from "next/link";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import Container from "react-bootstrap/Container";
-import Spinner from "react-bootstrap/Spinner";
-import Stack from "react-bootstrap/Stack";
+import { Button, Card, Container, Spinner, Stack } from "react-bootstrap";
 import { BsPlusLg } from "react-icons/bs";
+import { selectedProductsAtom } from "@/jotai/atom";
+import { useAtom } from "jotai";
 
-export default function ProductList({
-  id,
-  products,
-  selectedProducts,
-  setSelected,
-}) {
+export default function ProductList({ id, products }) {
+  const [selectedProducts, setSelectedProducts] = useAtom(selectedProductsAtom);
   let productList = [];
 
   if (products) {
@@ -102,7 +96,9 @@ export default function ProductList({
                 onClick={() => {
                   let newSelectedProducts = Object.assign({}, selectedProducts);
                   newSelectedProducts[id] = iterator;
-                  setSelected(newSelectedProducts);
+                  console.log(newSelectedProducts);
+                  // ここで無限ループ😇
+                  setSelectedProducts(newSelectedProducts);
                 }}
               >
                 <BsPlusLg />

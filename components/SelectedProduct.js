@@ -1,10 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Link from "next/link";
-import Card from "react-bootstrap/Card";
-import Stack from "react-bootstrap/Stack";
+import { Card, Stack } from "react-bootstrap";
+import { selectedProductsAtom } from "@/jotai/atom";
+import { useAtomValue } from "jotai";
 
-export default function SelectedProduct({ id, product }) {
+export default function SelectedProduct({ id }) {
+  const selectedProducts = useAtomValue(selectedProductsAtom);
+  const product = selectedProducts[id];
+
   if (product) {
     let text;
     if (id == "cpu") {
