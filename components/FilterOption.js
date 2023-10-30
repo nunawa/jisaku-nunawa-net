@@ -8,7 +8,6 @@ import {
 } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
-// WIP: ソート・フィルタ機能
 export default function FilterOption({
   show,
   handleClose,
@@ -19,6 +18,8 @@ export default function FilterOption({
   submittedFilterOption,
   setSubmittedFilterOption,
 }) {
+  const { register, handleSubmit, resetField, setValue } = useForm();
+
   function Accordions({ type }) {
     switch (type) {
       case "cpu":
@@ -44,19 +45,43 @@ export default function FilterOption({
               <Accordion.Body>
                 <Stack direction="horizontal" gap={3}>
                   <div className="p-2">
-                    {coreCountList.slice(0, 7).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {coreCountList.map((value, index) => {
+                      if (index < 7) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.coreCount.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                   <div className="p-2">
-                    {coreCountList.slice(7, 14).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {coreCountList.map((value, index) => {
+                      if (index >= 7 && index < 14) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.coreCount.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                   <div className="p-2">
-                    {coreCountList.slice(14).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {coreCountList.map((value, index) => {
+                      if (index >= 14) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.coreCount.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                 </Stack>
               </Accordion.Body>
@@ -66,14 +91,30 @@ export default function FilterOption({
               <Accordion.Body>
                 <Stack direction="horizontal" gap={3}>
                   <div className="p-2">
-                    {cpuSocketList.slice(0, 10).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {cpuSocketList.map((value, index) => {
+                      if (index < 10) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.socket.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                   <div className="p-2">
-                    {cpuSocketList.slice(10).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {cpuSocketList.map((value, index) => {
+                      if (index >= 10) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.socket.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                 </Stack>
               </Accordion.Body>
@@ -82,17 +123,14 @@ export default function FilterOption({
               <Accordion.Header>内蔵GPU</Accordion.Header>
               <Accordion.Body>
                 <Form.Check
-                  defaultChecked={true}
-                  type="radio"
-                  name="igpu"
-                  value={false}
-                  label="なし"
+                  key="igpu.yes"
+                  label="あり"
+                  {...register(`${type}.igpu.yes`)}
                 />
                 <Form.Check
-                  type="radio"
-                  name="igpu"
-                  value={true}
-                  label="あり"
+                  key="igpu.no"
+                  label="なし"
+                  {...register(`${type}.igpu.no`)}
                 />
               </Accordion.Body>
             </Accordion.Item>
@@ -134,14 +172,30 @@ export default function FilterOption({
               <Accordion.Body>
                 <Stack direction="horizontal" gap={2}>
                   <div className="p-2">
-                    {memoryCapacityList.slice(0, 8).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {memoryCapacityList.map((value, index) => {
+                      if (index < 8) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.capacity.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                   <div className="p-2">
-                    {memoryCapacityList.slice(8).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {memoryCapacityList.map((value, index) => {
+                      if (index >= 8) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.capacity.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                 </Stack>
               </Accordion.Body>
@@ -149,41 +203,58 @@ export default function FilterOption({
             <Accordion.Item eventKey="1">
               <Accordion.Header>枚数</Accordion.Header>
               <Accordion.Body>
-                {pcsList.map((type) => (
-                  <Form.Check key={type} value={type} label={type} />
+                {pcsList.map((value) => (
+                  <Form.Check
+                    key={value}
+                    label={value}
+                    {...register(`${type}.pcs.${value}`)}
+                  />
                 ))}
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="2">
               <Accordion.Header>規格</Accordion.Header>
               <Accordion.Body>
-                {standardList.map((type) => (
-                  <Form.Check key={type} value={type} label={type} />
+                {standardList.map((value, index) => (
+                  <Form.Check
+                    key={value}
+                    label={value}
+                    {...register(`${type}.standard.${index}.${value}`)}
+                  />
                 ))}
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="3">
               <Accordion.Header>インターフェース</Accordion.Header>
               <Accordion.Body>
-                {memoryInterfaceList.map((type) => (
-                  <Form.Check key={type} value={type} label={type} />
-                ))}
+                {memoryInterfaceList.map((value, index) => {
+                  const escapedValue = value.replaceAll(".", "_");
+                  return (
+                    <Form.Check
+                      key={value}
+                      label={value}
+                      {...register(
+                        `${type}.interface.${index}.${escapedValue}`,
+                      )}
+                    />
+                  );
+                })}
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
         );
       case "motherboard":
-        let formfactorList = [];
+        let formFactorList = [];
         let motherboardSocketList = [];
         let chipsetList = [];
         let motherboardMemoryList = [];
 
         if (buf && sql) {
           const db = new sql.Database(new Uint8Array(buf));
-          const formfactorRes = db.exec(
+          const formFactorRes = db.exec(
             "SELECT DISTINCT form_factor FROM motherboard WHERE form_factor != '' ORDER BY form_factor",
           );
-          formfactorList = formfactorRes[0].values.flat();
+          formFactorList = formFactorRes[0].values.flat();
 
           const motherboardSocketRes = db.exec(
             "SELECT DISTINCT socket FROM motherboard WHERE socket != '' AND socket NOT LIKE '%Onboard%' ORDER BY socket",
@@ -206,8 +277,12 @@ export default function FilterOption({
             <Accordion.Item eventKey="0">
               <Accordion.Header>フォームファクタ</Accordion.Header>
               <Accordion.Body>
-                {formfactorList.map((type) => (
-                  <Form.Check key={type} value={type} label={type} />
+                {formFactorList.map((value, index) => (
+                  <Form.Check
+                    key={value}
+                    label={value}
+                    {...register(`${type}.formFactor.${index}.${value}`)}
+                  />
                 ))}
               </Accordion.Body>
             </Accordion.Item>
@@ -216,14 +291,30 @@ export default function FilterOption({
               <Accordion.Body>
                 <Stack direction="horizontal" gap={2}>
                   <div className="p-2">
-                    {motherboardSocketList.slice(0, 7).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {motherboardSocketList.map((value, index) => {
+                      if (index < 7) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.socket.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                   <div className="p-2">
-                    {motherboardSocketList.slice(7).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {motherboardSocketList.map((value, index) => {
+                      if (index >= 7) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.socket.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                 </Stack>
               </Accordion.Body>
@@ -233,14 +324,30 @@ export default function FilterOption({
               <Accordion.Body>
                 <Stack direction="horizontal" gap={2}>
                   <div className="p-2">
-                    {chipsetList.slice(0, 28).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {chipsetList.map((value, index) => {
+                      if (index < 28) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.chipset.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                   <div className="p-2">
-                    {chipsetList.slice(28).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {chipsetList.map((value, index) => {
+                      if (index >= 28) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.chipset.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                 </Stack>
               </Accordion.Body>
@@ -248,24 +355,31 @@ export default function FilterOption({
             <Accordion.Item eventKey="3">
               <Accordion.Header>メモリ</Accordion.Header>
               <Accordion.Body>
-                {motherboardMemoryList.map((type) => (
-                  <Form.Check key={type} value={type} label={type} />
-                ))}
+                {motherboardMemoryList.map((value, index) => {
+                  const escapedValue = value.replaceAll(".", "_");
+                  return (
+                    <Form.Check
+                      key={value}
+                      label={value}
+                      {...register(`${type}.memory.${index}.${escapedValue}`)}
+                    />
+                  );
+                })}
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
         );
       case "gpu":
-        let gpuList = [];
+        let gpuNameList = [];
         let busList = [];
         let gpuMemoryList = [];
 
         if (buf && sql) {
           const db = new sql.Database(new Uint8Array(buf));
-          const gpuRes = db.exec(
+          const gpuNameRes = db.exec(
             "SELECT DISTINCT gpu_name FROM gpu WHERE gpu_name != '' AND gpu_name NOT LIKE '%ATI%' AND gpu_name NOT LIKE '%MATROX%' ORDER BY gpu_name",
           );
-          gpuList = gpuRes[0].values.flat();
+          gpuNameList = gpuNameRes[0].values.flat();
 
           const busRes = db.exec(
             "SELECT DISTINCT bus_interface FROM gpu WHERE bus_interface != '' AND bus_interface LIKE '%PCI%' ORDER BY bus_interface",
@@ -283,17 +397,30 @@ export default function FilterOption({
             <Accordion.Item eventKey="0">
               <Accordion.Header>GPU</Accordion.Header>
               <Accordion.Body>
-                {gpuList.map((type) => (
-                  <Form.Check key={type} value={type} label={type} />
+                {gpuNameList.map((value, index) => (
+                  <Form.Check
+                    key={value}
+                    label={value}
+                    {...register(`${type}.gpuName.${index}.${value}`)}
+                  />
                 ))}
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="1">
               <Accordion.Header>バスインターフェース</Accordion.Header>
               <Accordion.Body>
-                {busList.map((type) => (
-                  <Form.Check key={type} value={type} label={type} />
-                ))}
+                {busList.map((value, index) => {
+                  const escapedValue = value.replaceAll(".", "_");
+                  return (
+                    <Form.Check
+                      key={value}
+                      label={value}
+                      {...register(
+                        `${type}.busInterface.${index}.${escapedValue}`,
+                      )}
+                    />
+                  );
+                })}
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="2">
@@ -301,14 +428,30 @@ export default function FilterOption({
               <Accordion.Body>
                 <Stack direction="horizontal" gap={2}>
                   <div className="p-2">
-                    {gpuMemoryList.slice(0, 26).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {gpuMemoryList.map((value, index) => {
+                      if (index < 26) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.memory.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                   <div className="p-2">
-                    {gpuMemoryList.slice(26).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {gpuMemoryList.map((value, index) => {
+                      if (index >= 26) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.memory.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                 </Stack>
               </Accordion.Body>
@@ -345,14 +488,30 @@ export default function FilterOption({
               <Accordion.Body>
                 <Stack direction="horizontal" gap={2}>
                   <div className="p-2">
-                    {ssdCapacityList.slice(0, 19).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {ssdCapacityList.map((value, index) => {
+                      if (index < 19) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.capacity.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                   <div className="p-2">
-                    {ssdCapacityList.slice(19).map((type) => (
-                      <Form.Check key={type} value={type} label={type} />
-                    ))}
+                    {ssdCapacityList.map((value, index) => {
+                      if (index >= 19) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            label={value}
+                            {...register(`${type}.capacity.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
                   </div>
                 </Stack>
               </Accordion.Body>
@@ -360,16 +519,27 @@ export default function FilterOption({
             <Accordion.Item eventKey="1">
               <Accordion.Header>サイズ</Accordion.Header>
               <Accordion.Body>
-                {sizeList.map((type) => (
-                  <Form.Check key={type} value={type} label={type} />
-                ))}
+                {sizeList.map((value, index) => {
+                  const escapedValue = value.replace(".", "_");
+                  return (
+                    <Form.Check
+                      key={value}
+                      label={value}
+                      {...register(`${type}.size.${index}.${escapedValue}`)}
+                    />
+                  );
+                })}
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="2">
               <Accordion.Header>インターフェース</Accordion.Header>
               <Accordion.Body>
-                {ssdInterfaceList.map((type) => (
-                  <Form.Check key={type} value={type} label={type} />
+                {ssdInterfaceList.map((value, index) => (
+                  <Form.Check
+                    key={value}
+                    label={value}
+                    {...register(`${type}.interface.${index}.${value}`)}
+                  />
                 ))}
               </Accordion.Body>
             </Accordion.Item>
@@ -379,8 +549,6 @@ export default function FilterOption({
         break;
     }
   }
-
-  const { register, handleSubmit, resetField, setValue } = useForm();
 
   function onSubmit(data) {
     console.log(data);
@@ -402,20 +570,256 @@ export default function FilterOption({
     const min = Number(data.min);
     const max = Number(data.max);
     if (min && max && min <= max) {
-      minMax = `price >= ${min} AND price <= ${max}`;
+      minMax = `(price >= ${min} AND price <= ${max})`;
     } else if (min) {
       minMax = `price >= ${min}`;
     } else if (max) {
       minMax = `price <= ${max}`;
     }
 
+    let coreCount = "";
+    let cpuSocket = "";
+    let igpu = "";
+    if (data.cpu) {
+      let filteredCoreCount = [];
+      for (let i = 0; i < data.cpu.coreCount.length; i++) {
+        if (data.cpu.coreCount[i] === true) {
+          filteredCoreCount.push(`core_count = ${i}`);
+        }
+      }
+      coreCount = filteredCoreCount.join(" OR ");
+
+      let filteredCpuSocket = [];
+      for (const iter of data.cpu.socket) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            filteredCpuSocket.push(`socket = "${key}"`);
+          }
+        }
+      }
+      cpuSocket = filteredCpuSocket.join(" OR ");
+
+      if (
+        (data.cpu.igpu.yes === true && data.cpu.igpu.no === true) ||
+        (data.cpu.igpu.yes === false && data.cpu.igpu.no === false)
+      ) {
+        igpu = "";
+      } else if (data.cpu.igpu.yes === true) {
+        igpu = "gpu IS NOT NULL";
+      } else if (data.cpu.igpu.no === true) {
+        igpu = "gpu IS NULL";
+      }
+    }
+
+    let memoryCapacity = "";
+    let pcs = "";
+    let standard = "";
+    let memoryInterface = "";
+    if (data.memory) {
+      let filteredCapacity = [];
+      for (const iter of data.memory.capacity) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            filteredCapacity.push(`capacity = "${key}"`);
+          }
+        }
+      }
+      memoryCapacity = filteredCapacity.join(" OR ");
+
+      let filteredPcs = [];
+      for (let i = 0; i < data.memory.pcs.length; i++) {
+        if (data.memory.pcs[i] === true) {
+          filteredPcs.push(`pcs = ${i}`);
+        }
+      }
+      pcs = filteredPcs.join(" OR ");
+
+      let filteredStandard = [];
+      for (const iter of data.memory.standard) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            filteredStandard.push(`standard = "${key}"`);
+          }
+        }
+      }
+      standard = filteredStandard.join(" OR ");
+
+      let filteredMemoryInterface = [];
+      for (const iter of data.memory.interface) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            const restoredKey = key.replaceAll("_", ".");
+            filteredMemoryInterface.push(`interface = "${restoredKey}"`);
+          }
+        }
+      }
+      memoryInterface = filteredMemoryInterface.join(" OR ");
+    }
+
+    let formFactor = "";
+    let motherboardSocket = "";
+    let chipset = "";
+    let motherboardMemory = "";
+    if (data.motherboard) {
+      let filteredFormFactor = [];
+      for (const iter of data.motherboard.formFactor) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            filteredFormFactor.push(`form_factor = "${key}"`);
+          }
+        }
+      }
+      formFactor = filteredFormFactor.join(" OR ");
+
+      let filteredMotherboardSocket = [];
+      for (const iter of data.motherboard.socket) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            filteredMotherboardSocket.push(`socket = "${key}"`);
+          }
+        }
+      }
+      motherboardSocket = filteredMotherboardSocket.join(" OR ");
+
+      let filteredChipset = [];
+      for (const iter of data.motherboard.chipset) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            filteredChipset.push(`chipset = "${key}"`);
+          }
+        }
+      }
+      chipset = filteredChipset.join(" OR ");
+
+      let filteredMemory = [];
+      for (const iter of data.motherboard.memory) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            filteredMemory.push(`memory = "${key}"`);
+          }
+        }
+      }
+      memory = filteredMemory.join(" OR ");
+    }
+
+    let gpuName = "";
+    let busInterface = "";
+    let gpuMemory = "";
+    if (data.gpu) {
+      let filteredGpuName = [];
+      for (const iter of data.gpu.gpuName) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            filteredGpuName.push(`gpu_name = "${key}"`);
+          }
+        }
+      }
+      gpuName = filteredGpuName.join(" OR ");
+
+      let filteredBusInterface = [];
+      for (const iter of data.gpu.busInterface) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            const restoredKey = key.replaceAll("_", ".");
+            filteredBusInterface.push(`bus_interface = "${restoredKey}"`);
+          }
+        }
+      }
+      busInterface = filteredBusInterface.join(" OR ");
+
+      let filteredGpuMemory = [];
+      for (const iter of data.gpu.memory) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            filteredGpuMemory.push(`memory = "${key}"`);
+          }
+        }
+      }
+      gpuMemory = filteredGpuMemory.join(" OR ");
+    }
+
+    let ssdCapacity = "";
+    let size = "";
+    let ssdInterface = "";
+    if (data.ssd) {
+      let filteredSsdCapacity = [];
+      for (const iter of data.ssd.capacity) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            filteredSsdCapacity.push(`capacity = "${key}"`);
+          }
+        }
+      }
+      ssdCapacity = filteredSsdCapacity.join(" OR ");
+
+      let filteredSize = [];
+      for (const iter of data.ssd.size) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            const restoredKey = key.replaceAll("_", ".");
+            filteredSize.push(`size = "${restoredKey}"`);
+          }
+        }
+      }
+      size = filteredSize.join(" OR ");
+
+      let filteredSsdInterface = [];
+      for (const iter of data.ssd.interface) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            filteredSsdInterface.push(`interface = "${key}"`);
+          }
+        }
+      }
+      ssdInterface = filteredSsdInterface.join(" OR ");
+    }
+
     let where = "";
-    if (keyword && minMax) {
-      where = `WHERE ${keyword} AND ${minMax}`;
-    } else if (keyword) {
-      where = `WHERE ${keyword}`;
-    } else if (minMax) {
-      where = `WHERE ${minMax}`;
+    if (
+      keyword ||
+      minMax ||
+      coreCount ||
+      cpuSocket ||
+      igpu ||
+      memoryCapacity ||
+      pcs ||
+      standard ||
+      memoryInterface ||
+      formFactor ||
+      motherboardSocket ||
+      chipset ||
+      motherboardMemory ||
+      gpuName ||
+      busInterface ||
+      gpuMemory ||
+      ssdCapacity ||
+      size ||
+      ssdInterface
+    ) {
+      const params = [
+        keyword,
+        minMax,
+        coreCount,
+        cpuSocket,
+        igpu,
+        memoryCapacity,
+        pcs,
+        standard,
+        memoryInterface,
+        formFactor,
+        motherboardSocket,
+        chipset,
+        motherboardMemory,
+        gpuName,
+        busInterface,
+        gpuMemory,
+        ssdCapacity,
+        size,
+        ssdInterface,
+      ]
+        .filter(Boolean)
+        .join(") AND (");
+      where = `WHERE (${params})`;
     }
 
     if (buf && sql) {
@@ -436,6 +840,41 @@ export default function FilterOption({
     setValue("keyword", submittedFilterOption.keyword);
     setValue("min", submittedFilterOption.min);
     setValue("max", submittedFilterOption.max);
+    if (submittedFilterOption.cpu) {
+      setValue("cpu.coreCount", submittedFilterOption.cpu.coreCount);
+      setValue("cpu.socket", submittedFilterOption.cpu.socket);
+      setValue("cpu.igpu.yes", submittedFilterOption.cpu.igpu.yes);
+      setValue("cpu.igpu.no", submittedFilterOption.cpu.igpu.no);
+    }
+    if (submittedFilterOption.memory) {
+      setValue("memory.capacity", submittedFilterOption.memory.capacity);
+      setValue("memory.pcs", submittedFilterOption.memory.pcs);
+      setValue("memory.standard", submittedFilterOption.memory.standard);
+      setValue("memory.interface", submittedFilterOption.memory.interface);
+    }
+    if (submittedFilterOption.motherboard) {
+      setValue(
+        "motherboard.formFactor",
+        submittedFilterOption.motherboard.formFactor,
+      );
+      setValue("motherboard.socket", submittedFilterOption.motherboard.socket);
+      setValue(
+        "motherboard.chipset",
+        submittedFilterOption.motherboard.chipset,
+      );
+      setValue("motherboard.memory", submittedFilterOption.motherboard.memory);
+    }
+    if (submittedFilterOption.gpu) {
+      setValue("gpu.gpuName", submittedFilterOption.gpu.gpuName);
+      setValue("gpu.busInterface", submittedFilterOption.gpu.busInterface);
+      setValue("gpu.memory", submittedFilterOption.gpu.memory);
+    }
+    if (submittedFilterOption.ssd) {
+      setValue("ssd.capacity", submittedFilterOption.ssd.capacity);
+      setValue("ssd.size", submittedFilterOption.ssd.size);
+      setValue("ssd.interface", submittedFilterOption.ssd.interface);
+    }
+
     handleClose();
   }
 
