@@ -699,7 +699,7 @@ export default function FilterOption({
           }
         }
       }
-      memory = filteredMemory.join(" OR ");
+      motherboardMemory = filteredMemory.join(" OR ");
     }
 
     let gpuName = "";
