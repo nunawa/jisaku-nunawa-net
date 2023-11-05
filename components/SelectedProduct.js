@@ -1,10 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Link from "next/link";
-import Card from "react-bootstrap/Card";
-import Stack from "react-bootstrap/Stack";
+import { Card, Stack } from "react-bootstrap";
+import { selectedProductsAtom } from "@/jotai/atom";
+import { useAtomValue } from "jotai";
 
-export default function SelectedProduct({ id, product }) {
+export default function SelectedProduct({ id }) {
+  const selectedProducts = useAtomValue(selectedProductsAtom);
+  const product = selectedProducts[id];
+
   if (product) {
     let text;
     if (id == "cpu") {
@@ -38,14 +42,13 @@ export default function SelectedProduct({ id, product }) {
         </Card.Text>
       );
     } else if (id == "gpu") {
-      const monitor = product.monitor.join(" ");
       text = (
         <Card.Text style={{ wordBreak: "keep-all" }}>
           売れ筋:&nbsp;{product.sales_rank}
           位&emsp;バスインターフェース:&nbsp;
           {product.bus_interface}&emsp;メモリ:&nbsp;{product.memory}
           &emsp;モニター端子:&nbsp;
-          {monitor}
+          {product.monitor}
         </Card.Text>
       );
     } else if (id == "ssd") {
