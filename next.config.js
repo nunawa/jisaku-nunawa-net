@@ -2,7 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    runtime: "edge",
+    swcPlugins: [["@swc-jotai/react-refresh", {}]],
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+      };
+    }
+
+    return config;
   },
 };
 
