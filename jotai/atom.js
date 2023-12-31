@@ -7,5 +7,3 @@ export const selectedProductsAtom = atom({
   gpu: null,
   ssd: null,
 });
-
-export const totalPriceAtom = atom(0);
