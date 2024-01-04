@@ -1,0 +1,21 @@
+name: reviewdog
+
+on: [pull_request]
+
+jobs:
+  reviewdog:
+    name: reviewdog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v4
+      - name: Prettier Format
+        uses: reviewdog/action-black@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          level: warning
+      - name: ESLint Lint
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          level: warning
