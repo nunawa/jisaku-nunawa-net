@@ -7,7 +7,7 @@ export default function ProductCardText({ type, product }) {
     case "cpu":
       return (
         <Card.Text>
-          <Badge className="me-1">{product.sales_rank}位</Badge>
+          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
           <Badge className="me-1" bg="secondary">
             {product.frequency}GHz
           </Badge>
@@ -25,8 +25,8 @@ export default function ProductCardText({ type, product }) {
 
     case "memory":
       return (
-        <Card.Text style={{ wordBreak: "keep-all" }}>
-          <Badge className="me-1">{product.sales_rank}位</Badge>
+        <Card.Text>
+          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
           <Badge className="me-1" bg="secondary">
             {product.capacity}
           </Badge>
@@ -44,8 +44,8 @@ export default function ProductCardText({ type, product }) {
 
     case "motherboard":
       return (
-        <Card.Text style={{ wordBreak: "keep-all" }}>
-          <Badge className="me-1">{product.sales_rank}位</Badge>
+        <Card.Text>
+          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
           <Badge className="me-1" bg="secondary">
             {product.form_factor}
           </Badge>
@@ -63,8 +63,8 @@ export default function ProductCardText({ type, product }) {
 
     case "gpu":
       return (
-        <Card.Text style={{ wordBreak: "keep-all" }}>
-          <Badge className="me-1">{product.sales_rank}位</Badge>
+        <Card.Text>
+          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
           <Badge className="me-1" bg="secondary">
             {product.bus_interface}
           </Badge>
@@ -79,8 +79,8 @@ export default function ProductCardText({ type, product }) {
 
     case "ssd":
       return (
-        <Card.Text style={{ wordBreak: "keep-all" }}>
-          <Badge className="me-1">{product.sales_rank}位</Badge>
+        <Card.Text>
+          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
           <Badge className="me-1" bg="secondary">
             {product.capacity}
           </Badge>
