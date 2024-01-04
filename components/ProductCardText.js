@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import { Badge, Card } from "react-bootstrap";
 
 export default function ProductCardText({ type, product }) {
