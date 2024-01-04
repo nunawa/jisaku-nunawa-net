@@ -1,68 +1,16 @@
 /** @jsxImportSource @emotion/react */
+import { selectedProductsAtom } from "@/jotai/atom";
 import { css } from "@emotion/react";
+import { useAtomValue } from "jotai";
 import Link from "next/link";
 import { Card, Stack } from "react-bootstrap";
-import { selectedProductsAtom } from "@/jotai/atom";
-import { useAtomValue } from "jotai";
+import ProductCardText from "./ProductCardText";
 
 export default function SelectedProduct({ id }) {
   const selectedProducts = useAtomValue(selectedProductsAtom);
   const product = selectedProducts[id];
 
   if (product) {
-    let text;
-    if (id == "cpu") {
-      text = (
-        <Card.Text style={{ wordBreak: "keep-all" }}>
-          売れ筋:&nbsp;{product.sales_rank}位&emsp;クロック:&nbsp;
-          {product.frequency}GHz&emsp;ソケット:&nbsp;{product.socket}
-          &emsp;コア:&nbsp;
-          {product.core_count}
-          &emsp;スレッド:&nbsp;{product.thread_count}
-        </Card.Text>
-      );
-    } else if (id == "memory") {
-      text = (
-        <Card.Text style={{ wordBreak: "keep-all" }}>
-          売れ筋:&nbsp;{product.sales_rank}位&emsp;容量:&nbsp;
-          {product.capacity}&emsp;枚数:&nbsp;{product.pcs}
-          &emsp;規格:&nbsp;
-          {product.standard}
-          &emsp;インターフェース:&nbsp;{product.interface}
-        </Card.Text>
-      );
-    } else if (id == "motherboard") {
-      text = (
-        <Card.Text style={{ wordBreak: "keep-all" }}>
-          売れ筋:&nbsp;{product.sales_rank}位&emsp;フォームファクタ:&nbsp;
-          {product.form_factor}&emsp;ソケット:&nbsp;{product.socket}
-          &emsp;チップセット:&nbsp;
-          {product.chipset}
-          &emsp;メモリ:&nbsp;{product.memory}
-        </Card.Text>
-      );
-    } else if (id == "gpu") {
-      text = (
-        <Card.Text style={{ wordBreak: "keep-all" }}>
-          売れ筋:&nbsp;{product.sales_rank}
-          位&emsp;バスインターフェース:&nbsp;
-          {product.bus_interface}&emsp;メモリ:&nbsp;{product.memory}
-          &emsp;モニター端子:&nbsp;
-          {product.monitor}
-        </Card.Text>
-      );
-    } else if (id == "ssd") {
-      text = (
-        <Card.Text style={{ wordBreak: "keep-all" }}>
-          売れ筋:&nbsp;{product.sales_rank}位&emsp;容量:&nbsp;
-          {product.capacity}&emsp;タイプ:&nbsp;{product.cell_type}
-          &emsp;サイズ:&nbsp;
-          {product.size}
-          &emsp;インターフェース:&nbsp;{product.interface}
-        </Card.Text>
-      );
-    }
-
     return (
       <Card className="mb-3">
         <Card.Header as="h5">
@@ -98,7 +46,7 @@ export default function SelectedProduct({ id }) {
         </Card.Header>
         <Card.Body>
           <Card.Title>￥{product.price.toLocaleString()}</Card.Title>
-          {text}
+          <ProductCardText type={id} product={product} />
         </Card.Body>
       </Card>
     );
