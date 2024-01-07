@@ -11,7 +11,7 @@ export default function Document() {
         />
         <link
           rel="preload"
-          href="https://bucket.nunawa.net/parts_20230923_181511.db"
+          href="https://bucket.nunawa.net/parts_latest.db"
           as="fetch"
           crossOrigin="anonymous"
         />

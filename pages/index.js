@@ -9,7 +9,7 @@ const fetcher = (...args) => fetch(...args).then((res) => res.arrayBuffer());
 
 function useBuf() {
   let { data } = useSWRImmutable(
-    "https://bucket.nunawa.net/parts_20230923_181511.db",
+    "https://bucket.nunawa.net/parts_latest.db",
     fetcher,
   );
 
