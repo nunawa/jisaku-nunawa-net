@@ -26,7 +26,7 @@ export default function Home() {
     window
       .initSqlJs({
         locateFile: (file) =>
-          `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`,
+          `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.9.0/${file}`,
       })
       .then((SQL) => setSql(SQL));
   }
