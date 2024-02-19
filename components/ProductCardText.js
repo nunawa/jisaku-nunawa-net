@@ -70,7 +70,7 @@ export default function ProductCardText({ type, product }) {
             {product.memory}
           </Badge>
           <Badge className="me-1" bg="secondary">
-            {product.monitor}
+            {JSON.parse(product.monitor).join(" / ")}
           </Badge>
         </Card.Text>
       );
