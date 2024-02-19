@@ -50,6 +50,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-core-count-${value}`}
                             label={value}
                             {...register(`${type}.coreCount.${value}`)}
                           />
@@ -63,6 +64,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-core-count-${value}`}
                             label={value}
                             {...register(`${type}.coreCount.${value}`)}
                           />
@@ -76,6 +78,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-core-count-${value}`}
                             label={value}
                             {...register(`${type}.coreCount.${value}`)}
                           />
@@ -96,6 +99,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-socket-${index}`}
                             label={value}
                             {...register(`${type}.socket.${index}.${value}`)}
                           />
@@ -109,6 +113,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-socket-${index}`}
                             label={value}
                             {...register(`${type}.socket.${index}.${value}`)}
                           />
@@ -124,11 +129,13 @@ export default function FilterOption({
               <Accordion.Body>
                 <Form.Check
                   key="igpu.yes"
+                  id={`${type}-igpu-yes`}
                   label="あり"
                   {...register(`${type}.igpu.yes`)}
                 />
                 <Form.Check
                   key="igpu.no"
+                  id={`${type}-igpu-no`}
                   label="なし"
                   {...register(`${type}.igpu.no`)}
                 />
@@ -177,6 +184,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-capacity-${index}`}
                             label={value}
                             {...register(`${type}.capacity.${index}.${value}`)}
                           />
@@ -190,6 +198,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-capacity-${index}`}
                             label={value}
                             {...register(`${type}.capacity.${index}.${value}`)}
                           />
@@ -206,6 +215,7 @@ export default function FilterOption({
                 {pcsList.map((value) => (
                   <Form.Check
                     key={value}
+                    id={`${type}-pcs-${value}`}
                     label={value}
                     {...register(`${type}.pcs.${value}`)}
                   />
@@ -218,6 +228,7 @@ export default function FilterOption({
                 {standardList.map((value, index) => (
                   <Form.Check
                     key={value}
+                    id={`${type}-standard-${index}`}
                     label={value}
                     {...register(`${type}.standard.${index}.${value}`)}
                   />
@@ -232,6 +243,7 @@ export default function FilterOption({
                   return (
                     <Form.Check
                       key={value}
+                      id={`${type}-interface-${index}`}
                       label={value}
                       {...register(
                         `${type}.interface.${index}.${escapedValue}`,
@@ -280,6 +292,7 @@ export default function FilterOption({
                 {formFactorList.map((value, index) => (
                   <Form.Check
                     key={value}
+                    id={`${type}-form-factor-${index}`}
                     label={value}
                     {...register(`${type}.formFactor.${index}.${value}`)}
                   />
@@ -296,6 +309,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-socket-${index}`}
                             label={value}
                             {...register(`${type}.socket.${index}.${value}`)}
                           />
@@ -309,6 +323,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-socket-${index}`}
                             label={value}
                             {...register(`${type}.socket.${index}.${value}`)}
                           />
@@ -329,6 +344,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-chipset-${index}`}
                             label={value}
                             {...register(`${type}.chipset.${index}.${value}`)}
                           />
@@ -342,6 +358,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-chipset-${index}`}
                             label={value}
                             {...register(`${type}.chipset.${index}.${value}`)}
                           />
@@ -360,6 +377,7 @@ export default function FilterOption({
                   return (
                     <Form.Check
                       key={value}
+                      id={`${type}-memory-${index}`}
                       label={value}
                       {...register(`${type}.memory.${index}.${escapedValue}`)}
                     />
@@ -400,6 +418,7 @@ export default function FilterOption({
                 {gpuNameList.map((value, index) => (
                   <Form.Check
                     key={value}
+                    id={`${type}-gpu-name-${index}`}
                     label={value}
                     {...register(`${type}.gpuName.${index}.${value}`)}
                   />
@@ -414,6 +433,7 @@ export default function FilterOption({
                   return (
                     <Form.Check
                       key={value}
+                      id={`${type}-bus-interface-${index}`}
                       label={value}
                       {...register(
                         `${type}.busInterface.${index}.${escapedValue}`,
@@ -433,6 +453,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-memory-${index}`}
                             label={value}
                             {...register(`${type}.memory.${index}.${value}`)}
                           />
@@ -446,6 +467,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-memory-${index}`}
                             label={value}
                             {...register(`${type}.memory.${index}.${value}`)}
                           />
@@ -493,6 +515,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-capacity-${index}`}
                             label={value}
                             {...register(`${type}.capacity.${index}.${value}`)}
                           />
@@ -506,6 +529,7 @@ export default function FilterOption({
                         return (
                           <Form.Check
                             key={value}
+                            id={`${type}-capacity-${index}`}
                             label={value}
                             {...register(`${type}.capacity.${index}.${value}`)}
                           />
@@ -524,6 +548,7 @@ export default function FilterOption({
                   return (
                     <Form.Check
                       key={value}
+                      id={`${type}-size-${index}`}
                       label={value}
                       {...register(`${type}.size.${index}.${escapedValue}`)}
                     />
@@ -537,6 +562,7 @@ export default function FilterOption({
                 {ssdInterfaceList.map((value, index) => (
                   <Form.Check
                     key={value}
+                    id={`${type}-interface-${index}`}
                     label={value}
                     {...register(`${type}.interface.${index}.${value}`)}
                   />
