@@ -1,8 +1,17 @@
 import BuildTab from "@/components/BuildTab";
 import PartsTab from "@/components/PartsTab";
 import TotalPrice from "@/components/TotalPrice";
+import styles from "@/styles/TabNav.module.scss";
 import { useState } from "react";
-import { Col, Container, Nav, Navbar, Row, Tab } from "react-bootstrap";
+import {
+  Col,
+  Container,
+  Dropdown,
+  Nav,
+  Navbar,
+  Row,
+  Tab,
+} from "react-bootstrap";
 import useSWRImmutable from "swr/immutable";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.arrayBuffer());
@@ -45,7 +54,10 @@ export default function Home() {
         <Tab.Container id="left-tabs-example" defaultActiveKey="cpu">
           <Row>
             <Col sm={3}>
-              <Nav variant="pills" className="flex-column">
+              <Nav
+                variant="pills"
+                className={"flex-column " + styles["nav-normal"]}
+              >
                 <Nav.Item className="mb-2">
                   <Nav.Link eventKey="cpu">CPU</Nav.Link>
                 </Nav.Item>
@@ -66,6 +78,37 @@ export default function Home() {
                     <TotalPrice />
                   </Nav.Link>
                 </Nav.Item>
+              </Nav>
+              <Nav
+                className={
+                  "mb-3 justify-content-center " + styles["nav-dropdown"]
+                }
+              >
+                <Dropdown>
+                  <Dropdown.Toggle>パーツの種類を選択</Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item as={Nav.Item}>
+                      <Nav.Link eventKey="cpu">CPU</Nav.Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Nav.Item}>
+                      <Nav.Link eventKey="memory">メモリ</Nav.Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Nav.Item}>
+                      <Nav.Link eventKey="motherboard">マザーボード</Nav.Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Nav.Item}>
+                      <Nav.Link eventKey="gpu">GPU</Nav.Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Nav.Item}>
+                      <Nav.Link eventKey="ssd">SSD</Nav.Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Nav.Item}>
+                      <Nav.Link eventKey="build">
+                        <TotalPrice />
+                      </Nav.Link>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </Nav>
             </Col>
             <Col sm={9}>
