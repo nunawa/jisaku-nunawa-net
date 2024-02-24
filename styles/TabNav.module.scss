@@ -1,0 +1,15 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins/_breakpoints";
+
+@include media-breakpoint-down(sm) {
+  .nav-normal {
+    display: none;
+  }
+}
+
+@include media-breakpoint-up(sm) {
+  .nav-dropdown {
+    display: none;
+  }
+}

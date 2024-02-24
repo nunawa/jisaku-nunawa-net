@@ -11,5 +11,5 @@ export default function TotalPrice() {
     }
   }
 
-  return <>￥{totalPrice.toLocaleString()}</>;
+  return `￥${totalPrice.toLocaleString()}`;
 }
