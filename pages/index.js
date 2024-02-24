@@ -27,6 +27,101 @@ function useBuf() {
   };
 }
 
+function TabContainer({ buf, sql }) {
+  const [dropdownButtonTitle, setDropdownButtonTitle] = useState("CPU");
+  const partsTabList = [
+    {
+      key: "cpu",
+      name: "CPU",
+    },
+    {
+      key: "memory",
+      name: "メモリ",
+    },
+    {
+      key: "motherboard",
+      name: "マザーボード",
+    },
+    {
+      key: "gpu",
+      name: "GPU",
+    },
+    {
+      key: "ssd",
+      name: "SSD",
+    },
+  ];
+
+  function handleTabContainerSelect(eventKey) {
+    if (eventKey === "build") {
+      setDropdownButtonTitle(<TotalPrice />);
+    } else {
+      setDropdownButtonTitle(
+        partsTabList.find((elem) => elem.key === eventKey).name,
+      );
+    }
+  }
+
+  return (
+    <Tab.Container
+      id="left-tabs"
+      defaultActiveKey="cpu"
+      onSelect={handleTabContainerSelect}
+    >
+      <Row>
+        <Col sm={3}>
+          <Nav
+            variant="pills"
+            className={"flex-column " + styles["nav-normal"]}
+          >
+            {partsTabList.map((value) => (
+              <Nav.Item className="mb-2" key={value.key}>
+                <Nav.Link eventKey={value.key}>{value.name}</Nav.Link>
+              </Nav.Item>
+            ))}
+            <Nav.Item className="mb-2">
+              <Nav.Link eventKey="build">
+                <TotalPrice />
+              </Nav.Link>
+            </Nav.Item>
+          </Nav>
+          <Nav
+            className={"mb-3 justify-content-center " + styles["nav-dropdown"]}
+          >
+            <Dropdown>
+              <Dropdown.Toggle>{dropdownButtonTitle}</Dropdown.Toggle>
+              <Dropdown.Menu>
+                {partsTabList.map((value) => (
+                  <Dropdown.Item as={Nav.Item} key={value.key}>
+                    <Nav.Link eventKey={value.key}>{value.name}</Nav.Link>
+                  </Dropdown.Item>
+                ))}
+                <Dropdown.Item as={Nav.Item}>
+                  <Nav.Link eventKey="build">
+                    <TotalPrice />
+                  </Nav.Link>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Nav>
+        </Col>
+        <Col sm={9}>
+          <Tab.Content>
+            {partsTabList.map((value) => (
+              <Tab.Pane eventKey={value.key} key={value.key}>
+                <PartsTab type={value.key} buf={buf} sql={sql} />
+              </Tab.Pane>
+            ))}
+            <Tab.Pane eventKey="build">
+              <BuildTab />
+            </Tab.Pane>
+          </Tab.Content>
+        </Col>
+      </Row>
+    </Tab.Container>
+  );
+}
+
 export default function Home() {
   const { buf } = useBuf();
   const [sql, setSql] = useState();
@@ -51,90 +146,7 @@ export default function Home() {
         </Container>
       </Navbar>
       <Container>
-        <Tab.Container id="left-tabs-example" defaultActiveKey="cpu">
-          <Row>
-            <Col sm={3}>
-              <Nav
-                variant="pills"
-                className={"flex-column " + styles["nav-normal"]}
-              >
-                <Nav.Item className="mb-2">
-                  <Nav.Link eventKey="cpu">CPU</Nav.Link>
-                </Nav.Item>
-                <Nav.Item className="mb-2">
-                  <Nav.Link eventKey="memory">メモリ</Nav.Link>
-                </Nav.Item>
-                <Nav.Item className="mb-2">
-                  <Nav.Link eventKey="motherboard">マザーボード</Nav.Link>
-                </Nav.Item>
-                <Nav.Item className="mb-2">
-                  <Nav.Link eventKey="gpu">GPU</Nav.Link>
-                </Nav.Item>
-                <Nav.Item className="mb-2">
-                  <Nav.Link eventKey="ssd">SSD</Nav.Link>
-                </Nav.Item>
-                <Nav.Item className="mb-2">
-                  <Nav.Link eventKey="build">
-                    <TotalPrice />
-                  </Nav.Link>
-                </Nav.Item>
-              </Nav>
-              <Nav
-                className={
-                  "mb-3 justify-content-center " + styles["nav-dropdown"]
-                }
-              >
-                <Dropdown>
-                  <Dropdown.Toggle>パーツの種類を選択</Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item as={Nav.Item}>
-                      <Nav.Link eventKey="cpu">CPU</Nav.Link>
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Nav.Item}>
-                      <Nav.Link eventKey="memory">メモリ</Nav.Link>
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Nav.Item}>
-                      <Nav.Link eventKey="motherboard">マザーボード</Nav.Link>
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Nav.Item}>
-                      <Nav.Link eventKey="gpu">GPU</Nav.Link>
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Nav.Item}>
-                      <Nav.Link eventKey="ssd">SSD</Nav.Link>
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Nav.Item}>
-                      <Nav.Link eventKey="build">
-                        <TotalPrice />
-                      </Nav.Link>
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Nav>
-            </Col>
-            <Col sm={9}>
-              <Tab.Content>
-                <Tab.Pane eventKey="cpu">
-                  <PartsTab type="cpu" buf={buf} sql={sql} />
-                </Tab.Pane>
-                <Tab.Pane eventKey="memory">
-                  <PartsTab type="memory" buf={buf} sql={sql} />
-                </Tab.Pane>
-                <Tab.Pane eventKey="motherboard">
-                  <PartsTab type="motherboard" buf={buf} sql={sql} />
-                </Tab.Pane>
-                <Tab.Pane eventKey="gpu">
-                  <PartsTab type="gpu" buf={buf} sql={sql} />
-                </Tab.Pane>
-                <Tab.Pane eventKey="ssd">
-                  <PartsTab type="ssd" buf={buf} sql={sql} />
-                </Tab.Pane>
-                <Tab.Pane eventKey="build">
-                  <BuildTab />
-                </Tab.Pane>
-              </Tab.Content>
-            </Col>
-          </Row>
-        </Tab.Container>
+        <TabContainer buf={buf} sql={sql} />
       </Container>
     </>
   );
