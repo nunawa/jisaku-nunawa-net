@@ -1,6 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import { selectedProductsAtom } from "@/jotai/atom";
-import { css } from "@emotion/react";
+import styles from "@/styles/ProductCardLink.module.scss";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { Button, Card, Container, Spinner, Stack } from "react-bootstrap";
@@ -17,23 +16,10 @@ export default function ProductList({ id, products }) {
         <Card key={iterator.id} className="mb-2">
           <Card.Header as="h5">
             <Stack direction="horizontal">
-              <div
-                className="me-auto"
-                css={css({
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                  maxWidth: "700px",
-                  textOverflow: "ellipsis",
-                })}
-              >
+              <div className={"me-auto " + styles["div"]}>
                 <Link
                   href={"https://kakaku.com/item/" + iterator.id}
-                  css={css({
-                    textDecoration: "none",
-                    "&:hover": {
-                      textDecoration: "underline",
-                    },
-                  })}
+                  className={styles["link"]}
                 >
                   {iterator.manufacturer} {iterator.name}
                 </Link>

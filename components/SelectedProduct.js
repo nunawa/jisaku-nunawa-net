@@ -1,6 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import { selectedProductsAtom } from "@/jotai/atom";
-import { css } from "@emotion/react";
+import styles from "@/styles/ProductCardLink.module.scss";
 import { useAtomValue } from "jotai";
 import Link from "next/link";
 import { Card, Stack } from "react-bootstrap";
@@ -15,33 +14,15 @@ export default function SelectedProduct({ id }) {
       <Card className="mb-3">
         <Card.Header as="h5">
           <Stack direction="horizontal">
-            <div
-              className="me-auto"
-              css={css({
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                maxWidth: "700px",
-                textOverflow: "ellipsis",
-              })}
-            >
+            <div className={"me-auto " + styles["div"]}>
               <Link
                 href={"https://kakaku.com/item/" + product.id}
-                css={css({
-                  textDecoration: "none",
-                  "&:hover": {
-                    textDecoration: "underline",
-                  },
-                })}
+                className={styles["link"]}
               >
                 {product.manufacturer} {product.name}
               </Link>
             </div>
-            <div
-              className="text-muted ms-2"
-              css={css({ fontWeight: "normal", wordBreak: "keep-all" })}
-            >
-              選択中
-            </div>
+            <div className={"text-muted ms-2 " + styles["status"]}>選択中</div>
           </Stack>
         </Card.Header>
         <Card.Body>
