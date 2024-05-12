@@ -14,7 +14,6 @@ Frontend source code for online pc builder [jisaku.nunawa.net](https://jisaku.nu
 - [sql.js](https://sql.js.org/#/)
 - [Jotai](https://jotai.org/)
 - [SWR](https://swr.vercel.app/ja)
-- [Emotion](https://emotion.sh/docs/introduction)
 
 ## Run Locally
 
