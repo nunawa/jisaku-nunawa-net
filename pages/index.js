@@ -170,7 +170,7 @@ export default function Home() {
 
   return (
     <>
-      <Navbar className="mb-3" bg="light">
+      <Navbar className="mb-3 bg-dark-subtle">
         <Container>
           <Navbar.Brand href="/">jisaku.nunawa.net</Navbar.Brand>
           <Nav className="ms-auto">
