@@ -4,6 +4,7 @@ import TotalPrice from "@/components/TotalPrice";
 import styles from "@/styles/TabNav.module.scss";
 import { useState } from "react";
 import {
+  Button,
   Col,
   Container,
   Dropdown,
@@ -12,6 +13,7 @@ import {
   Row,
   Tab,
 } from "react-bootstrap";
+import { BsMoonFill, BsSunFill } from "react-icons/bs";
 import useSWRImmutable from "swr/immutable";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.arrayBuffer());
@@ -122,6 +124,37 @@ function TabContainer({ buf, sql }) {
   );
 }
 
+function ToggleDarkModeButton() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  function toggleDarkMode() {
+    const mode = document.documentElement.getAttribute("data-bs-theme");
+
+    if (mode === "light") {
+      document.documentElement.setAttribute("data-bs-theme", "dark");
+      setIsDarkMode(true);
+    } else if (mode === "dark") {
+      document.documentElement.setAttribute("data-bs-theme", "light");
+      setIsDarkMode(false);
+    }
+  }
+
+  return (
+    <Button
+      className="nav-link"
+      style={{
+        background: "none",
+        border: "none",
+        display: "grid",
+        placeContent: "center",
+      }}
+      onClick={() => toggleDarkMode()}
+    >
+      {isDarkMode ? <BsMoonFill /> : <BsSunFill />}
+    </Button>
+  );
+}
+
 export default function Home() {
   const { buf } = useBuf();
   const [sql, setSql] = useState();
@@ -142,6 +175,7 @@ export default function Home() {
           <Navbar.Brand href="/">jisaku.nunawa.net</Navbar.Brand>
           <Nav className="ms-auto">
             <Nav.Link href="/about">About</Nav.Link>
+            <ToggleDarkModeButton />
           </Nav>
         </Container>
       </Navbar>
