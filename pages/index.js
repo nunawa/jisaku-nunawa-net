@@ -1,17 +1,21 @@
 import BuildTab from "@/components/BuildTab";
 import PartsTab from "@/components/PartsTab";
 import TotalPrice from "@/components/TotalPrice";
+import { themeAtom } from "@/jotai/atom";
 import styles from "@/styles/TabNav.module.scss";
-import { useState } from "react";
+import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
 import {
   Col,
   Container,
   Dropdown,
   Nav,
   Navbar,
+  NavDropdown,
   Row,
   Tab,
 } from "react-bootstrap";
+import { BsMoonFill, BsPcDisplay, BsSunFill } from "react-icons/bs";
 import useSWRImmutable from "swr/immutable";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.arrayBuffer());
@@ -122,6 +126,69 @@ function TabContainer({ buf, sql }) {
   );
 }
 
+function ThemeDropdown() {
+  const [theme, setThemeAtom] = useAtom(themeAtom);
+
+  useEffect(() => {
+    let targetTheme = theme;
+
+    if (theme === "default") {
+      targetTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+
+    if (targetTheme === "light") {
+      document.documentElement.dataset.bsTheme = targetTheme;
+    } else if (targetTheme === "dark") {
+      document.documentElement.dataset.bsTheme = targetTheme;
+    }
+  }, [theme]);
+
+  function setTheme(t) {
+    if (t === "default") {
+      const defaultTheme = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? "dark"
+        : "light";
+      document.documentElement.dataset.bsTheme = defaultTheme;
+      setThemeAtom("default");
+    } else if (t === "light") {
+      document.documentElement.dataset.bsTheme = "light";
+      setThemeAtom("light");
+    } else if (t === "dark") {
+      document.documentElement.dataset.bsTheme = "dark";
+      setThemeAtom("dark");
+    }
+  }
+
+  function ThemeIcon({ t }) {
+    if (t === "default") {
+      return <BsPcDisplay />;
+    } else if (t === "light") {
+      return <BsSunFill />;
+    } else if (t === "dark") {
+      return <BsMoonFill />;
+    }
+  }
+
+  return (
+    <>
+      <NavDropdown title={<ThemeIcon t={theme} />}>
+        <NavDropdown.Item onClick={() => setTheme("light")}>
+          Light
+        </NavDropdown.Item>
+        <NavDropdown.Item onClick={() => setTheme("dark")}>
+          Dark
+        </NavDropdown.Item>
+        <NavDropdown.Item onClick={() => setTheme("default")}>
+          System
+        </NavDropdown.Item>
+      </NavDropdown>
+    </>
+  );
+}
+
 export default function Home() {
   const { buf } = useBuf();
   const [sql, setSql] = useState();
@@ -137,10 +204,11 @@ export default function Home() {
 
   return (
     <>
-      <Navbar className="mb-3" bg="light">
+      <Navbar className="mb-3 border-bottom">
         <Container>
           <Navbar.Brand href="/">jisaku.nunawa.net</Navbar.Brand>
           <Nav className="ms-auto">
+            <ThemeDropdown />
             <Nav.Link href="/about">About</Nav.Link>
           </Nav>
         </Container>
