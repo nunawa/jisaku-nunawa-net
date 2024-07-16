@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 
 export const selectedProductsAtom = atom({
   cpu: null,
@@ -7,3 +8,5 @@ export const selectedProductsAtom = atom({
   gpu: null,
   ssd: null,
 });
+
+export const themeAtom = atomWithStorage("default");
