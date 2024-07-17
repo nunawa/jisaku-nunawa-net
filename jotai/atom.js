@@ -9,4 +9,4 @@ export const selectedProductsAtom = atom({
   ssd: null,
 });
 
-export const themeAtom = atomWithStorage("default");
+export const themeAtom = atomWithStorage("theme", "default");
