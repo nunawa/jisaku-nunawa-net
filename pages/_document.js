@@ -6,7 +6,7 @@ export default function Document() {
       <Head />
       <body>
         <script
-          src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.9.0/sql-wasm.min.js"
+          src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.min.js"
           async
         />
         <link
@@ -17,7 +17,7 @@ export default function Document() {
         />
         <link
           rel="preload"
-          href="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.9.0/sql-wasm.wasm"
+          href="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.wasm"
           as="fetch"
           crossOrigin="anonymous"
         />
