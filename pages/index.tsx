@@ -1,114 +1,236 @@
-import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
+import BuildTab from "@/components/BuildTab";
+import PartsTab from "@/components/PartsTab";
+import TotalPrice from "@/components/TotalPrice";
+import { themeAtom } from "@/jotai/atom";
+import styles from "@/styles/TabNav.module.scss";
+import { productType } from "@/types";
+import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
+import {
+  Col,
+  Container,
+  Dropdown,
+  Nav,
+  Navbar,
+  NavDropdown,
+  Row,
+  Tab,
+} from "react-bootstrap";
+import { BsMoonFill, BsPcDisplay, BsSunFill } from "react-icons/bs";
+import initSqlJs from "sql.js";
+import { Fetcher } from "swr";
+import useSWRImmutable from "swr/immutable";
 
-const inter = Inter({ subsets: ["latin"] });
+const fetcher: Fetcher<ArrayBuffer, string> = (url) =>
+  fetch(url).then((res) => res.arrayBuffer());
 
-export default function Home() {
+function useBuf() {
+  let { data } = useSWRImmutable(
+    "https://bucket.nunawa.net/parts_latest.db",
+    fetcher,
+  );
+
+  return {
+    buf: data,
+  };
+}
+
+function TabContainer({
+  buf,
+  sql,
+}: {
+  buf: ArrayBuffer;
+  sql: initSqlJs.SqlJsStatic;
+}) {
+  const [dropdownButtonTitle, setDropdownButtonTitle] = useState("CPU");
+  const partsTabList = [
+    {
+      key: "cpu",
+      name: "CPU",
+    },
+    {
+      key: "memory",
+      name: "メモリ",
+    },
+    {
+      key: "motherboard",
+      name: "マザーボード",
+    },
+    {
+      key: "gpu",
+      name: "GPU",
+    },
+    {
+      key: "ssd",
+      name: "SSD",
+    },
+  ];
+
+  function handleTabContainerSelect(eventKey: string) {
+    if (eventKey === "build") {
+      setDropdownButtonTitle(`${(<TotalPrice />)}`);
+    } else {
+      setDropdownButtonTitle(
+        partsTabList.find((elem) => elem.key === eventKey)!.name,
+      );
+    }
+  }
+
+  return (
+    <Tab.Container
+      id="left-tabs"
+      defaultActiveKey="cpu"
+      onSelect={() => handleTabContainerSelect}
+    >
+      <Row>
+        <Col sm={3}>
+          <Nav
+            variant="pills"
+            className={"flex-column " + styles["nav-normal"]}
+          >
+            {partsTabList.map((value) => (
+              <Nav.Item className="mb-2" key={value.key}>
+                <Nav.Link eventKey={value.key}>{value.name}</Nav.Link>
+              </Nav.Item>
+            ))}
+            <Nav.Item className="mb-2">
+              <Nav.Link eventKey="build">
+                <TotalPrice />
+              </Nav.Link>
+            </Nav.Item>
+          </Nav>
+          <Nav
+            className={"mb-3 justify-content-center " + styles["nav-dropdown"]}
+          >
+            <Dropdown>
+              <Dropdown.Toggle>{dropdownButtonTitle}</Dropdown.Toggle>
+              <Dropdown.Menu>
+                {partsTabList.map((value) => (
+                  <Dropdown.Item as={Nav.Item} key={value.key}>
+                    <Nav.Link eventKey={value.key}>{value.name}</Nav.Link>
+                  </Dropdown.Item>
+                ))}
+                <Dropdown.Item as={Nav.Item}>
+                  <Nav.Link eventKey="build">
+                    <TotalPrice />
+                  </Nav.Link>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Nav>
+        </Col>
+        <Col sm={9}>
+          <Tab.Content>
+            {partsTabList.map((value) => (
+              <Tab.Pane eventKey={value.key} key={value.key}>
+                <PartsTab
+                  type={value.key as keyof productType}
+                  buf={buf}
+                  sql={sql}
+                />
+              </Tab.Pane>
+            ))}
+            <Tab.Pane eventKey="build">
+              <BuildTab />
+            </Tab.Pane>
+          </Tab.Content>
+        </Col>
+      </Row>
+    </Tab.Container>
+  );
+}
+
+function ThemeDropdown() {
+  const [theme, setThemeAtom] = useAtom(themeAtom);
+
+  useEffect(() => {
+    let targetTheme = theme;
+
+    if (theme === "default") {
+      targetTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+
+    if (targetTheme === "light") {
+      document.documentElement.dataset.bsTheme = targetTheme;
+    } else if (targetTheme === "dark") {
+      document.documentElement.dataset.bsTheme = targetTheme;
+    }
+  }, [theme]);
+
+  function setTheme(t: string) {
+    if (t === "default") {
+      const defaultTheme = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? "dark"
+        : "light";
+      document.documentElement.dataset.bsTheme = defaultTheme;
+      setThemeAtom("default");
+    } else if (t === "light") {
+      document.documentElement.dataset.bsTheme = "light";
+      setThemeAtom("light");
+    } else if (t === "dark") {
+      document.documentElement.dataset.bsTheme = "dark";
+      setThemeAtom("dark");
+    }
+  }
+
+  function ThemeIcon({ t }: { t: string }) {
+    if (t === "default") {
+      return <BsPcDisplay />;
+    } else if (t === "light") {
+      return <BsSunFill />;
+    } else if (t === "dark") {
+      return <BsMoonFill />;
+    }
+  }
+
   return (
     <>
-      <Head>
-        <title>Create Next App</title>
-        <meta name="description" content="Generated by create next app" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main className={`${styles.main} ${inter.className}`}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{" "}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
+      <NavDropdown title={<ThemeIcon t={theme} />}>
+        <NavDropdown.Item onClick={() => setTheme("light")}>
+          Light
+        </NavDropdown.Item>
+        <NavDropdown.Item onClick={() => setTheme("dark")}>
+          Dark
+        </NavDropdown.Item>
+        <NavDropdown.Item onClick={() => setTheme("default")}>
+          System
+        </NavDropdown.Item>
+      </NavDropdown>
+    </>
+  );
+}
 
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-        </div>
+export default function Home() {
+  const { buf } = useBuf();
+  const [sql, setSql] = useState<initSqlJs.SqlJsStatic>();
 
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
+  useEffect(() => {
+    (async () => {
+      const SQL = await initSqlJs({
+        locateFile: () =>
+          new URL("sql.js/dist/sql-wasm.wasm", import.meta.url).toString(),
+      });
+      setSql(SQL);
+    })();
+  }, []);
 
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+  return (
+    <>
+      <Navbar className="mb-3 border-bottom">
+        <Container>
+          <Navbar.Brand href="/">jisaku.nunawa.net</Navbar.Brand>
+          <Nav className="ms-auto">
+            <ThemeDropdown />
+            <Nav.Link href="/about">About</Nav.Link>
+          </Nav>
+        </Container>
+      </Navbar>
+      <Container>
+        <TabContainer buf={buf!} sql={sql!} />
+      </Container>
     </>
   );
 }
