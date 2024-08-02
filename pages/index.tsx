@@ -3,6 +3,7 @@ import PartsTab from "@/components/PartsTab";
 import TotalPrice from "@/components/TotalPrice";
 import { themeAtom } from "@/jotai/atom";
 import styles from "@/styles/TabNav.module.scss";
+import { productType } from "@/types";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import {
@@ -16,9 +17,12 @@ import {
   Tab,
 } from "react-bootstrap";
 import { BsMoonFill, BsPcDisplay, BsSunFill } from "react-icons/bs";
+import initSqlJs from "sql.js";
+import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 
-const fetcher = (...args) => fetch(...args).then((res) => res.arrayBuffer());
+const fetcher: Fetcher<ArrayBuffer, string> = (url) =>
+  fetch(url).then((res) => res.arrayBuffer());
 
 function useBuf() {
   let { data } = useSWRImmutable(
@@ -31,7 +35,13 @@ function useBuf() {
   };
 }
 
-function TabContainer({ buf, sql }) {
+function TabContainer({
+  buf,
+  sql,
+}: {
+  buf: ArrayBuffer;
+  sql: initSqlJs.SqlJsStatic;
+}) {
   const [dropdownButtonTitle, setDropdownButtonTitle] = useState("CPU");
   const partsTabList = [
     {
@@ -56,12 +66,12 @@ function TabContainer({ buf, sql }) {
     },
   ];
 
-  function handleTabContainerSelect(eventKey) {
+  function handleTabContainerSelect(eventKey: string) {
     if (eventKey === "build") {
-      setDropdownButtonTitle(<TotalPrice />);
+      setDropdownButtonTitle(`${(<TotalPrice />)}`);
     } else {
       setDropdownButtonTitle(
-        partsTabList.find((elem) => elem.key === eventKey).name,
+        partsTabList.find((elem) => elem.key === eventKey)!.name,
       );
     }
   }
@@ -70,7 +80,7 @@ function TabContainer({ buf, sql }) {
     <Tab.Container
       id="left-tabs"
       defaultActiveKey="cpu"
-      onSelect={handleTabContainerSelect}
+      onSelect={() => handleTabContainerSelect}
     >
       <Row>
         <Col sm={3}>
@@ -113,7 +123,11 @@ function TabContainer({ buf, sql }) {
           <Tab.Content>
             {partsTabList.map((value) => (
               <Tab.Pane eventKey={value.key} key={value.key}>
-                <PartsTab type={value.key} buf={buf} sql={sql} />
+                <PartsTab
+                  type={value.key as keyof productType}
+                  buf={buf}
+                  sql={sql}
+                />
               </Tab.Pane>
             ))}
             <Tab.Pane eventKey="build">
@@ -145,7 +159,7 @@ function ThemeDropdown() {
     }
   }, [theme]);
 
-  function setTheme(t) {
+  function setTheme(t: string) {
     if (t === "default") {
       const defaultTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
@@ -162,7 +176,7 @@ function ThemeDropdown() {
     }
   }
 
-  function ThemeIcon({ t }) {
+  function ThemeIcon({ t }: { t: string }) {
     if (t === "default") {
       return <BsPcDisplay />;
     } else if (t === "light") {
@@ -191,16 +205,17 @@ function ThemeDropdown() {
 
 export default function Home() {
   const { buf } = useBuf();
-  const [sql, setSql] = useState();
+  const [sql, setSql] = useState<initSqlJs.SqlJsStatic>();
 
-  if (typeof window !== "undefined") {
-    window
-      .initSqlJs({
-        locateFile: (file) =>
-          `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}`,
-      })
-      .then((SQL) => setSql(SQL));
-  }
+  useEffect(() => {
+    (async () => {
+      const SQL = await initSqlJs({
+        locateFile: () =>
+          new URL("sql.js/dist/sql-wasm.wasm", import.meta.url).toString(),
+      });
+      setSql(SQL);
+    })();
+  }, []);
 
   return (
     <>
@@ -214,7 +229,7 @@ export default function Home() {
         </Container>
       </Navbar>
       <Container>
-        <TabContainer buf={buf} sql={sql} />
+        <TabContainer buf={buf!} sql={sql!} />
       </Container>
     </>
   );
