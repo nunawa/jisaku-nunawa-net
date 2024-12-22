@@ -73,7 +73,10 @@ export default function ProductCardText({
             {product.bus_interface}
           </Badge>
           <Badge className="me-1" bg="secondary">
-            {product.memory}
+            {product.standard}
+          </Badge>
+          <Badge className="me-1" bg="secondary">
+            {product.capacity}
           </Badge>
           <Badge className="me-1" bg="secondary">
             {JSON.parse(product.monitor).join(" / ")}
