@@ -158,7 +158,7 @@ export default function FilterOption({
       case "memory":
         let memoryCapacityList: any[] = [];
         let pcsList: any[] = [];
-        let standardList: any[] = [];
+        let memoryStandardList: any[] = [];
         let memoryInterfaceList: any[] = [];
 
         if (buf && sql) {
@@ -173,10 +173,10 @@ export default function FilterOption({
           );
           pcsList = pcsRes[0].values.flat();
 
-          const standardRes = db.exec(
+          const memoryStandardRes = db.exec(
             "SELECT DISTINCT standard FROM memory WHERE standard != '' ORDER BY standard",
           );
-          standardList = standardRes[0].values.flat();
+          memoryStandardList = memoryStandardRes[0].values.flat();
 
           const memoryInterfaceRes = db.exec(
             "SELECT DISTINCT interface FROM memory WHERE interface != '' ORDER BY interface",
@@ -237,7 +237,7 @@ export default function FilterOption({
             <Accordion.Item eventKey="2">
               <Accordion.Header>規格</Accordion.Header>
               <Accordion.Body>
-                {standardList.map((value, index) => (
+                {memoryStandardList.map((value, index) => (
                   <Form.Check
                     key={value}
                     id={`${type}-standard-${index}`}
@@ -402,7 +402,8 @@ export default function FilterOption({
       case "gpu":
         let gpuNameList: any[] = [];
         let busList: any[] = [];
-        let gpuMemoryList: any[] = [];
+        let gpuStandardList: any[] = [];
+        let gpuCapacityList: any[] = [];
 
         if (buf && sql) {
           const db = new sql.Database(new Uint8Array(buf));
@@ -416,10 +417,15 @@ export default function FilterOption({
           );
           busList = busRes[0].values.flat();
 
-          const gpuMemoryRes = db.exec(
-            "SELECT DISTINCT memory FROM gpu WHERE memory != '' ORDER BY memory",
+          const gpuStandardRes = db.exec(
+            "SELECT DISTINCT standard FROM gpu WHERE standard != '' ORDER BY standard",
           );
-          gpuMemoryList = gpuMemoryRes[0].values.flat();
+          gpuStandardList = gpuStandardRes[0].values.flat();
+
+          const gpuCapacityRes = db.exec(
+            "SELECT DISTINCT capacity FROM gpu WHERE capacity != '' ORDER BY capacity",
+          );
+          gpuCapacityList = gpuCapacityRes[0].values.flat();
         }
 
         return (
@@ -456,32 +462,67 @@ export default function FilterOption({
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="2">
-              <Accordion.Header>メモリ</Accordion.Header>
+              <Accordion.Header>規格</Accordion.Header>
               <Accordion.Body>
                 <Stack direction="horizontal" gap={2}>
                   <div className="p-2">
-                    {gpuMemoryList.map((value, index) => {
-                      if (index < 26) {
+                    {gpuStandardList.map((value, index) => {
+                      if (index < 5) {
                         return (
                           <Form.Check
                             key={value}
-                            id={`${type}-memory-${index}`}
+                            id={`${type}-standard-${index}`}
                             label={value}
-                            {...register(`${type}.memory.${index}.${value}`)}
+                            {...register(`${type}.standard.${index}.${value}`)}
                           />
                         );
                       }
                     })}
                   </div>
                   <div className="p-2">
-                    {gpuMemoryList.map((value, index) => {
-                      if (index >= 26) {
+                    {gpuStandardList.map((value, index) => {
+                      if (index >= 5) {
                         return (
                           <Form.Check
                             key={value}
-                            id={`${type}-memory-${index}`}
+                            id={`${type}-standard-${index}`}
                             label={value}
-                            {...register(`${type}.memory.${index}.${value}`)}
+                            {...register(`${type}.standard.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
+                  </div>
+                </Stack>
+              </Accordion.Body>
+            </Accordion.Item>
+            <Accordion.Item eventKey="3">
+              <Accordion.Header>容量</Accordion.Header>
+              <Accordion.Body>
+                <Stack direction="horizontal" gap={2}>
+                  <div className="p-2">
+                    {gpuCapacityList.map((value, index) => {
+                      if (index < 10) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            id={`${type}-capacity-${index}`}
+                            label={value}
+                            {...register(`${type}.capacity.${index}.${value}`)}
+                          />
+                        );
+                      }
+                    })}
+                  </div>
+                  <div className="p-2">
+                    {gpuCapacityList.map((value, index) => {
+                      if (index >= 10) {
+                        return (
+                          <Form.Check
+                            key={value}
+                            id={`${type}-capacity-${index}`}
+                            label={value}
+                            {...register(`${type}.capacity.${index}.${value}`)}
                           />
                         );
                       }
@@ -651,7 +692,7 @@ export default function FilterOption({
 
     let memoryCapacity = "";
     let pcs = "";
-    let standard = "";
+    let memoryStandard = "";
     let memoryInterface = "";
     if (data.memory) {
       let filteredCapacity = [];
@@ -680,7 +721,7 @@ export default function FilterOption({
           }
         }
       }
-      standard = filteredStandard.join(" OR ");
+      memoryStandard = filteredStandard.join(" OR ");
 
       let filteredMemoryInterface = [];
       for (const iter of data.memory.interface) {
@@ -742,7 +783,8 @@ export default function FilterOption({
 
     let gpuName = "";
     let busInterface = "";
-    let gpuMemory = "";
+    let gpuStandard = "";
+    let gpuCapacity = "";
     if (data.gpu) {
       let filteredGpuName = [];
       for (const iter of data.gpu.gpuName) {
@@ -765,15 +807,25 @@ export default function FilterOption({
       }
       busInterface = filteredBusInterface.join(" OR ");
 
-      let filteredGpuMemory = [];
-      for (const iter of data.gpu.memory) {
+      let filteredGpuStandard = [];
+      for (const iter of data.gpu.standard) {
         for (const [key, value] of Object.entries(iter)) {
           if (value === true) {
-            filteredGpuMemory.push(`memory = "${key}"`);
+            filteredGpuStandard.push(`standard = "${key}"`);
           }
         }
       }
-      gpuMemory = filteredGpuMemory.join(" OR ");
+      gpuStandard = filteredGpuStandard.join(" OR ");
+
+      let filteredGpuCapacity = [];
+      for (const iter of data.gpu.capacity) {
+        for (const [key, value] of Object.entries(iter)) {
+          if (value === true) {
+            filteredGpuCapacity.push(`capacity = "${key}"`);
+          }
+        }
+      }
+      gpuCapacity = filteredGpuCapacity.join(" OR ");
     }
 
     let ssdCapacity = "";
@@ -821,7 +873,7 @@ export default function FilterOption({
       igpu ||
       memoryCapacity ||
       pcs ||
-      standard ||
+      memoryStandard ||
       memoryInterface ||
       formFactor ||
       motherboardSocket ||
@@ -829,7 +881,8 @@ export default function FilterOption({
       motherboardMemory ||
       gpuName ||
       busInterface ||
-      gpuMemory ||
+      gpuStandard ||
+      gpuCapacity ||
       ssdCapacity ||
       size ||
       ssdInterface
@@ -842,7 +895,7 @@ export default function FilterOption({
         igpu,
         memoryCapacity,
         pcs,
-        standard,
+        memoryStandard,
         memoryInterface,
         formFactor,
         motherboardSocket,
@@ -850,7 +903,8 @@ export default function FilterOption({
         motherboardMemory,
         gpuName,
         busInterface,
-        gpuMemory,
+        gpuStandard,
+        gpuCapacity,
         ssdCapacity,
         size,
         ssdInterface,
@@ -909,7 +963,8 @@ export default function FilterOption({
     if (submittedFilterOption.gpu) {
       setValue("gpu.gpuName", submittedFilterOption.gpu.gpuName);
       setValue("gpu.busInterface", submittedFilterOption.gpu.busInterface);
-      setValue("gpu.memory", submittedFilterOption.gpu.memory);
+      setValue("gpu.standard", submittedFilterOption.gpu.standard);
+      setValue("gpu.capacity", submittedFilterOption.gpu.capacity);
     }
     if (submittedFilterOption.ssd) {
       setValue("ssd.capacity", submittedFilterOption.ssd.capacity);
