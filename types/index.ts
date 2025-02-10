@@ -14,13 +14,46 @@ export type productType = {
 };
 
 export type filterOptions = {
-  ssd: any;
-  gpu: any;
-  motherboard: any;
-  memory: any;
-  cpu: any;
   sort: string;
   keyword: string;
   min: string;
   max: string;
+  cpu:
+    | {
+        coreCount: boolean[];
+        socket: Object[];
+        igpu: { yes: boolean; no: boolean };
+      }
+    | undefined;
+  memory:
+    | {
+        capacity: Object[];
+        pcs: boolean[];
+        standard: Object[];
+        interface: Object[];
+      }
+    | undefined;
+  motherboard:
+    | {
+        formFactor: Object[];
+        socket: Object[];
+        chipset: Object[];
+        memory: Object[];
+      }
+    | undefined;
+  gpu:
+    | {
+        gpuName: Object[];
+        busInterface: Object[];
+        standard: Object[];
+        capacity: Object[];
+      }
+    | undefined;
+  ssd:
+    | {
+        capacity: Object[];
+        size: Object[];
+        interface: Object[];
+      }
+    | undefined;
 };
