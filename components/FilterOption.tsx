@@ -8,8 +8,644 @@ import {
   Modal,
   Stack,
 } from "react-bootstrap";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import initSqlJs from "sql.js";
+import {
+  FieldValues,
+  SubmitHandler,
+  useForm,
+  UseFormRegister,
+} from "react-hook-form";
+import { SqlJsStatic, Database } from "sql.js";
+
+function CpuAccordion(
+  db: Database | null,
+  register: UseFormRegister<FieldValues>,
+) {
+  let coreCountList: any[] = [];
+  let cpuSocketList: any[] = [];
+
+  if (db) {
+    const coreCountRes = db.exec(
+      "SELECT DISTINCT core_count FROM cpu WHERE core_count IS NOT NULL ORDER BY core_count",
+    );
+    coreCountList = coreCountRes[0].values.flat();
+    const cpuSocketRes = db.exec(
+      "SELECT DISTINCT socket FROM cpu WHERE socket IS NOT NULL ORDER BY socket",
+    );
+    cpuSocketList = cpuSocketRes[0].values.flat();
+  }
+
+  return (
+    <Accordion>
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>コア数</Accordion.Header>
+        <Accordion.Body>
+          <Stack direction="horizontal" gap={3}>
+            <div className="p-2">
+              {coreCountList.map((value, index) => {
+                if (index < 7) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`cpu-core-count-${value}`}
+                      label={value}
+                      {...register(`cpu.coreCount.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <div className="p-2">
+              {coreCountList.map((value, index) => {
+                if (index >= 7 && index < 14) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`cpu-core-count-${value}`}
+                      label={value}
+                      {...register(`cpu.coreCount.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <div className="p-2">
+              {coreCountList.map((value, index) => {
+                if (index >= 14) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`cpu-core-count-${value}`}
+                      label={value}
+                      {...register(`cpu.coreCount.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+          </Stack>
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="1">
+        <Accordion.Header>ソケット</Accordion.Header>
+        <Accordion.Body>
+          <Stack direction="horizontal" gap={3}>
+            <div className="p-2">
+              {cpuSocketList.map((value, index) => {
+                if (index < 10) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`cpu-socket-${index}`}
+                      label={value}
+                      {...register(`cpu.socket.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <div className="p-2">
+              {cpuSocketList.map((value, index) => {
+                if (index >= 10) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`cpu-socket-${index}`}
+                      label={value}
+                      {...register(`cpu.socket.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+          </Stack>
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="2">
+        <Accordion.Header>内蔵GPU</Accordion.Header>
+        <Accordion.Body>
+          <Form.Check
+            key="igpu.yes"
+            id={"cpu-igpu-yes"}
+            label="あり"
+            {...register("cpu.igpu.yes")}
+          />
+          <Form.Check
+            key="igpu.no"
+            id={"cpu-igpu-no"}
+            label="なし"
+            {...register("cpu.igpu.no")}
+          />
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  );
+}
+
+function MemoryAccordion(
+  db: Database | null,
+  register: UseFormRegister<FieldValues>,
+) {
+  let memoryCapacityList: any[] = [];
+  let pcsList: any[] = [];
+  let memoryStandardList: any[] = [];
+  let memoryInterfaceList: any[] = [];
+
+  if (db) {
+    const memoryCapacityRes = db.exec(
+      "SELECT DISTINCT capacity FROM memory WHERE capacity != '' ORDER BY capacity",
+    );
+    memoryCapacityList = memoryCapacityRes[0].values.flat();
+
+    const pcsRes = db.exec(
+      "SELECT DISTINCT pcs FROM memory WHERE pcs IS NOT NULL ORDER BY pcs",
+    );
+    pcsList = pcsRes[0].values.flat();
+
+    const memoryStandardRes = db.exec(
+      "SELECT DISTINCT standard FROM memory WHERE standard != '' ORDER BY standard",
+    );
+    memoryStandardList = memoryStandardRes[0].values.flat();
+
+    const memoryInterfaceRes = db.exec(
+      "SELECT DISTINCT interface FROM memory WHERE interface != '' ORDER BY interface",
+    );
+    memoryInterfaceList = memoryInterfaceRes[0].values.flat();
+  }
+
+  return (
+    <Accordion>
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>容量</Accordion.Header>
+        <Accordion.Body>
+          <Stack direction="horizontal" gap={2}>
+            <div className="p-2">
+              {memoryCapacityList.map((value, index) => {
+                if (index < 8) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`memory-capacity-${index}`}
+                      label={value}
+                      {...register(`memory.capacity.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <div className="p-2">
+              {memoryCapacityList.map((value, index) => {
+                if (index >= 8) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`memory-capacity-${index}`}
+                      label={value}
+                      {...register(`memory.capacity.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+          </Stack>
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="1">
+        <Accordion.Header>枚数</Accordion.Header>
+        <Accordion.Body>
+          {pcsList.map((value) => (
+            <Form.Check
+              key={value}
+              id={`memory-pcs-${value}`}
+              label={value}
+              {...register(`memory.pcs.${value}`)}
+            />
+          ))}
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="2">
+        <Accordion.Header>規格</Accordion.Header>
+        <Accordion.Body>
+          {memoryStandardList.map((value, index) => (
+            <Form.Check
+              key={value}
+              id={`memory-standard-${index}`}
+              label={value}
+              {...register(`memory.standard.${index}.${value}`)}
+            />
+          ))}
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="3">
+        <Accordion.Header>インターフェース</Accordion.Header>
+        <Accordion.Body>
+          {memoryInterfaceList.map((value, index) => {
+            const escapedValue = value.replaceAll(".", "_");
+            return (
+              <Form.Check
+                key={value}
+                id={`memory-interface-${index}`}
+                label={value}
+                {...register(`memory.interface.${index}.${escapedValue}`)}
+              />
+            );
+          })}
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  );
+}
+
+function MotherboardAccordion(
+  db: Database | null,
+  register: UseFormRegister<FieldValues>,
+) {
+  let formFactorList: any[] = [];
+  let motherboardSocketList: any[] = [];
+  let chipsetList: any[] = [];
+  let motherboardMemoryList: any[] = [];
+
+  if (db) {
+    const formFactorRes = db.exec(
+      "SELECT DISTINCT form_factor FROM motherboard WHERE form_factor != '' ORDER BY form_factor",
+    );
+    formFactorList = formFactorRes[0].values.flat();
+
+    const motherboardSocketRes = db.exec(
+      "SELECT DISTINCT socket FROM motherboard WHERE socket != '' AND socket NOT LIKE '%Onboard%' ORDER BY socket",
+    );
+    motherboardSocketList = motherboardSocketRes[0].values.flat();
+
+    const chipsetRes = db.exec(
+      "SELECT DISTINCT chipset FROM motherboard WHERE chipset != '' ORDER BY chipset",
+    );
+    chipsetList = chipsetRes[0].values.flat();
+
+    const motherboardMemoryRes = db.exec(
+      "SELECT DISTINCT memory FROM motherboard WHERE memory != '' ORDER BY memory",
+    );
+    motherboardMemoryList = motherboardMemoryRes[0].values.flat();
+  }
+
+  return (
+    <Accordion>
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>フォームファクタ</Accordion.Header>
+        <Accordion.Body>
+          {formFactorList.map((value, index) => (
+            <Form.Check
+              key={value}
+              id={`motherboard-form-factor-${index}`}
+              label={value}
+              {...register(`motherboard.formFactor.${index}.${value}`)}
+            />
+          ))}
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="1">
+        <Accordion.Header>ソケット</Accordion.Header>
+        <Accordion.Body>
+          <Stack direction="horizontal" gap={2}>
+            <div className="p-2">
+              {motherboardSocketList.map((value, index) => {
+                if (index < 7) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`motherboard-socket-${index}`}
+                      label={value}
+                      {...register(`motherboard.socket.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <div className="p-2">
+              {motherboardSocketList.map((value, index) => {
+                if (index >= 7) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`motherboard-socket-${index}`}
+                      label={value}
+                      {...register(`motherboard.socket.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+          </Stack>
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="2">
+        <Accordion.Header>チップセット</Accordion.Header>
+        <Accordion.Body>
+          <Stack direction="horizontal" gap={2}>
+            <div className="p-2">
+              {chipsetList.map((value, index) => {
+                if (index < 28) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`motherboard-chipset-${index}`}
+                      label={value}
+                      {...register(`motherboard.chipset.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <div className="p-2">
+              {chipsetList.map((value, index) => {
+                if (index >= 28) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`motherboard-chipset-${index}`}
+                      label={value}
+                      {...register(`motherboard.chipset.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+          </Stack>
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="3">
+        <Accordion.Header>メモリ</Accordion.Header>
+        <Accordion.Body>
+          {motherboardMemoryList.map((value, index) => {
+            const escapedValue = value.replaceAll(".", "_");
+            return (
+              <Form.Check
+                key={value}
+                id={`motherboard-memory-${index}`}
+                label={value}
+                {...register(`motherboard.memory.${index}.${escapedValue}`)}
+              />
+            );
+          })}
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  );
+}
+
+function GpuAccordion(
+  db: Database | null,
+  register: UseFormRegister<FieldValues>,
+) {
+  let gpuNameList: any[] = [];
+  let busList: any[] = [];
+  let gpuStandardList: any[] = [];
+  let gpuCapacityList: any[] = [];
+
+  if (db) {
+    const gpuNameRes = db.exec(
+      "SELECT DISTINCT gpu_name FROM gpu WHERE gpu_name != '' AND gpu_name NOT LIKE '%ATI%' AND gpu_name NOT LIKE '%MATROX%' ORDER BY gpu_name",
+    );
+    gpuNameList = gpuNameRes[0].values.flat();
+
+    const busRes = db.exec(
+      "SELECT DISTINCT bus_interface FROM gpu WHERE bus_interface != '' AND bus_interface LIKE '%PCI%' ORDER BY bus_interface",
+    );
+    busList = busRes[0].values.flat();
+
+    const gpuStandardRes = db.exec(
+      "SELECT DISTINCT standard FROM gpu WHERE standard != '' ORDER BY standard",
+    );
+    gpuStandardList = gpuStandardRes[0].values.flat();
+
+    const gpuCapacityRes = db.exec(
+      "SELECT DISTINCT capacity FROM gpu WHERE capacity != '' ORDER BY capacity",
+    );
+    gpuCapacityList = gpuCapacityRes[0].values.flat();
+  }
+
+  return (
+    <Accordion>
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>GPU</Accordion.Header>
+        <Accordion.Body>
+          {gpuNameList.map((value, index) => (
+            <Form.Check
+              key={value}
+              id={`gpu-gpu-name-${index}`}
+              label={value}
+              {...register(`gpu.gpuName.${index}.${value}`)}
+            />
+          ))}
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="1">
+        <Accordion.Header>バスインターフェース</Accordion.Header>
+        <Accordion.Body>
+          {busList.map((value, index) => {
+            const escapedValue = value.replaceAll(".", "_");
+            return (
+              <Form.Check
+                key={value}
+                id={`gpu-bus-interface-${index}`}
+                label={value}
+                {...register(`gpu.busInterface.${index}.${escapedValue}`)}
+              />
+            );
+          })}
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="2">
+        <Accordion.Header>規格</Accordion.Header>
+        <Accordion.Body>
+          <Stack direction="horizontal" gap={2}>
+            <div className="p-2">
+              {gpuStandardList.map((value, index) => {
+                if (index < 5) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`gpu-standard-${index}`}
+                      label={value}
+                      {...register(`gpu.standard.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <div className="p-2">
+              {gpuStandardList.map((value, index) => {
+                if (index >= 5) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`gpu-standard-${index}`}
+                      label={value}
+                      {...register(`gpu.standard.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+          </Stack>
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="3">
+        <Accordion.Header>容量</Accordion.Header>
+        <Accordion.Body>
+          <Stack direction="horizontal" gap={2}>
+            <div className="p-2">
+              {gpuCapacityList.map((value, index) => {
+                if (index < 10) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`gpu-capacity-${index}`}
+                      label={value}
+                      {...register(`gpu.capacity.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <div className="p-2">
+              {gpuCapacityList.map((value, index) => {
+                if (index >= 10) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`gpu-capacity-${index}`}
+                      label={value}
+                      {...register(`gpu.capacity.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+          </Stack>
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  );
+}
+
+function SsdAccordion(
+  db: Database | null,
+  register: UseFormRegister<FieldValues>,
+) {
+  let ssdCapacityList: any[] = [];
+  let sizeList: any[] = [];
+  let ssdInterfaceList: any[] = [];
+
+  if (db) {
+    const ssdCapacityRes = db.exec(
+      "SELECT DISTINCT capacity FROM ssd WHERE capacity != '' ORDER BY capacity",
+    );
+    ssdCapacityList = ssdCapacityRes[0].values.flat();
+
+    const sizeRes = db.exec(
+      "SELECT DISTINCT size FROM ssd WHERE size != '' ORDER BY size",
+    );
+    sizeList = sizeRes[0].values.flat();
+
+    const ssdInterfaceRes = db.exec(
+      "SELECT DISTINCT interface FROM ssd WHERE interface != '' AND interface NOT LIKE '%USB%' ORDER BY interface",
+    );
+    ssdInterfaceList = ssdInterfaceRes[0].values.flat();
+  }
+
+  return (
+    <Accordion>
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>容量</Accordion.Header>
+        <Accordion.Body>
+          <Stack direction="horizontal" gap={2}>
+            <div className="p-2">
+              {ssdCapacityList.map((value, index) => {
+                if (index < 19) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`ssd-capacity-${index}`}
+                      label={value}
+                      {...register(`ssd.capacity.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <div className="p-2">
+              {ssdCapacityList.map((value, index) => {
+                if (index >= 19) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`ssd-capacity-${index}`}
+                      label={value}
+                      {...register(`ssd.capacity.${index}.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+          </Stack>
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="1">
+        <Accordion.Header>サイズ</Accordion.Header>
+        <Accordion.Body>
+          {sizeList.map((value, index) => {
+            const escapedValue = value.replace(".", "_");
+            return (
+              <Form.Check
+                key={value}
+                id={`ssd-size-${index}`}
+                label={value}
+                {...register(`ssd.size.${index}.${escapedValue}`)}
+              />
+            );
+          })}
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="2">
+        <Accordion.Header>インターフェース</Accordion.Header>
+        <Accordion.Body>
+          {ssdInterfaceList.map((value, index) => (
+            <Form.Check
+              key={value}
+              id={`ssd-interface-${index}`}
+              label={value}
+              {...register(`ssd.interface.${index}.${value}`)}
+            />
+          ))}
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  );
+}
+
+function Accordions({
+  type,
+  db,
+  register,
+}: {
+  type: keyof productType;
+  db: Database | null;
+  register: UseFormRegister<FieldValues>;
+}) {
+  switch (type) {
+    case "cpu":
+      return CpuAccordion(db, register);
+    case "memory":
+      return MemoryAccordion(db, register);
+    case "motherboard":
+      return MotherboardAccordion(db, register);
+    case "gpu":
+      return GpuAccordion(db, register);
+    case "ssd":
+      return SsdAccordion(db, register);
+    default:
+      break;
+  }
+}
 
 export default function FilterOption({
   show,
@@ -25,608 +661,17 @@ export default function FilterOption({
   handleClose: () => void;
   type: keyof productType;
   buf: ArrayBuffer;
-  sql: initSqlJs.SqlJsStatic;
+  sql: SqlJsStatic;
   setConvertedProducts: Dispatch<SetStateAction<productInfo[] | undefined>>;
   submittedFilterOption: filterOptions;
   setSubmittedFilterOption: Dispatch<SetStateAction<filterOptions>>;
 }) {
   const { register, handleSubmit, resetField, setValue } = useForm();
 
-  function Accordions({ type }: { type: keyof productType }) {
-    switch (type) {
-      case "cpu":
-        let coreCountList: any[] = [];
-        let cpuSocketList: any[] = [];
+  let db = null;
 
-        if (buf && sql) {
-          const db = new sql.Database(new Uint8Array(buf));
-          const coreCountRes = db.exec(
-            "SELECT DISTINCT core_count FROM cpu WHERE core_count IS NOT NULL ORDER BY core_count",
-          );
-          coreCountList = coreCountRes[0].values.flat();
-          const cpuSocketRes = db.exec(
-            "SELECT DISTINCT socket FROM cpu WHERE socket IS NOT NULL ORDER BY socket",
-          );
-          cpuSocketList = cpuSocketRes[0].values.flat();
-        }
-
-        return (
-          <Accordion>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>コア数</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={3}>
-                  <div className="p-2">
-                    {coreCountList.map((value, index) => {
-                      if (index < 7) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-core-count-${value}`}
-                            label={value}
-                            {...register(`${type}.coreCount.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {coreCountList.map((value, index) => {
-                      if (index >= 7 && index < 14) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-core-count-${value}`}
-                            label={value}
-                            {...register(`${type}.coreCount.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {coreCountList.map((value, index) => {
-                      if (index >= 14) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-core-count-${value}`}
-                            label={value}
-                            {...register(`${type}.coreCount.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>ソケット</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={3}>
-                  <div className="p-2">
-                    {cpuSocketList.map((value, index) => {
-                      if (index < 10) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-socket-${index}`}
-                            label={value}
-                            {...register(`${type}.socket.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {cpuSocketList.map((value, index) => {
-                      if (index >= 10) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-socket-${index}`}
-                            label={value}
-                            {...register(`${type}.socket.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>内蔵GPU</Accordion.Header>
-              <Accordion.Body>
-                <Form.Check
-                  key="igpu.yes"
-                  id={`${type}-igpu-yes`}
-                  label="あり"
-                  {...register(`${type}.igpu.yes`)}
-                />
-                <Form.Check
-                  key="igpu.no"
-                  id={`${type}-igpu-no`}
-                  label="なし"
-                  {...register(`${type}.igpu.no`)}
-                />
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        );
-      case "memory":
-        let memoryCapacityList: any[] = [];
-        let pcsList: any[] = [];
-        let memoryStandardList: any[] = [];
-        let memoryInterfaceList: any[] = [];
-
-        if (buf && sql) {
-          const db = new sql.Database(new Uint8Array(buf));
-          const memoryCapacityRes = db.exec(
-            "SELECT DISTINCT capacity FROM memory WHERE capacity != '' ORDER BY capacity",
-          );
-          memoryCapacityList = memoryCapacityRes[0].values.flat();
-
-          const pcsRes = db.exec(
-            "SELECT DISTINCT pcs FROM memory WHERE pcs IS NOT NULL ORDER BY pcs",
-          );
-          pcsList = pcsRes[0].values.flat();
-
-          const memoryStandardRes = db.exec(
-            "SELECT DISTINCT standard FROM memory WHERE standard != '' ORDER BY standard",
-          );
-          memoryStandardList = memoryStandardRes[0].values.flat();
-
-          const memoryInterfaceRes = db.exec(
-            "SELECT DISTINCT interface FROM memory WHERE interface != '' ORDER BY interface",
-          );
-          memoryInterfaceList = memoryInterfaceRes[0].values.flat();
-        }
-
-        return (
-          <Accordion>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>容量</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={2}>
-                  <div className="p-2">
-                    {memoryCapacityList.map((value, index) => {
-                      if (index < 8) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-capacity-${index}`}
-                            label={value}
-                            {...register(`${type}.capacity.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {memoryCapacityList.map((value, index) => {
-                      if (index >= 8) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-capacity-${index}`}
-                            label={value}
-                            {...register(`${type}.capacity.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>枚数</Accordion.Header>
-              <Accordion.Body>
-                {pcsList.map((value) => (
-                  <Form.Check
-                    key={value}
-                    id={`${type}-pcs-${value}`}
-                    label={value}
-                    {...register(`${type}.pcs.${value}`)}
-                  />
-                ))}
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>規格</Accordion.Header>
-              <Accordion.Body>
-                {memoryStandardList.map((value, index) => (
-                  <Form.Check
-                    key={value}
-                    id={`${type}-standard-${index}`}
-                    label={value}
-                    {...register(`${type}.standard.${index}.${value}`)}
-                  />
-                ))}
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="3">
-              <Accordion.Header>インターフェース</Accordion.Header>
-              <Accordion.Body>
-                {memoryInterfaceList.map((value, index) => {
-                  const escapedValue = value.replaceAll(".", "_");
-                  return (
-                    <Form.Check
-                      key={value}
-                      id={`${type}-interface-${index}`}
-                      label={value}
-                      {...register(
-                        `${type}.interface.${index}.${escapedValue}`,
-                      )}
-                    />
-                  );
-                })}
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        );
-      case "motherboard":
-        let formFactorList: any[] = [];
-        let motherboardSocketList: any[] = [];
-        let chipsetList: any[] = [];
-        let motherboardMemoryList: any[] = [];
-
-        if (buf && sql) {
-          const db = new sql.Database(new Uint8Array(buf));
-          const formFactorRes = db.exec(
-            "SELECT DISTINCT form_factor FROM motherboard WHERE form_factor != '' ORDER BY form_factor",
-          );
-          formFactorList = formFactorRes[0].values.flat();
-
-          const motherboardSocketRes = db.exec(
-            "SELECT DISTINCT socket FROM motherboard WHERE socket != '' AND socket NOT LIKE '%Onboard%' ORDER BY socket",
-          );
-          motherboardSocketList = motherboardSocketRes[0].values.flat();
-
-          const chipsetRes = db.exec(
-            "SELECT DISTINCT chipset FROM motherboard WHERE chipset != '' ORDER BY chipset",
-          );
-          chipsetList = chipsetRes[0].values.flat();
-
-          const motherboardMemoryRes = db.exec(
-            "SELECT DISTINCT memory FROM motherboard WHERE memory != '' ORDER BY memory",
-          );
-          motherboardMemoryList = motherboardMemoryRes[0].values.flat();
-        }
-
-        return (
-          <Accordion>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>フォームファクタ</Accordion.Header>
-              <Accordion.Body>
-                {formFactorList.map((value, index) => (
-                  <Form.Check
-                    key={value}
-                    id={`${type}-form-factor-${index}`}
-                    label={value}
-                    {...register(`${type}.formFactor.${index}.${value}`)}
-                  />
-                ))}
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>ソケット</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={2}>
-                  <div className="p-2">
-                    {motherboardSocketList.map((value, index) => {
-                      if (index < 7) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-socket-${index}`}
-                            label={value}
-                            {...register(`${type}.socket.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {motherboardSocketList.map((value, index) => {
-                      if (index >= 7) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-socket-${index}`}
-                            label={value}
-                            {...register(`${type}.socket.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>チップセット</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={2}>
-                  <div className="p-2">
-                    {chipsetList.map((value, index) => {
-                      if (index < 28) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-chipset-${index}`}
-                            label={value}
-                            {...register(`${type}.chipset.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {chipsetList.map((value, index) => {
-                      if (index >= 28) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-chipset-${index}`}
-                            label={value}
-                            {...register(`${type}.chipset.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="3">
-              <Accordion.Header>メモリ</Accordion.Header>
-              <Accordion.Body>
-                {motherboardMemoryList.map((value, index) => {
-                  const escapedValue = value.replaceAll(".", "_");
-                  return (
-                    <Form.Check
-                      key={value}
-                      id={`${type}-memory-${index}`}
-                      label={value}
-                      {...register(`${type}.memory.${index}.${escapedValue}`)}
-                    />
-                  );
-                })}
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        );
-      case "gpu":
-        let gpuNameList: any[] = [];
-        let busList: any[] = [];
-        let gpuStandardList: any[] = [];
-        let gpuCapacityList: any[] = [];
-
-        if (buf && sql) {
-          const db = new sql.Database(new Uint8Array(buf));
-          const gpuNameRes = db.exec(
-            "SELECT DISTINCT gpu_name FROM gpu WHERE gpu_name != '' AND gpu_name NOT LIKE '%ATI%' AND gpu_name NOT LIKE '%MATROX%' ORDER BY gpu_name",
-          );
-          gpuNameList = gpuNameRes[0].values.flat();
-
-          const busRes = db.exec(
-            "SELECT DISTINCT bus_interface FROM gpu WHERE bus_interface != '' AND bus_interface LIKE '%PCI%' ORDER BY bus_interface",
-          );
-          busList = busRes[0].values.flat();
-
-          const gpuStandardRes = db.exec(
-            "SELECT DISTINCT standard FROM gpu WHERE standard != '' ORDER BY standard",
-          );
-          gpuStandardList = gpuStandardRes[0].values.flat();
-
-          const gpuCapacityRes = db.exec(
-            "SELECT DISTINCT capacity FROM gpu WHERE capacity != '' ORDER BY capacity",
-          );
-          gpuCapacityList = gpuCapacityRes[0].values.flat();
-        }
-
-        return (
-          <Accordion>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>GPU</Accordion.Header>
-              <Accordion.Body>
-                {gpuNameList.map((value, index) => (
-                  <Form.Check
-                    key={value}
-                    id={`${type}-gpu-name-${index}`}
-                    label={value}
-                    {...register(`${type}.gpuName.${index}.${value}`)}
-                  />
-                ))}
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>バスインターフェース</Accordion.Header>
-              <Accordion.Body>
-                {busList.map((value, index) => {
-                  const escapedValue = value.replaceAll(".", "_");
-                  return (
-                    <Form.Check
-                      key={value}
-                      id={`${type}-bus-interface-${index}`}
-                      label={value}
-                      {...register(
-                        `${type}.busInterface.${index}.${escapedValue}`,
-                      )}
-                    />
-                  );
-                })}
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>規格</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={2}>
-                  <div className="p-2">
-                    {gpuStandardList.map((value, index) => {
-                      if (index < 5) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-standard-${index}`}
-                            label={value}
-                            {...register(`${type}.standard.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {gpuStandardList.map((value, index) => {
-                      if (index >= 5) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-standard-${index}`}
-                            label={value}
-                            {...register(`${type}.standard.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="3">
-              <Accordion.Header>容量</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={2}>
-                  <div className="p-2">
-                    {gpuCapacityList.map((value, index) => {
-                      if (index < 10) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-capacity-${index}`}
-                            label={value}
-                            {...register(`${type}.capacity.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {gpuCapacityList.map((value, index) => {
-                      if (index >= 10) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-capacity-${index}`}
-                            label={value}
-                            {...register(`${type}.capacity.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        );
-      case "ssd":
-        let ssdCapacityList: any[] = [];
-        let sizeList: any[] = [];
-        let ssdInterfaceList: any[] = [];
-
-        if (buf && sql) {
-          const db = new sql.Database(new Uint8Array(buf));
-          const ssdCapacityRes = db.exec(
-            "SELECT DISTINCT capacity FROM ssd WHERE capacity != '' ORDER BY capacity",
-          );
-          ssdCapacityList = ssdCapacityRes[0].values.flat();
-
-          const sizeRes = db.exec(
-            "SELECT DISTINCT size FROM ssd WHERE size != '' ORDER BY size",
-          );
-          sizeList = sizeRes[0].values.flat();
-
-          const ssdInterfaceRes = db.exec(
-            "SELECT DISTINCT interface FROM ssd WHERE interface != '' AND interface NOT LIKE '%USB%' ORDER BY interface",
-          );
-          ssdInterfaceList = ssdInterfaceRes[0].values.flat();
-        }
-
-        return (
-          <Accordion>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>容量</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={2}>
-                  <div className="p-2">
-                    {ssdCapacityList.map((value, index) => {
-                      if (index < 19) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-capacity-${index}`}
-                            label={value}
-                            {...register(`${type}.capacity.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {ssdCapacityList.map((value, index) => {
-                      if (index >= 19) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-capacity-${index}`}
-                            label={value}
-                            {...register(`${type}.capacity.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>サイズ</Accordion.Header>
-              <Accordion.Body>
-                {sizeList.map((value, index) => {
-                  const escapedValue = value.replace(".", "_");
-                  return (
-                    <Form.Check
-                      key={value}
-                      id={`${type}-size-${index}`}
-                      label={value}
-                      {...register(`${type}.size.${index}.${escapedValue}`)}
-                    />
-                  );
-                })}
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>インターフェース</Accordion.Header>
-              <Accordion.Body>
-                {ssdInterfaceList.map((value, index) => (
-                  <Form.Check
-                    key={value}
-                    id={`${type}-interface-${index}`}
-                    label={value}
-                    {...register(`${type}.interface.${index}.${value}`)}
-                  />
-                ))}
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        );
-      default:
-        break;
-    }
+  if (buf && sql) {
+    db = new sql.Database(new Uint8Array(buf));
   }
 
   function onSubmit(data: filterOptions) {
@@ -1019,7 +1064,7 @@ export default function FilterOption({
               クリア
             </Button>
           </InputGroup>
-          <Accordions type={type} />
+          <Accordions type={type} db={db} register={register} />
         </Modal.Body>
 
         <Modal.Footer>
