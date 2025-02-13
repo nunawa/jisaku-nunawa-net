@@ -1,4 +1,18 @@
-import { filterOptions, productInfo, productType } from "@/types";
+import cpuJson from "@/json/cpu.json";
+import gpuJson from "@/json/gpu.json";
+import memoryJson from "@/json/memory.json";
+import motherboardJson from "@/json/motherboard.json";
+import ssdJson from "@/json/ssd.json";
+import {
+  cpuFilterOption,
+  filterOptions,
+  gpuFilterOption,
+  memoryFilterOption,
+  motherboardFilterOption,
+  productInfo,
+  productType,
+  ssdFilterOption,
+} from "@/types";
 import { Dispatch, SetStateAction } from "react";
 import {
   Accordion,
@@ -16,23 +30,9 @@ import {
 } from "react-hook-form";
 import { SqlJsStatic, Database } from "sql.js";
 
-function CpuAccordion(
-  db: Database | null,
-  register: UseFormRegister<FieldValues>,
-) {
-  let coreCountList: any[] = [];
-  let cpuSocketList: any[] = [];
-
-  if (db) {
-    const coreCountRes = db.exec(
-      "SELECT DISTINCT core_count FROM cpu WHERE core_count IS NOT NULL ORDER BY core_count",
-    );
-    coreCountList = coreCountRes[0].values.flat();
-    const cpuSocketRes = db.exec(
-      "SELECT DISTINCT socket FROM cpu WHERE socket IS NOT NULL ORDER BY socket",
-    );
-    cpuSocketList = cpuSocketRes[0].values.flat();
-  }
+function CpuAccordion(register: UseFormRegister<FieldValues>) {
+  const coreCountList = cpuJson.core_count;
+  const cpuSocketList = cpuJson.socket;
 
   return (
     <Accordion>
@@ -141,36 +141,11 @@ function CpuAccordion(
   );
 }
 
-function MemoryAccordion(
-  db: Database | null,
-  register: UseFormRegister<FieldValues>,
-) {
-  let memoryCapacityList: any[] = [];
-  let pcsList: any[] = [];
-  let memoryStandardList: any[] = [];
-  let memoryInterfaceList: any[] = [];
-
-  if (db) {
-    const memoryCapacityRes = db.exec(
-      "SELECT DISTINCT capacity FROM memory WHERE capacity != '' ORDER BY capacity",
-    );
-    memoryCapacityList = memoryCapacityRes[0].values.flat();
-
-    const pcsRes = db.exec(
-      "SELECT DISTINCT pcs FROM memory WHERE pcs IS NOT NULL ORDER BY pcs",
-    );
-    pcsList = pcsRes[0].values.flat();
-
-    const memoryStandardRes = db.exec(
-      "SELECT DISTINCT standard FROM memory WHERE standard != '' ORDER BY standard",
-    );
-    memoryStandardList = memoryStandardRes[0].values.flat();
-
-    const memoryInterfaceRes = db.exec(
-      "SELECT DISTINCT interface FROM memory WHERE interface != '' ORDER BY interface",
-    );
-    memoryInterfaceList = memoryInterfaceRes[0].values.flat();
-  }
+function MemoryAccordion(register: UseFormRegister<FieldValues>) {
+  const memoryCapacityList = memoryJson.capacity;
+  const pcsList = memoryJson.pcs;
+  const memoryStandardList = memoryJson.standard;
+  const memoryInterfaceList = memoryJson.interface;
 
   return (
     <Accordion>
@@ -255,36 +230,11 @@ function MemoryAccordion(
   );
 }
 
-function MotherboardAccordion(
-  db: Database | null,
-  register: UseFormRegister<FieldValues>,
-) {
-  let formFactorList: any[] = [];
-  let motherboardSocketList: any[] = [];
-  let chipsetList: any[] = [];
-  let motherboardMemoryList: any[] = [];
-
-  if (db) {
-    const formFactorRes = db.exec(
-      "SELECT DISTINCT form_factor FROM motherboard WHERE form_factor != '' ORDER BY form_factor",
-    );
-    formFactorList = formFactorRes[0].values.flat();
-
-    const motherboardSocketRes = db.exec(
-      "SELECT DISTINCT socket FROM motherboard WHERE socket != '' AND socket NOT LIKE '%Onboard%' ORDER BY socket",
-    );
-    motherboardSocketList = motherboardSocketRes[0].values.flat();
-
-    const chipsetRes = db.exec(
-      "SELECT DISTINCT chipset FROM motherboard WHERE chipset != '' ORDER BY chipset",
-    );
-    chipsetList = chipsetRes[0].values.flat();
-
-    const motherboardMemoryRes = db.exec(
-      "SELECT DISTINCT memory FROM motherboard WHERE memory != '' ORDER BY memory",
-    );
-    motherboardMemoryList = motherboardMemoryRes[0].values.flat();
-  }
+function MotherboardAccordion(register: UseFormRegister<FieldValues>) {
+  const formFactorList = motherboardJson.form_factor;
+  const motherboardSocketList = motherboardJson.socket;
+  const chipsetList = motherboardJson.chipset;
+  const motherboardMemoryList = motherboardJson.memory;
 
   return (
     <Accordion>
@@ -391,36 +341,11 @@ function MotherboardAccordion(
   );
 }
 
-function GpuAccordion(
-  db: Database | null,
-  register: UseFormRegister<FieldValues>,
-) {
-  let gpuNameList: any[] = [];
-  let busList: any[] = [];
-  let gpuStandardList: any[] = [];
-  let gpuCapacityList: any[] = [];
-
-  if (db) {
-    const gpuNameRes = db.exec(
-      "SELECT DISTINCT gpu_name FROM gpu WHERE gpu_name != '' AND gpu_name NOT LIKE '%ATI%' AND gpu_name NOT LIKE '%MATROX%' ORDER BY gpu_name",
-    );
-    gpuNameList = gpuNameRes[0].values.flat();
-
-    const busRes = db.exec(
-      "SELECT DISTINCT bus_interface FROM gpu WHERE bus_interface != '' AND bus_interface LIKE '%PCI%' ORDER BY bus_interface",
-    );
-    busList = busRes[0].values.flat();
-
-    const gpuStandardRes = db.exec(
-      "SELECT DISTINCT standard FROM gpu WHERE standard != '' ORDER BY standard",
-    );
-    gpuStandardList = gpuStandardRes[0].values.flat();
-
-    const gpuCapacityRes = db.exec(
-      "SELECT DISTINCT capacity FROM gpu WHERE capacity != '' ORDER BY capacity",
-    );
-    gpuCapacityList = gpuCapacityRes[0].values.flat();
-  }
+function GpuAccordion(register: UseFormRegister<FieldValues>) {
+  const gpuNameList = gpuJson.gpu_name;
+  const busList = gpuJson.bus_interface;
+  const gpuStandardList = gpuJson.standard;
+  const gpuCapacityList = gpuJson.capacity;
 
   return (
     <Accordion>
@@ -527,30 +452,10 @@ function GpuAccordion(
   );
 }
 
-function SsdAccordion(
-  db: Database | null,
-  register: UseFormRegister<FieldValues>,
-) {
-  let ssdCapacityList: any[] = [];
-  let sizeList: any[] = [];
-  let ssdInterfaceList: any[] = [];
-
-  if (db) {
-    const ssdCapacityRes = db.exec(
-      "SELECT DISTINCT capacity FROM ssd WHERE capacity != '' ORDER BY capacity",
-    );
-    ssdCapacityList = ssdCapacityRes[0].values.flat();
-
-    const sizeRes = db.exec(
-      "SELECT DISTINCT size FROM ssd WHERE size != '' ORDER BY size",
-    );
-    sizeList = sizeRes[0].values.flat();
-
-    const ssdInterfaceRes = db.exec(
-      "SELECT DISTINCT interface FROM ssd WHERE interface != '' AND interface NOT LIKE '%USB%' ORDER BY interface",
-    );
-    ssdInterfaceList = ssdInterfaceRes[0].values.flat();
-  }
+function SsdAccordion(register: UseFormRegister<FieldValues>) {
+  const ssdCapacityList = ssdJson.capacity;
+  const sizeList = ssdJson.size;
+  const ssdInterfaceList = ssdJson.interface;
 
   return (
     <Accordion>
@@ -624,26 +529,22 @@ function SsdAccordion(
 
 function Accordions({
   type,
-  db,
   register,
 }: {
   type: keyof productType;
-  db: Database | null;
   register: UseFormRegister<FieldValues>;
 }) {
   switch (type) {
     case "cpu":
-      return CpuAccordion(db, register);
+      return CpuAccordion(register);
     case "memory":
-      return MemoryAccordion(db, register);
+      return MemoryAccordion(register);
     case "motherboard":
-      return MotherboardAccordion(db, register);
+      return MotherboardAccordion(register);
     case "gpu":
-      return GpuAccordion(db, register);
+      return GpuAccordion(register);
     case "ssd":
-      return SsdAccordion(db, register);
-    default:
-      break;
+      return SsdAccordion(register);
   }
 }
 
@@ -1064,7 +965,7 @@ export default function FilterOption({
               クリア
             </Button>
           </InputGroup>
-          <Accordions type={type} db={db} register={register} />
+          <Accordions type={type} register={register} />
         </Modal.Body>
 
         <Modal.Footer>
