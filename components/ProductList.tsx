@@ -37,7 +37,6 @@ export default function ProductList({
                 onClick={() => {
                   let newSelectedProducts = Object.assign({}, selectedProducts);
                   newSelectedProducts[id] = iterator;
-                  console.log(newSelectedProducts);
                   // ここで無限ループ😇
                   setSelectedProducts(newSelectedProducts);
                 }}

@@ -1,3 +1,8 @@
+import { Cpu } from "@/db/Cpu";
+import { Gpu } from "@/db/Gpu";
+import { Memory } from "@/db/Memory";
+import { Motherboard } from "@/db/Motherboard";
+import { Ssd } from "@/db/Ssd";
 import cpuJson from "@/json/cpu.json";
 import gpuJson from "@/json/gpu.json";
 import memoryJson from "@/json/memory.json";
@@ -28,7 +33,7 @@ import {
   useForm,
   UseFormRegister,
 } from "react-hook-form";
-import { SqlJsStatic, Database } from "sql.js";
+import { Brackets, DataSource, SelectQueryBuilder } from "typeorm";
 
 function CpuAccordion(register: UseFormRegister<FieldValues>) {
   const coreCountList = cpuJson.core_count;
@@ -548,12 +553,366 @@ function Accordions({
   }
 }
 
+function addCpuQuery(
+  queryBuilder: SelectQueryBuilder<Cpu>,
+  value: cpuFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.coreCount.length; i++) {
+        if (value.coreCount[i] === true) {
+          resultQb = resultQb.orWhere(`core_count = :coreCount${i}`, {
+            [`coreCount${i}`]: i,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.socket.length; i++) {
+        const option = value.socket[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`socket = :socket${i}`, {
+            [`socket${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  if (value.igpu.yes === true && value.igpu.no === false) {
+    resultQueryBuilder = resultQueryBuilder.andWhere("gpu IS NOT NULL");
+  } else if (value.igpu.yes === false && value.igpu.no === true) {
+    resultQueryBuilder = resultQueryBuilder.andWhere("gpu IS NULL");
+  }
+
+  return resultQueryBuilder;
+}
+
+function addMemoryQuery(
+  queryBuilder: SelectQueryBuilder<Memory>,
+  value: memoryFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.capacity.length; i++) {
+        const option = value.capacity[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`capacity = :capacity${i}`, {
+            [`capacity${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.pcs.length; i++) {
+        if (value.pcs[i] === true) {
+          resultQb = resultQb.orWhere(`pcs = :pcs${i}`, { [`pcs${i}`]: i });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.standard.length; i++) {
+        const option = value.standard[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`standard = :standard${i}`, {
+            [`standard${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.interface.length; i++) {
+        const option = value.interface[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          const restoredKey = key.replaceAll("_", ".");
+          resultQb = resultQb.orWhere(`interface = :interface${i}`, {
+            [`interface${i}`]: restoredKey,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  return resultQueryBuilder;
+}
+
+function addMotherboardQuery(
+  queryBuilder: SelectQueryBuilder<Motherboard>,
+  value: motherboardFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.formFactor.length; i++) {
+        const formFactorOption = value.formFactor[i];
+        const [key, isSelected] = Object.entries(formFactorOption)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`form_factor = :formFactor${i}`, {
+            [`formFactor${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.socket.length; i++) {
+        const option = value.socket[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`socket = :socket${i}`, {
+            [`socket${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.chipset.length; i++) {
+        const option = value.chipset[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`chipset = :chipset${i}`, {
+            [`chipset${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.memory.length; i++) {
+        const option = value.memory[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          const restoredKey = key.replaceAll("_", ".");
+          resultQb = resultQb.orWhere(`memory = :memory${i}`, {
+            [`memory${i}`]: restoredKey,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  return resultQueryBuilder;
+}
+
+function addGpuQuery(
+  queryBuilder: SelectQueryBuilder<Gpu>,
+  value: gpuFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.gpuName.length; i++) {
+        const gpuNameOption = value.gpuName[i];
+        const [key, isSelected] = Object.entries(gpuNameOption)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`gpu_name = :gpuName${i}`, {
+            [`gpuName${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.busInterface.length; i++) {
+        const busInterfaceOption = value.busInterface[i];
+        const [key, isSelected] = Object.entries(busInterfaceOption)[0];
+        if (isSelected === true) {
+          const restoredKey = key.replaceAll("_", ".");
+          resultQb = resultQb.orWhere(`bus_interface = :busInterface${i}`, {
+            [`busInterface${i}`]: restoredKey,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.standard.length; i++) {
+        const option = value.standard[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`standard = :standard${i}`, {
+            [`standard${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.capacity.length; i++) {
+        const option = value.capacity[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`capacity = :capacity${i}`, {
+            [`capacity${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  return resultQueryBuilder;
+}
+
+function addSsdQuery(
+  queryBuilder: SelectQueryBuilder<Ssd>,
+  value: ssdFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.capacity.length; i++) {
+        const option = value.capacity[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`capacity = :capacity${i}`, {
+            [`capacity${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.size.length; i++) {
+        const option = value.size[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          const restoredKey = key.replaceAll("_", ".");
+          resultQb = resultQb.orWhere(`size = :size${i}`, {
+            [`size${i}`]: restoredKey,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.interface.length; i++) {
+        const option = value.interface[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`interface = :interface${i}`, {
+            [`interface${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  return resultQueryBuilder;
+}
+
 export default function FilterOption({
   show,
   handleClose,
   type,
-  buf,
-  sql,
+  dataSource,
   setConvertedProducts,
   submittedFilterOption,
   setSubmittedFilterOption,
@@ -561,316 +920,103 @@ export default function FilterOption({
   show: boolean;
   handleClose: () => void;
   type: keyof productType;
-  buf: ArrayBuffer;
-  sql: SqlJsStatic;
+  dataSource: DataSource | undefined;
   setConvertedProducts: Dispatch<SetStateAction<productInfo[] | undefined>>;
   submittedFilterOption: filterOptions;
   setSubmittedFilterOption: Dispatch<SetStateAction<filterOptions>>;
 }) {
   const { register, handleSubmit, resetField, setValue } = useForm();
 
-  let db = null;
-
-  if (buf && sql) {
-    db = new sql.Database(new Uint8Array(buf));
-  }
-
-  function onSubmit(data: filterOptions) {
-    console.log(data);
+  async function onSubmit(data: filterOptions) {
     setSubmittedFilterOption(data);
 
-    let sort = "";
-    if (data.sort == "sales_rank_asc") {
-      sort = "ORDER BY (sales_rank IS NULL), sales_rank";
-    } else if (data.sort == "price_asc") {
-      sort = "ORDER BY (price IS NULL), price";
-    }
+    if (dataSource) {
+      let queryBuilder:
+        | SelectQueryBuilder<Cpu>
+        | SelectQueryBuilder<Memory>
+        | SelectQueryBuilder<Motherboard>
+        | SelectQueryBuilder<Gpu>
+        | SelectQueryBuilder<Ssd>;
 
-    let keyword = "";
-    if (data.keyword) {
-      keyword = `manufacturer || " " || name LIKE "%${data.keyword}%"`;
-    }
+      switch (type) {
+        case "cpu":
+          queryBuilder = dataSource.getRepository(Cpu).createQueryBuilder(type);
 
-    let minMax = "";
-    const min = Number(data.min);
-    const max = Number(data.max);
-    if (min && max && min <= max) {
-      minMax = `(price >= ${min} AND price <= ${max})`;
-    } else if (min) {
-      minMax = `price >= ${min}`;
-    } else if (max) {
-      minMax = `price <= ${max}`;
-    }
-
-    let coreCount = "";
-    let cpuSocket = "";
-    let igpu = "";
-    if (data.cpu) {
-      let filteredCoreCount = [];
-      for (let i = 0; i < data.cpu.coreCount.length; i++) {
-        if (data.cpu.coreCount[i] === true) {
-          filteredCoreCount.push(`core_count = ${i}`);
-        }
-      }
-      coreCount = filteredCoreCount.join(" OR ");
-
-      let filteredCpuSocket = [];
-      for (const iter of data.cpu.socket) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredCpuSocket.push(`socket = "${key}"`);
+          if (data.cpu) {
+            queryBuilder = addCpuQuery(queryBuilder, data.cpu);
           }
-        }
-      }
-      cpuSocket = filteredCpuSocket.join(" OR ");
 
-      if (
-        (data.cpu.igpu.yes === true && data.cpu.igpu.no === true) ||
-        (data.cpu.igpu.yes === false && data.cpu.igpu.no === false)
-      ) {
-        igpu = "";
-      } else if (data.cpu.igpu.yes === true) {
-        igpu = "gpu IS NOT NULL";
-      } else if (data.cpu.igpu.no === true) {
-        igpu = "gpu IS NULL";
-      }
-    }
+          break;
+        case "memory":
+          queryBuilder = dataSource
+            .getRepository(Memory)
+            .createQueryBuilder(type);
 
-    let memoryCapacity = "";
-    let pcs = "";
-    let memoryStandard = "";
-    let memoryInterface = "";
-    if (data.memory) {
-      let filteredCapacity = [];
-      for (const iter of data.memory.capacity) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredCapacity.push(`capacity = "${key}"`);
+          if (data.memory) {
+            queryBuilder = addMemoryQuery(queryBuilder, data.memory);
           }
-        }
-      }
-      memoryCapacity = filteredCapacity.join(" OR ");
 
-      let filteredPcs = [];
-      for (let i = 0; i < data.memory.pcs.length; i++) {
-        if (data.memory.pcs[i] === true) {
-          filteredPcs.push(`pcs = ${i}`);
-        }
-      }
-      pcs = filteredPcs.join(" OR ");
+          break;
+        case "motherboard":
+          queryBuilder = dataSource
+            .getRepository(Motherboard)
+            .createQueryBuilder(type);
 
-      let filteredStandard = [];
-      for (const iter of data.memory.standard) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredStandard.push(`standard = "${key}"`);
+          if (data.motherboard) {
+            queryBuilder = addMotherboardQuery(queryBuilder, data.motherboard);
           }
-        }
-      }
-      memoryStandard = filteredStandard.join(" OR ");
 
-      let filteredMemoryInterface = [];
-      for (const iter of data.memory.interface) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            const restoredKey = key.replaceAll("_", ".");
-            filteredMemoryInterface.push(`interface = "${restoredKey}"`);
+          break;
+        case "gpu":
+          queryBuilder = dataSource.getRepository(Gpu).createQueryBuilder(type);
+
+          if (data.gpu) {
+            queryBuilder = addGpuQuery(queryBuilder, data.gpu);
           }
-        }
-      }
-      memoryInterface = filteredMemoryInterface.join(" OR ");
-    }
 
-    let formFactor = "";
-    let motherboardSocket = "";
-    let chipset = "";
-    let motherboardMemory = "";
-    if (data.motherboard) {
-      let filteredFormFactor = [];
-      for (const iter of data.motherboard.formFactor) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredFormFactor.push(`form_factor = "${key}"`);
+          break;
+        case "ssd":
+          queryBuilder = dataSource.getRepository(Ssd).createQueryBuilder(type);
+
+          if (data.ssd) {
+            queryBuilder = addSsdQuery(queryBuilder, data.ssd);
           }
-        }
+
+          break;
       }
-      formFactor = filteredFormFactor.join(" OR ");
 
-      let filteredMotherboardSocket = [];
-      for (const iter of data.motherboard.socket) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredMotherboardSocket.push(`socket = "${key}"`);
-          }
-        }
+      if (data.keyword) {
+        queryBuilder = queryBuilder.andWhere(
+          "concat(manufacturer, ' ', name) LIKE :keyword",
+          { keyword: `%${data.keyword}%` },
+        );
       }
-      motherboardSocket = filteredMotherboardSocket.join(" OR ");
 
-      let filteredChipset = [];
-      for (const iter of data.motherboard.chipset) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredChipset.push(`chipset = "${key}"`);
-          }
-        }
+      const min = Number(data.min);
+      const max = Number(data.max);
+      if (min && max && min <= max) {
+        queryBuilder = queryBuilder.andWhere(
+          "price >= :min AND price <= :max",
+          { min: min, max: max },
+        );
+      } else if (min) {
+        queryBuilder = queryBuilder.andWhere("price >= :min", { min: min });
+      } else if (max) {
+        queryBuilder = queryBuilder.andWhere("price <= :max", { max: max });
       }
-      chipset = filteredChipset.join(" OR ");
 
-      let filteredMemory = [];
-      for (const iter of data.motherboard.memory) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredMemory.push(`memory = "${key}"`);
-          }
-        }
+      if (data.sort == "sales_rank_asc") {
+        queryBuilder = queryBuilder.orderBy(
+          "sales_rank",
+          undefined,
+          "NULLS LAST",
+        );
+      } else if (data.sort == "price_asc") {
+        queryBuilder = queryBuilder.orderBy("price", undefined, "NULLS LAST");
       }
-      motherboardMemory = filteredMemory.join(" OR ");
-    }
 
-    let gpuName = "";
-    let busInterface = "";
-    let gpuStandard = "";
-    let gpuCapacity = "";
-    if (data.gpu) {
-      let filteredGpuName = [];
-      for (const iter of data.gpu.gpuName) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredGpuName.push(`gpu_name = "${key}"`);
-          }
-        }
-      }
-      gpuName = filteredGpuName.join(" OR ");
+      const productList = (await queryBuilder.getMany()) as productInfo[];
 
-      let filteredBusInterface = [];
-      for (const iter of data.gpu.busInterface) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            const restoredKey = key.replaceAll("_", ".");
-            filteredBusInterface.push(`bus_interface = "${restoredKey}"`);
-          }
-        }
-      }
-      busInterface = filteredBusInterface.join(" OR ");
-
-      let filteredGpuStandard = [];
-      for (const iter of data.gpu.standard) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredGpuStandard.push(`standard = "${key}"`);
-          }
-        }
-      }
-      gpuStandard = filteredGpuStandard.join(" OR ");
-
-      let filteredGpuCapacity = [];
-      for (const iter of data.gpu.capacity) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredGpuCapacity.push(`capacity = "${key}"`);
-          }
-        }
-      }
-      gpuCapacity = filteredGpuCapacity.join(" OR ");
-    }
-
-    let ssdCapacity = "";
-    let size = "";
-    let ssdInterface = "";
-    if (data.ssd) {
-      let filteredSsdCapacity = [];
-      for (const iter of data.ssd.capacity) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredSsdCapacity.push(`capacity = "${key}"`);
-          }
-        }
-      }
-      ssdCapacity = filteredSsdCapacity.join(" OR ");
-
-      let filteredSize = [];
-      for (const iter of data.ssd.size) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            const restoredKey = key.replaceAll("_", ".");
-            filteredSize.push(`size = "${restoredKey}"`);
-          }
-        }
-      }
-      size = filteredSize.join(" OR ");
-
-      let filteredSsdInterface = [];
-      for (const iter of data.ssd.interface) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredSsdInterface.push(`interface = "${key}"`);
-          }
-        }
-      }
-      ssdInterface = filteredSsdInterface.join(" OR ");
-    }
-
-    let where = "";
-    if (
-      keyword ||
-      minMax ||
-      coreCount ||
-      cpuSocket ||
-      igpu ||
-      memoryCapacity ||
-      pcs ||
-      memoryStandard ||
-      memoryInterface ||
-      formFactor ||
-      motherboardSocket ||
-      chipset ||
-      motherboardMemory ||
-      gpuName ||
-      busInterface ||
-      gpuStandard ||
-      gpuCapacity ||
-      ssdCapacity ||
-      size ||
-      ssdInterface
-    ) {
-      const params = [
-        keyword,
-        minMax,
-        coreCount,
-        cpuSocket,
-        igpu,
-        memoryCapacity,
-        pcs,
-        memoryStandard,
-        memoryInterface,
-        formFactor,
-        motherboardSocket,
-        chipset,
-        motherboardMemory,
-        gpuName,
-        busInterface,
-        gpuStandard,
-        gpuCapacity,
-        ssdCapacity,
-        size,
-        ssdInterface,
-      ]
-        .filter(Boolean)
-        .join(") AND (");
-      where = `WHERE (${params})`;
-    }
-
-    if (buf && sql) {
-      const db = new sql.Database(new Uint8Array(buf));
-      let productList: SetStateAction<productInfo[] | undefined> = [];
-      db.each(
-        `SELECT * FROM ${type} ${where} ${sort} LIMIT 30`,
-        (row) => {
-          productList.push(row as productInfo);
-        },
-        () => {},
-      );
-      console.log(productList);
       setConvertedProducts(productList);
     }
 

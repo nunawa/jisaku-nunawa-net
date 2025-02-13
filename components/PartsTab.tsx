@@ -1,39 +1,35 @@
 import { filterOptions, productInfo, productType } from "@/types";
 import { useEffect, useState } from "react";
 import { Button, Container } from "react-bootstrap";
-import initSqlJs from "sql.js";
+import { DataSource } from "typeorm";
 import FilterOption from "./FilterOption";
 import ProductList from "./ProductList";
 import SelectedProduct from "./SelectedProduct";
 
 export default function PartsTab({
   type,
-  buf,
-  sql,
+  dataSource,
 }: {
   type: keyof productType;
-  buf: ArrayBuffer;
-  sql: initSqlJs.SqlJsStatic;
+  dataSource: DataSource | undefined;
 }) {
   const [originProducts, setOriginProducts] = useState<productInfo[]>();
   const [convertedProducts, setConvertedProducts] = useState<productInfo[]>();
 
   useEffect(() => {
-    if (buf && sql) {
-      const db = new sql.Database(new Uint8Array(buf));
-      let productList: productInfo[] = [];
-      db.each(
-        `SELECT * FROM ${type} LIMIT 30`,
-        (row) => {
-          productList.push(row as productInfo);
-        },
-        () => {},
-      );
-      console.log(productList);
-      setOriginProducts(productList);
-      setConvertedProducts(productList);
+    if (dataSource) {
+      (async () => {
+        let productList: productInfo[] = [];
+
+        productList = (await dataSource.manager.query(
+          `SELECT * FROM ${type} LIMIT 30`,
+        )) as productInfo[];
+
+        setOriginProducts(productList);
+        setConvertedProducts(productList);
+      })();
     }
-  }, [buf, sql, type]);
+  }, [dataSource, type]);
 
   const [submittedFilterOption, setSubmittedFilterOption] =
     useState<filterOptions>({
@@ -65,8 +61,7 @@ export default function PartsTab({
         show={show}
         handleClose={() => handleClose()}
         type={type}
-        buf={buf}
-        sql={sql}
+        dataSource={dataSource}
         setConvertedProducts={setConvertedProducts}
         submittedFilterOption={submittedFilterOption}
         setSubmittedFilterOption={setSubmittedFilterOption}
