@@ -1,6 +1,11 @@
 import BuildTab from "@/components/BuildTab";
 import PartsTab from "@/components/PartsTab";
 import TotalPrice from "@/components/TotalPrice";
+import { Cpu } from "@/db/Cpu";
+import { Gpu } from "@/db/Gpu";
+import { Memory } from "@/db/Memory";
+import { Motherboard } from "@/db/Motherboard";
+import { Ssd } from "@/db/Ssd";
 import { themeAtom } from "@/jotai/atom";
 import styles from "@/styles/TabNav.module.scss";
 import { productType } from "@/types";
@@ -17,9 +22,11 @@ import {
   Tab,
 } from "react-bootstrap";
 import { BsMoonFill, BsPcDisplay, BsSunFill } from "react-icons/bs";
+import "reflect-metadata";
 import initSqlJs from "sql.js";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
+import { DataSource } from "typeorm";
 
 const fetcher: Fetcher<ArrayBuffer, string> = (url) =>
   fetch(url).then((res) => res.arrayBuffer());
@@ -35,13 +42,7 @@ function useBuf() {
   };
 }
 
-function TabContainer({
-  buf,
-  sql,
-}: {
-  buf: ArrayBuffer;
-  sql: initSqlJs.SqlJsStatic;
-}) {
+function TabContainer({ dataSource }: { dataSource: DataSource | undefined }) {
   const [dropdownButtonTitle, setDropdownButtonTitle] = useState("CPU");
   const partsTabList = [
     {
@@ -125,8 +126,7 @@ function TabContainer({
               <Tab.Pane eventKey={value.key} key={value.key}>
                 <PartsTab
                   type={value.key as keyof productType}
-                  buf={buf}
-                  sql={sql}
+                  dataSource={dataSource}
                 />
               </Tab.Pane>
             ))}
@@ -205,17 +205,31 @@ function ThemeDropdown() {
 
 export default function Home() {
   const { buf } = useBuf();
-  const [sql, setSql] = useState<initSqlJs.SqlJsStatic>();
+  const [dataSource, setDatasource] = useState<DataSource>();
 
   useEffect(() => {
-    (async () => {
-      const SQL = await initSqlJs({
-        locateFile: () =>
-          new URL("sql.js/dist/sql-wasm.wasm", import.meta.url).toString(),
-      });
-      setSql(SQL);
-    })();
-  }, []);
+    if (buf) {
+      (async () => {
+        const SQL = await initSqlJs({
+          locateFile: () =>
+            new URL("sql.js/dist/sql-wasm.wasm", import.meta.url).toString(),
+        });
+
+        // @ts-ignore
+        globalThis.SQL = SQL;
+
+        const dataSource = new DataSource({
+          type: "sqljs",
+          entities: [Cpu, Memory, Motherboard, Gpu, Ssd],
+          database: new Uint8Array(buf),
+        });
+
+        await dataSource.initialize();
+
+        setDatasource(dataSource);
+      })();
+    }
+  }, [buf]);
 
   return (
     <>
@@ -229,7 +243,7 @@ export default function Home() {
         </Container>
       </Navbar>
       <Container>
-        <TabContainer buf={buf!} sql={sql!} />
+        <TabContainer dataSource={dataSource} />
       </Container>
     </>
   );

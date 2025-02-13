@@ -1,22 +1,384 @@
-import { filterOptions, productInfo, productType } from "@/types";
-import { Dispatch, SetStateAction } from "react";
+import { Cpu } from "@/db/Cpu";
+import { Gpu } from "@/db/Gpu";
+import { Memory } from "@/db/Memory";
+import { Motherboard } from "@/db/Motherboard";
+import { Ssd } from "@/db/Ssd";
 import {
-  Accordion,
-  Button,
-  Form,
-  InputGroup,
-  Modal,
-  Stack,
-} from "react-bootstrap";
+  cpuFilterOption,
+  filterOptions,
+  gpuFilterOption,
+  memoryFilterOption,
+  motherboardFilterOption,
+  productInfo,
+  productType,
+  ssdFilterOption,
+} from "@/types";
+import { Dispatch, SetStateAction } from "react";
+import { Button, Form, InputGroup, Modal } from "react-bootstrap";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import initSqlJs from "sql.js";
+import { Brackets, DataSource, SelectQueryBuilder } from "typeorm";
+import Accordions from "./Accordions";
+
+function addCpuQuery(
+  queryBuilder: SelectQueryBuilder<Cpu>,
+  value: cpuFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.coreCount.length; i++) {
+        if (value.coreCount[i] === true) {
+          resultQb = resultQb.orWhere(`core_count = :coreCount${i}`, {
+            [`coreCount${i}`]: i,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.socket.length; i++) {
+        const option = value.socket[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`socket = :socket${i}`, {
+            [`socket${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  if (value.igpu.yes === true && value.igpu.no === false) {
+    resultQueryBuilder = resultQueryBuilder.andWhere("gpu IS NOT NULL");
+  } else if (value.igpu.yes === false && value.igpu.no === true) {
+    resultQueryBuilder = resultQueryBuilder.andWhere("gpu IS NULL");
+  }
+
+  return resultQueryBuilder;
+}
+
+function addMemoryQuery(
+  queryBuilder: SelectQueryBuilder<Memory>,
+  value: memoryFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.capacity.length; i++) {
+        const option = value.capacity[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`capacity = :capacity${i}`, {
+            [`capacity${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.pcs.length; i++) {
+        if (value.pcs[i] === true) {
+          resultQb = resultQb.orWhere(`pcs = :pcs${i}`, { [`pcs${i}`]: i });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.standard.length; i++) {
+        const option = value.standard[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`standard = :standard${i}`, {
+            [`standard${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.interface.length; i++) {
+        const option = value.interface[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          const restoredKey = key.replaceAll("_", ".");
+          resultQb = resultQb.orWhere(`interface = :interface${i}`, {
+            [`interface${i}`]: restoredKey,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  return resultQueryBuilder;
+}
+
+function addMotherboardQuery(
+  queryBuilder: SelectQueryBuilder<Motherboard>,
+  value: motherboardFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.formFactor.length; i++) {
+        const formFactorOption = value.formFactor[i];
+        const [key, isSelected] = Object.entries(formFactorOption)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`form_factor = :formFactor${i}`, {
+            [`formFactor${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.socket.length; i++) {
+        const option = value.socket[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`socket = :socket${i}`, {
+            [`socket${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.chipset.length; i++) {
+        const option = value.chipset[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`chipset = :chipset${i}`, {
+            [`chipset${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.memory.length; i++) {
+        const option = value.memory[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          const restoredKey = key.replaceAll("_", ".");
+          resultQb = resultQb.orWhere(`memory = :memory${i}`, {
+            [`memory${i}`]: restoredKey,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  return resultQueryBuilder;
+}
+
+function addGpuQuery(
+  queryBuilder: SelectQueryBuilder<Gpu>,
+  value: gpuFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.gpuName.length; i++) {
+        const gpuNameOption = value.gpuName[i];
+        const [key, isSelected] = Object.entries(gpuNameOption)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`gpu_name = :gpuName${i}`, {
+            [`gpuName${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.busInterface.length; i++) {
+        const busInterfaceOption = value.busInterface[i];
+        const [key, isSelected] = Object.entries(busInterfaceOption)[0];
+        if (isSelected === true) {
+          const restoredKey = key.replaceAll("_", ".");
+          resultQb = resultQb.orWhere(`bus_interface = :busInterface${i}`, {
+            [`busInterface${i}`]: restoredKey,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.standard.length; i++) {
+        const option = value.standard[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`standard = :standard${i}`, {
+            [`standard${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.capacity.length; i++) {
+        const option = value.capacity[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`capacity = :capacity${i}`, {
+            [`capacity${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  return resultQueryBuilder;
+}
+
+function addSsdQuery(
+  queryBuilder: SelectQueryBuilder<Ssd>,
+  value: ssdFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.capacity.length; i++) {
+        const option = value.capacity[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`capacity = :capacity${i}`, {
+            [`capacity${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.size.length; i++) {
+        const option = value.size[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          const restoredKey = key.replaceAll("_", ".");
+          resultQb = resultQb.orWhere(`size = :size${i}`, {
+            [`size${i}`]: restoredKey,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.interface.length; i++) {
+        const option = value.interface[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`interface = :interface${i}`, {
+            [`interface${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  return resultQueryBuilder;
+}
 
 export default function FilterOption({
   show,
   handleClose,
   type,
-  buf,
-  sql,
+  dataSource,
   setConvertedProducts,
   submittedFilterOption,
   setSubmittedFilterOption,
@@ -24,907 +386,103 @@ export default function FilterOption({
   show: boolean;
   handleClose: () => void;
   type: keyof productType;
-  buf: ArrayBuffer;
-  sql: initSqlJs.SqlJsStatic;
+  dataSource: DataSource | undefined;
   setConvertedProducts: Dispatch<SetStateAction<productInfo[] | undefined>>;
   submittedFilterOption: filterOptions;
   setSubmittedFilterOption: Dispatch<SetStateAction<filterOptions>>;
 }) {
   const { register, handleSubmit, resetField, setValue } = useForm();
 
-  function Accordions({ type }: { type: keyof productType }) {
-    switch (type) {
-      case "cpu":
-        let coreCountList: any[] = [];
-        let cpuSocketList: any[] = [];
-
-        if (buf && sql) {
-          const db = new sql.Database(new Uint8Array(buf));
-          const coreCountRes = db.exec(
-            "SELECT DISTINCT core_count FROM cpu WHERE core_count IS NOT NULL ORDER BY core_count",
-          );
-          coreCountList = coreCountRes[0].values.flat();
-          const cpuSocketRes = db.exec(
-            "SELECT DISTINCT socket FROM cpu WHERE socket IS NOT NULL ORDER BY socket",
-          );
-          cpuSocketList = cpuSocketRes[0].values.flat();
-        }
-
-        return (
-          <Accordion>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>コア数</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={3}>
-                  <div className="p-2">
-                    {coreCountList.map((value, index) => {
-                      if (index < 7) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-core-count-${value}`}
-                            label={value}
-                            {...register(`${type}.coreCount.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {coreCountList.map((value, index) => {
-                      if (index >= 7 && index < 14) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-core-count-${value}`}
-                            label={value}
-                            {...register(`${type}.coreCount.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {coreCountList.map((value, index) => {
-                      if (index >= 14) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-core-count-${value}`}
-                            label={value}
-                            {...register(`${type}.coreCount.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>ソケット</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={3}>
-                  <div className="p-2">
-                    {cpuSocketList.map((value, index) => {
-                      if (index < 10) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-socket-${index}`}
-                            label={value}
-                            {...register(`${type}.socket.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {cpuSocketList.map((value, index) => {
-                      if (index >= 10) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-socket-${index}`}
-                            label={value}
-                            {...register(`${type}.socket.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>内蔵GPU</Accordion.Header>
-              <Accordion.Body>
-                <Form.Check
-                  key="igpu.yes"
-                  id={`${type}-igpu-yes`}
-                  label="あり"
-                  {...register(`${type}.igpu.yes`)}
-                />
-                <Form.Check
-                  key="igpu.no"
-                  id={`${type}-igpu-no`}
-                  label="なし"
-                  {...register(`${type}.igpu.no`)}
-                />
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        );
-      case "memory":
-        let memoryCapacityList: any[] = [];
-        let pcsList: any[] = [];
-        let memoryStandardList: any[] = [];
-        let memoryInterfaceList: any[] = [];
-
-        if (buf && sql) {
-          const db = new sql.Database(new Uint8Array(buf));
-          const memoryCapacityRes = db.exec(
-            "SELECT DISTINCT capacity FROM memory WHERE capacity != '' ORDER BY capacity",
-          );
-          memoryCapacityList = memoryCapacityRes[0].values.flat();
-
-          const pcsRes = db.exec(
-            "SELECT DISTINCT pcs FROM memory WHERE pcs IS NOT NULL ORDER BY pcs",
-          );
-          pcsList = pcsRes[0].values.flat();
-
-          const memoryStandardRes = db.exec(
-            "SELECT DISTINCT standard FROM memory WHERE standard != '' ORDER BY standard",
-          );
-          memoryStandardList = memoryStandardRes[0].values.flat();
-
-          const memoryInterfaceRes = db.exec(
-            "SELECT DISTINCT interface FROM memory WHERE interface != '' ORDER BY interface",
-          );
-          memoryInterfaceList = memoryInterfaceRes[0].values.flat();
-        }
-
-        return (
-          <Accordion>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>容量</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={2}>
-                  <div className="p-2">
-                    {memoryCapacityList.map((value, index) => {
-                      if (index < 8) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-capacity-${index}`}
-                            label={value}
-                            {...register(`${type}.capacity.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {memoryCapacityList.map((value, index) => {
-                      if (index >= 8) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-capacity-${index}`}
-                            label={value}
-                            {...register(`${type}.capacity.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>枚数</Accordion.Header>
-              <Accordion.Body>
-                {pcsList.map((value) => (
-                  <Form.Check
-                    key={value}
-                    id={`${type}-pcs-${value}`}
-                    label={value}
-                    {...register(`${type}.pcs.${value}`)}
-                  />
-                ))}
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>規格</Accordion.Header>
-              <Accordion.Body>
-                {memoryStandardList.map((value, index) => (
-                  <Form.Check
-                    key={value}
-                    id={`${type}-standard-${index}`}
-                    label={value}
-                    {...register(`${type}.standard.${index}.${value}`)}
-                  />
-                ))}
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="3">
-              <Accordion.Header>インターフェース</Accordion.Header>
-              <Accordion.Body>
-                {memoryInterfaceList.map((value, index) => {
-                  const escapedValue = value.replaceAll(".", "_");
-                  return (
-                    <Form.Check
-                      key={value}
-                      id={`${type}-interface-${index}`}
-                      label={value}
-                      {...register(
-                        `${type}.interface.${index}.${escapedValue}`,
-                      )}
-                    />
-                  );
-                })}
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        );
-      case "motherboard":
-        let formFactorList: any[] = [];
-        let motherboardSocketList: any[] = [];
-        let chipsetList: any[] = [];
-        let motherboardMemoryList: any[] = [];
-
-        if (buf && sql) {
-          const db = new sql.Database(new Uint8Array(buf));
-          const formFactorRes = db.exec(
-            "SELECT DISTINCT form_factor FROM motherboard WHERE form_factor != '' ORDER BY form_factor",
-          );
-          formFactorList = formFactorRes[0].values.flat();
-
-          const motherboardSocketRes = db.exec(
-            "SELECT DISTINCT socket FROM motherboard WHERE socket != '' AND socket NOT LIKE '%Onboard%' ORDER BY socket",
-          );
-          motherboardSocketList = motherboardSocketRes[0].values.flat();
-
-          const chipsetRes = db.exec(
-            "SELECT DISTINCT chipset FROM motherboard WHERE chipset != '' ORDER BY chipset",
-          );
-          chipsetList = chipsetRes[0].values.flat();
-
-          const motherboardMemoryRes = db.exec(
-            "SELECT DISTINCT memory FROM motherboard WHERE memory != '' ORDER BY memory",
-          );
-          motherboardMemoryList = motherboardMemoryRes[0].values.flat();
-        }
-
-        return (
-          <Accordion>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>フォームファクタ</Accordion.Header>
-              <Accordion.Body>
-                {formFactorList.map((value, index) => (
-                  <Form.Check
-                    key={value}
-                    id={`${type}-form-factor-${index}`}
-                    label={value}
-                    {...register(`${type}.formFactor.${index}.${value}`)}
-                  />
-                ))}
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>ソケット</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={2}>
-                  <div className="p-2">
-                    {motherboardSocketList.map((value, index) => {
-                      if (index < 7) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-socket-${index}`}
-                            label={value}
-                            {...register(`${type}.socket.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {motherboardSocketList.map((value, index) => {
-                      if (index >= 7) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-socket-${index}`}
-                            label={value}
-                            {...register(`${type}.socket.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>チップセット</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={2}>
-                  <div className="p-2">
-                    {chipsetList.map((value, index) => {
-                      if (index < 28) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-chipset-${index}`}
-                            label={value}
-                            {...register(`${type}.chipset.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {chipsetList.map((value, index) => {
-                      if (index >= 28) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-chipset-${index}`}
-                            label={value}
-                            {...register(`${type}.chipset.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="3">
-              <Accordion.Header>メモリ</Accordion.Header>
-              <Accordion.Body>
-                {motherboardMemoryList.map((value, index) => {
-                  const escapedValue = value.replaceAll(".", "_");
-                  return (
-                    <Form.Check
-                      key={value}
-                      id={`${type}-memory-${index}`}
-                      label={value}
-                      {...register(`${type}.memory.${index}.${escapedValue}`)}
-                    />
-                  );
-                })}
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        );
-      case "gpu":
-        let gpuNameList: any[] = [];
-        let busList: any[] = [];
-        let gpuStandardList: any[] = [];
-        let gpuCapacityList: any[] = [];
-
-        if (buf && sql) {
-          const db = new sql.Database(new Uint8Array(buf));
-          const gpuNameRes = db.exec(
-            "SELECT DISTINCT gpu_name FROM gpu WHERE gpu_name != '' AND gpu_name NOT LIKE '%ATI%' AND gpu_name NOT LIKE '%MATROX%' ORDER BY gpu_name",
-          );
-          gpuNameList = gpuNameRes[0].values.flat();
-
-          const busRes = db.exec(
-            "SELECT DISTINCT bus_interface FROM gpu WHERE bus_interface != '' AND bus_interface LIKE '%PCI%' ORDER BY bus_interface",
-          );
-          busList = busRes[0].values.flat();
-
-          const gpuStandardRes = db.exec(
-            "SELECT DISTINCT standard FROM gpu WHERE standard != '' ORDER BY standard",
-          );
-          gpuStandardList = gpuStandardRes[0].values.flat();
-
-          const gpuCapacityRes = db.exec(
-            "SELECT DISTINCT capacity FROM gpu WHERE capacity != '' ORDER BY capacity",
-          );
-          gpuCapacityList = gpuCapacityRes[0].values.flat();
-        }
-
-        return (
-          <Accordion>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>GPU</Accordion.Header>
-              <Accordion.Body>
-                {gpuNameList.map((value, index) => (
-                  <Form.Check
-                    key={value}
-                    id={`${type}-gpu-name-${index}`}
-                    label={value}
-                    {...register(`${type}.gpuName.${index}.${value}`)}
-                  />
-                ))}
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>バスインターフェース</Accordion.Header>
-              <Accordion.Body>
-                {busList.map((value, index) => {
-                  const escapedValue = value.replaceAll(".", "_");
-                  return (
-                    <Form.Check
-                      key={value}
-                      id={`${type}-bus-interface-${index}`}
-                      label={value}
-                      {...register(
-                        `${type}.busInterface.${index}.${escapedValue}`,
-                      )}
-                    />
-                  );
-                })}
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>規格</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={2}>
-                  <div className="p-2">
-                    {gpuStandardList.map((value, index) => {
-                      if (index < 5) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-standard-${index}`}
-                            label={value}
-                            {...register(`${type}.standard.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {gpuStandardList.map((value, index) => {
-                      if (index >= 5) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-standard-${index}`}
-                            label={value}
-                            {...register(`${type}.standard.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="3">
-              <Accordion.Header>容量</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={2}>
-                  <div className="p-2">
-                    {gpuCapacityList.map((value, index) => {
-                      if (index < 10) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-capacity-${index}`}
-                            label={value}
-                            {...register(`${type}.capacity.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {gpuCapacityList.map((value, index) => {
-                      if (index >= 10) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-capacity-${index}`}
-                            label={value}
-                            {...register(`${type}.capacity.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        );
-      case "ssd":
-        let ssdCapacityList: any[] = [];
-        let sizeList: any[] = [];
-        let ssdInterfaceList: any[] = [];
-
-        if (buf && sql) {
-          const db = new sql.Database(new Uint8Array(buf));
-          const ssdCapacityRes = db.exec(
-            "SELECT DISTINCT capacity FROM ssd WHERE capacity != '' ORDER BY capacity",
-          );
-          ssdCapacityList = ssdCapacityRes[0].values.flat();
-
-          const sizeRes = db.exec(
-            "SELECT DISTINCT size FROM ssd WHERE size != '' ORDER BY size",
-          );
-          sizeList = sizeRes[0].values.flat();
-
-          const ssdInterfaceRes = db.exec(
-            "SELECT DISTINCT interface FROM ssd WHERE interface != '' AND interface NOT LIKE '%USB%' ORDER BY interface",
-          );
-          ssdInterfaceList = ssdInterfaceRes[0].values.flat();
-        }
-
-        return (
-          <Accordion>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>容量</Accordion.Header>
-              <Accordion.Body>
-                <Stack direction="horizontal" gap={2}>
-                  <div className="p-2">
-                    {ssdCapacityList.map((value, index) => {
-                      if (index < 19) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-capacity-${index}`}
-                            label={value}
-                            {...register(`${type}.capacity.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                  <div className="p-2">
-                    {ssdCapacityList.map((value, index) => {
-                      if (index >= 19) {
-                        return (
-                          <Form.Check
-                            key={value}
-                            id={`${type}-capacity-${index}`}
-                            label={value}
-                            {...register(`${type}.capacity.${index}.${value}`)}
-                          />
-                        );
-                      }
-                    })}
-                  </div>
-                </Stack>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>サイズ</Accordion.Header>
-              <Accordion.Body>
-                {sizeList.map((value, index) => {
-                  const escapedValue = value.replace(".", "_");
-                  return (
-                    <Form.Check
-                      key={value}
-                      id={`${type}-size-${index}`}
-                      label={value}
-                      {...register(`${type}.size.${index}.${escapedValue}`)}
-                    />
-                  );
-                })}
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>インターフェース</Accordion.Header>
-              <Accordion.Body>
-                {ssdInterfaceList.map((value, index) => (
-                  <Form.Check
-                    key={value}
-                    id={`${type}-interface-${index}`}
-                    label={value}
-                    {...register(`${type}.interface.${index}.${value}`)}
-                  />
-                ))}
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        );
-      default:
-        break;
-    }
-  }
-
-  function onSubmit(data: filterOptions) {
-    console.log(data);
+  async function onSubmit(data: filterOptions) {
     setSubmittedFilterOption(data);
 
-    let sort = "";
-    if (data.sort == "sales_rank_asc") {
-      sort = "ORDER BY (sales_rank IS NULL), sales_rank";
-    } else if (data.sort == "price_asc") {
-      sort = "ORDER BY (price IS NULL), price";
-    }
+    if (dataSource) {
+      let queryBuilder:
+        | SelectQueryBuilder<Cpu>
+        | SelectQueryBuilder<Memory>
+        | SelectQueryBuilder<Motherboard>
+        | SelectQueryBuilder<Gpu>
+        | SelectQueryBuilder<Ssd>;
 
-    let keyword = "";
-    if (data.keyword) {
-      keyword = `manufacturer || " " || name LIKE "%${data.keyword}%"`;
-    }
+      switch (type) {
+        case "cpu":
+          queryBuilder = dataSource.getRepository(Cpu).createQueryBuilder(type);
 
-    let minMax = "";
-    const min = Number(data.min);
-    const max = Number(data.max);
-    if (min && max && min <= max) {
-      minMax = `(price >= ${min} AND price <= ${max})`;
-    } else if (min) {
-      minMax = `price >= ${min}`;
-    } else if (max) {
-      minMax = `price <= ${max}`;
-    }
-
-    let coreCount = "";
-    let cpuSocket = "";
-    let igpu = "";
-    if (data.cpu) {
-      let filteredCoreCount = [];
-      for (let i = 0; i < data.cpu.coreCount.length; i++) {
-        if (data.cpu.coreCount[i] === true) {
-          filteredCoreCount.push(`core_count = ${i}`);
-        }
-      }
-      coreCount = filteredCoreCount.join(" OR ");
-
-      let filteredCpuSocket = [];
-      for (const iter of data.cpu.socket) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredCpuSocket.push(`socket = "${key}"`);
+          if (data.cpu) {
+            queryBuilder = addCpuQuery(queryBuilder, data.cpu);
           }
-        }
-      }
-      cpuSocket = filteredCpuSocket.join(" OR ");
 
-      if (
-        (data.cpu.igpu.yes === true && data.cpu.igpu.no === true) ||
-        (data.cpu.igpu.yes === false && data.cpu.igpu.no === false)
-      ) {
-        igpu = "";
-      } else if (data.cpu.igpu.yes === true) {
-        igpu = "gpu IS NOT NULL";
-      } else if (data.cpu.igpu.no === true) {
-        igpu = "gpu IS NULL";
-      }
-    }
+          break;
+        case "memory":
+          queryBuilder = dataSource
+            .getRepository(Memory)
+            .createQueryBuilder(type);
 
-    let memoryCapacity = "";
-    let pcs = "";
-    let memoryStandard = "";
-    let memoryInterface = "";
-    if (data.memory) {
-      let filteredCapacity = [];
-      for (const iter of data.memory.capacity) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredCapacity.push(`capacity = "${key}"`);
+          if (data.memory) {
+            queryBuilder = addMemoryQuery(queryBuilder, data.memory);
           }
-        }
-      }
-      memoryCapacity = filteredCapacity.join(" OR ");
 
-      let filteredPcs = [];
-      for (let i = 0; i < data.memory.pcs.length; i++) {
-        if (data.memory.pcs[i] === true) {
-          filteredPcs.push(`pcs = ${i}`);
-        }
-      }
-      pcs = filteredPcs.join(" OR ");
+          break;
+        case "motherboard":
+          queryBuilder = dataSource
+            .getRepository(Motherboard)
+            .createQueryBuilder(type);
 
-      let filteredStandard = [];
-      for (const iter of data.memory.standard) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredStandard.push(`standard = "${key}"`);
+          if (data.motherboard) {
+            queryBuilder = addMotherboardQuery(queryBuilder, data.motherboard);
           }
-        }
-      }
-      memoryStandard = filteredStandard.join(" OR ");
 
-      let filteredMemoryInterface = [];
-      for (const iter of data.memory.interface) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            const restoredKey = key.replaceAll("_", ".");
-            filteredMemoryInterface.push(`interface = "${restoredKey}"`);
+          break;
+        case "gpu":
+          queryBuilder = dataSource.getRepository(Gpu).createQueryBuilder(type);
+
+          if (data.gpu) {
+            queryBuilder = addGpuQuery(queryBuilder, data.gpu);
           }
-        }
-      }
-      memoryInterface = filteredMemoryInterface.join(" OR ");
-    }
 
-    let formFactor = "";
-    let motherboardSocket = "";
-    let chipset = "";
-    let motherboardMemory = "";
-    if (data.motherboard) {
-      let filteredFormFactor = [];
-      for (const iter of data.motherboard.formFactor) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredFormFactor.push(`form_factor = "${key}"`);
+          break;
+        case "ssd":
+          queryBuilder = dataSource.getRepository(Ssd).createQueryBuilder(type);
+
+          if (data.ssd) {
+            queryBuilder = addSsdQuery(queryBuilder, data.ssd);
           }
-        }
+
+          break;
       }
-      formFactor = filteredFormFactor.join(" OR ");
 
-      let filteredMotherboardSocket = [];
-      for (const iter of data.motherboard.socket) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredMotherboardSocket.push(`socket = "${key}"`);
-          }
-        }
+      if (data.keyword) {
+        queryBuilder = queryBuilder.andWhere(
+          "concat(manufacturer, ' ', name) LIKE :keyword",
+          { keyword: `%${data.keyword}%` },
+        );
       }
-      motherboardSocket = filteredMotherboardSocket.join(" OR ");
 
-      let filteredChipset = [];
-      for (const iter of data.motherboard.chipset) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredChipset.push(`chipset = "${key}"`);
-          }
-        }
+      const min = Number(data.min);
+      const max = Number(data.max);
+      if (min && max && min <= max) {
+        queryBuilder = queryBuilder.andWhere(
+          "price >= :min AND price <= :max",
+          { min: min, max: max },
+        );
+      } else if (min) {
+        queryBuilder = queryBuilder.andWhere("price >= :min", { min: min });
+      } else if (max) {
+        queryBuilder = queryBuilder.andWhere("price <= :max", { max: max });
       }
-      chipset = filteredChipset.join(" OR ");
 
-      let filteredMemory = [];
-      for (const iter of data.motherboard.memory) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredMemory.push(`memory = "${key}"`);
-          }
-        }
+      if (data.sort == "sales_rank_asc") {
+        queryBuilder = queryBuilder.orderBy(
+          "sales_rank",
+          undefined,
+          "NULLS LAST",
+        );
+      } else if (data.sort == "price_asc") {
+        queryBuilder = queryBuilder.orderBy("price", undefined, "NULLS LAST");
       }
-      motherboardMemory = filteredMemory.join(" OR ");
-    }
 
-    let gpuName = "";
-    let busInterface = "";
-    let gpuStandard = "";
-    let gpuCapacity = "";
-    if (data.gpu) {
-      let filteredGpuName = [];
-      for (const iter of data.gpu.gpuName) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredGpuName.push(`gpu_name = "${key}"`);
-          }
-        }
-      }
-      gpuName = filteredGpuName.join(" OR ");
+      const productList = (await queryBuilder.getMany()) as productInfo[];
 
-      let filteredBusInterface = [];
-      for (const iter of data.gpu.busInterface) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            const restoredKey = key.replaceAll("_", ".");
-            filteredBusInterface.push(`bus_interface = "${restoredKey}"`);
-          }
-        }
-      }
-      busInterface = filteredBusInterface.join(" OR ");
-
-      let filteredGpuStandard = [];
-      for (const iter of data.gpu.standard) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredGpuStandard.push(`standard = "${key}"`);
-          }
-        }
-      }
-      gpuStandard = filteredGpuStandard.join(" OR ");
-
-      let filteredGpuCapacity = [];
-      for (const iter of data.gpu.capacity) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredGpuCapacity.push(`capacity = "${key}"`);
-          }
-        }
-      }
-      gpuCapacity = filteredGpuCapacity.join(" OR ");
-    }
-
-    let ssdCapacity = "";
-    let size = "";
-    let ssdInterface = "";
-    if (data.ssd) {
-      let filteredSsdCapacity = [];
-      for (const iter of data.ssd.capacity) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredSsdCapacity.push(`capacity = "${key}"`);
-          }
-        }
-      }
-      ssdCapacity = filteredSsdCapacity.join(" OR ");
-
-      let filteredSize = [];
-      for (const iter of data.ssd.size) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            const restoredKey = key.replaceAll("_", ".");
-            filteredSize.push(`size = "${restoredKey}"`);
-          }
-        }
-      }
-      size = filteredSize.join(" OR ");
-
-      let filteredSsdInterface = [];
-      for (const iter of data.ssd.interface) {
-        for (const [key, value] of Object.entries(iter)) {
-          if (value === true) {
-            filteredSsdInterface.push(`interface = "${key}"`);
-          }
-        }
-      }
-      ssdInterface = filteredSsdInterface.join(" OR ");
-    }
-
-    let where = "";
-    if (
-      keyword ||
-      minMax ||
-      coreCount ||
-      cpuSocket ||
-      igpu ||
-      memoryCapacity ||
-      pcs ||
-      memoryStandard ||
-      memoryInterface ||
-      formFactor ||
-      motherboardSocket ||
-      chipset ||
-      motherboardMemory ||
-      gpuName ||
-      busInterface ||
-      gpuStandard ||
-      gpuCapacity ||
-      ssdCapacity ||
-      size ||
-      ssdInterface
-    ) {
-      const params = [
-        keyword,
-        minMax,
-        coreCount,
-        cpuSocket,
-        igpu,
-        memoryCapacity,
-        pcs,
-        memoryStandard,
-        memoryInterface,
-        formFactor,
-        motherboardSocket,
-        chipset,
-        motherboardMemory,
-        gpuName,
-        busInterface,
-        gpuStandard,
-        gpuCapacity,
-        ssdCapacity,
-        size,
-        ssdInterface,
-      ]
-        .filter(Boolean)
-        .join(") AND (");
-      where = `WHERE (${params})`;
-    }
-
-    if (buf && sql) {
-      const db = new sql.Database(new Uint8Array(buf));
-      let productList: SetStateAction<productInfo[] | undefined> = [];
-      db.each(
-        `SELECT * FROM ${type} ${where} ${sort} LIMIT 30`,
-        (row) => {
-          productList.push(row as productInfo);
-        },
-        () => {},
-      );
-      console.log(productList);
       setConvertedProducts(productList);
     }
 
@@ -1019,7 +577,7 @@ export default function FilterOption({
               クリア
             </Button>
           </InputGroup>
-          <Accordions type={type} />
+          <Accordions type={type} register={register} />
         </Modal.Body>
 
         <Modal.Footer>
