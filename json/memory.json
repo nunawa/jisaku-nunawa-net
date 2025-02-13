@@ -1,0 +1,26 @@
+{
+  "capacity": [
+    "128GB",
+    "128MB",
+    "16GB",
+    "1GB",
+    "24GB",
+    "2GB",
+    "32GB",
+    "48GB",
+    "4GB",
+    "512MB",
+    "64GB",
+    "8GB",
+    "96GB"
+  ],
+  "pcs": [1, 2, 3, 4, 8],
+  "standard": [
+    "DDR SDRAM",
+    "DDR2 SDRAM",
+    "DDR3 SDRAM",
+    "DDR4 SDRAM",
+    "DDR5 SDRAM"
+  ],
+  "interface": ["DIMM", "S.O.DIMM"]
+}
