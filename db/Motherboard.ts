@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
-@Entity()
+@Entity("motherboard")
 export class Motherboard {
   @PrimaryColumn("text")
   id!: string;

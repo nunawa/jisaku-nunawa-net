@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
-@Entity()
+@Entity("memory")
 export class Memory {
   @PrimaryColumn("text")
   id!: string;
