@@ -205,18 +205,21 @@ function ThemeDropdown() {
 
 export default function Home() {
   const { buf } = useBuf();
+  const [sql, setSql] = useState<initSqlJs.SqlJsStatic>();
   const [dataSource, setDatasource] = useState<DataSource>();
 
-  useEffect(() => {
-    if (buf) {
-      (async () => {
-        const SQL = await initSqlJs({
-          locateFile: () =>
-            new URL("sql.js/dist/sql-wasm.wasm", import.meta.url).toString(),
-        });
+  initSqlJs({
+    locateFile: () =>
+      new URL("sql.js/dist/sql-wasm.wasm", import.meta.url).toString(),
+  }).then((sql) => {
+    setSql(sql);
+  });
 
+  useEffect(() => {
+    if (buf && sql) {
+      (async () => {
         // @ts-ignore
-        globalThis.SQL = SQL;
+        globalThis.SQL = sql;
 
         const dataSource = new DataSource({
           type: "sqljs",
@@ -229,7 +232,7 @@ export default function Home() {
         setDatasource(dataSource);
       })();
     }
-  }, [buf]);
+  }, [buf, sql]);
 
   return (
     <>
