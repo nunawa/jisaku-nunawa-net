@@ -37,25 +37,20 @@
     "960GB"
   ],
   "size": [
-    "1.8インチ",
     "2.5インチ",
     "3.5インチ",
-    "M.2 (Type22110)",
     "M.2 (Type2230)",
     "M.2 (Type2242)",
-    "M.2 (Type2260)",
     "M.2 (Type2280)",
     "mSATA"
   ],
   "interface": [
-    "IDE",
     "PCI-Express",
     "PCI-Express Gen3",
     "PCI-Express Gen4",
     "PCI-Express Gen4/Gen5",
     "PCI-Express Gen5",
     "SAS 12Gb/s",
-    "Serial ATA 6Gb/s",
-    "ZIF"
+    "Serial ATA 6Gb/s"
   ]
 }
