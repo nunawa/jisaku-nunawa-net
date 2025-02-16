@@ -14,7 +14,13 @@
     "8GB",
     "96GB"
   ],
-  "pcs": [1, 2, 3, 4, 8],
+  "pcs": [
+    1,
+    2,
+    3,
+    4,
+    8
+  ],
   "standard": [
     "DDR SDRAM",
     "DDR2 SDRAM",
@@ -22,5 +28,8 @@
     "DDR4 SDRAM",
     "DDR5 SDRAM"
   ],
-  "interface": ["DIMM", "S.O.DIMM"]
+  "interface": [
+    "DIMM",
+    "S.O.DIMM"
+  ]
 }
