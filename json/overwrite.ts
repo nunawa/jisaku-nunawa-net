@@ -25,6 +25,10 @@ async function overwriteCpu(dataSource: DataSource) {
     .createQueryBuilder("cpu")
     .select("DISTINCT core_count")
     .where("core_count IS NOT NULL")
+    // 一つしか製品がない、もしくは入手困難な製品は除外
+    .andWhere("core_count NOT IN (:...coreCount)", {
+      coreCount: [22, 44, 56, 72, 84, 112, 120, 144],
+    })
     .orderBy("core_count")
     .getRawMany();
 
@@ -33,6 +37,10 @@ async function overwriteCpu(dataSource: DataSource) {
     .createQueryBuilder("cpu")
     .select("DISTINCT socket")
     .where("socket IS NOT NULL")
+    // あまりに古いソケット（Core 2 Duo、Nehalem、Opteron用）は除外
+    .andWhere("socket NOT IN (:...socket)", {
+      socket: ["LGA775", "LGA1156", "Socket F"],
+    })
     .orderBy("socket")
     .getRawMany();
 
@@ -54,6 +62,8 @@ async function overwriteMemory(dataSource: DataSource) {
     .createQueryBuilder("memory")
     .select("DISTINCT capacity")
     .where("capacity != ''")
+    // MBの製品は除外
+    .andWhere("capacity NOT LIKE '%MB%'")
     .orderBy("capacity")
     .getRawMany();
 
@@ -62,6 +72,8 @@ async function overwriteMemory(dataSource: DataSource) {
     .createQueryBuilder("memory")
     .select("DISTINCT pcs")
     .where("pcs IS NOT NULL")
+    // 3枚の製品は除外
+    .andWhere("pcs != 3")
     .orderBy("pcs")
     .getRawMany();
 
@@ -101,6 +113,10 @@ async function overwriteMotherboard(dataSource: DataSource) {
     .createQueryBuilder("motherboard")
     .select("DISTINCT form_factor")
     .where("form_factor != ''")
+    // マイナーな規格は除外
+    .andWhere("form_factor NOT IN (:...formFactor)", {
+      formFactor: ["FlexATX", "Proprietary"],
+    })
     .orderBy("form_factor")
     .getRawMany();
 
@@ -118,6 +134,22 @@ async function overwriteMotherboard(dataSource: DataSource) {
     .createQueryBuilder("motherboard")
     .select("DISTINCT chipset")
     .where("chipset != ''")
+    // 古いサーバー向けチップセットを除外
+    .andWhere("chipset NOT IN (:...chipset)", {
+      chipset: [
+        "INTELC202",
+        "INTELQM67",
+        "INTELC204",
+        "INTELC602",
+        "INTELC224",
+        "INTELC226",
+        "INTELC216",
+        "INTELCM236",
+        "INTELC222",
+        "INTELC612",
+        "INTELC232",
+      ],
+    })
     .orderBy("chipset")
     .getRawMany();
 
@@ -207,6 +239,10 @@ async function overwriteSsd(dataSource: DataSource) {
     .createQueryBuilder("ssd")
     .select("DISTINCT size")
     .where("size != ''")
+    // マイナーな規格は除外
+    .andWhere("size NOT IN (:...size)", {
+      size: ["1.8インチ", "M.2 (Type22110)", "M.2 (Type2260)"],
+    })
     .orderBy("size")
     .getRawMany();
 
@@ -215,6 +251,10 @@ async function overwriteSsd(dataSource: DataSource) {
     .createQueryBuilder("ssd")
     .select("DISTINCT interface")
     .where("interface != ''")
+    // マイナーな規格は除外
+    .andWhere("interface NOT IN (:...interface)", {
+      interface: ["IDE", "ZIF"],
+    })
     .andWhere("interface NOT LIKE '%USB%'")
     .orderBy("interface")
     .getRawMany();
