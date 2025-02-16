@@ -1,0 +1,28 @@
+name: update-json
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "45 20 */5 * *"
+
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Overwrite JSON
+        run: |
+          npm ci
+          npx tsx ./json/overwrite.ts
+      - name: Set date variable
+        run: echo "DATE=$(date '+%y-%m-%d')" >> "$GITHUB_ENV"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "Update JSON"
+          title: "Update JSON ${{ env.DATE }}"
