@@ -14,6 +14,7 @@ import { Ssd } from "@/db/Ssd";
 import initSqlJs from "sql.js";
 import { DataSource } from "typeorm";
 import fs from "fs";
+import { Psu } from "@/db/Psu";
 
 declare global {
   var SQL: initSqlJs.SqlJsStatic;
@@ -272,6 +273,35 @@ async function overwriteSsd(dataSource: DataSource) {
   fs.writeFileSync("./json/ssd.json", data + "\n");
 }
 
+async function overwritePsu(dataSource: DataSource) {
+  const capacityList = await dataSource
+    .getRepository(Psu)
+    .createQueryBuilder("psu")
+    .select("DISTINCT capacity")
+    .where("capacity IS NOT NULL")
+    .orderBy("capacity")
+    .getRawMany();
+
+  const certificationList = await dataSource
+    .getRepository(Psu)
+    .createQueryBuilder("psu")
+    .select("DISTINCT certification")
+    .where("certification != ''")
+    .orderBy("certification")
+    .getRawMany();
+
+  const data = JSON.stringify(
+    {
+      capacity: capacityList.map((x) => x.capacity),
+      certification: certificationList.map((x) => x.certification),
+    },
+    null,
+    2,
+  );
+
+  fs.writeFileSync("./json/psu.json", data + "\n");
+}
+
 async function main() {
   const sql = await initSqlJs();
   globalThis.SQL = sql;
@@ -281,7 +311,7 @@ async function main() {
 
   const dataSource = new DataSource({
     type: "sqljs",
-    entities: [Cpu, Memory, Motherboard, Gpu, Ssd],
+    entities: [Cpu, Memory, Motherboard, Gpu, Ssd, Psu],
     database: new Uint8Array(buf),
   });
 
@@ -292,6 +322,7 @@ async function main() {
   await overwriteMotherboard(dataSource);
   await overwriteGpu(dataSource);
   await overwriteSsd(dataSource);
+  await overwritePsu(dataSource);
 }
 
 main();
