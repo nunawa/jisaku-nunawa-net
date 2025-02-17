@@ -2,8 +2,10 @@ import { Cpu } from "@/db/Cpu";
 import { Gpu } from "@/db/Gpu";
 import { Memory } from "@/db/Memory";
 import { Motherboard } from "@/db/Motherboard";
+import { Psu } from "@/db/Psu";
 import { Ssd } from "@/db/Ssd";
 import {
+  caseFilterOption,
   cpuFilterOption,
   filterOptions,
   gpuFilterOption,
@@ -11,6 +13,7 @@ import {
   motherboardFilterOption,
   productInfo,
   productType,
+  psuFilterOption,
   ssdFilterOption,
 } from "@/types";
 import { Dispatch, SetStateAction } from "react";
@@ -18,6 +21,7 @@ import { Button, Form, InputGroup, Modal } from "react-bootstrap";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { Brackets, DataSource, SelectQueryBuilder } from "typeorm";
 import Accordions from "./Accordions";
+import { Case } from "@/db/Case";
 
 function addCpuQuery(
   queryBuilder: SelectQueryBuilder<Cpu>,
@@ -374,6 +378,64 @@ function addSsdQuery(
   return resultQueryBuilder;
 }
 
+function addPsuQuery(
+  queryBuilder: SelectQueryBuilder<Psu>,
+  value: psuFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.capacity.length; i++) {
+        if (value.capacity[i] === true) {
+          resultQb = resultQb.orWhere(`capacity = :capacity${i}`, {
+            [`capacity${i}`]: i,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.certification.length; i++) {
+        const option = value.certification[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`certification = :certification${i}`, {
+            [`certification${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  return resultQueryBuilder;
+}
+
+function addCaseQuery(
+  queryBuilder: SelectQueryBuilder<Case>,
+  value: caseFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  if (value.psuIncluded.yes === true && value.psuIncluded.no === false) {
+    resultQueryBuilder = resultQueryBuilder.andWhere("psu_included = true");
+  } else if (value.psuIncluded.yes === false && value.psuIncluded.no === true) {
+    resultQueryBuilder = resultQueryBuilder.andWhere("psu_included = false");
+  }
+
+  return resultQueryBuilder;
+}
+
 export default function FilterOption({
   show,
   handleClose,
@@ -402,7 +464,9 @@ export default function FilterOption({
         | SelectQueryBuilder<Memory>
         | SelectQueryBuilder<Motherboard>
         | SelectQueryBuilder<Gpu>
-        | SelectQueryBuilder<Ssd>;
+        | SelectQueryBuilder<Ssd>
+        | SelectQueryBuilder<Psu>
+        | SelectQueryBuilder<Case>;
 
       switch (type) {
         case "cpu":
@@ -446,6 +510,24 @@ export default function FilterOption({
 
           if (data.ssd) {
             queryBuilder = addSsdQuery(queryBuilder, data.ssd);
+          }
+
+          break;
+        case "psu":
+          queryBuilder = dataSource.getRepository(Psu).createQueryBuilder(type);
+
+          if (data.psu) {
+            queryBuilder = addPsuQuery(queryBuilder, data.psu);
+          }
+
+          break;
+        case "case":
+          queryBuilder = dataSource
+            .getRepository(Case)
+            .createQueryBuilder(type);
+
+          if (data.case) {
+            queryBuilder = addCaseQuery(queryBuilder, data.case);
           }
 
           break;
@@ -528,6 +610,20 @@ export default function FilterOption({
       setValue("ssd.capacity", submittedFilterOption.ssd.capacity);
       setValue("ssd.size", submittedFilterOption.ssd.size);
       setValue("ssd.interface", submittedFilterOption.ssd.interface);
+    }
+    if (submittedFilterOption.psu) {
+      setValue("psu.capacity", submittedFilterOption.psu.capacity);
+      setValue("psu.certification", submittedFilterOption.psu.certification);
+    }
+    if (submittedFilterOption.case) {
+      setValue(
+        "case.psuIncluded.yes",
+        submittedFilterOption.case.psuIncluded.yes,
+      );
+      setValue(
+        "case.psuIncluded.no",
+        submittedFilterOption.case.psuIncluded.no,
+      );
     }
 
     handleClose();

@@ -35,6 +35,18 @@ export default function BuildTab() {
       <SelectedProduct id="ssd" />
     </Container>,
   );
+  buildList.push(
+    <Container key="psu">
+      <h5>電源</h5>
+      <SelectedProduct id="psu" />
+    </Container>,
+  );
+  buildList.push(
+    <Container key="case">
+      <h5>ケース</h5>
+      <SelectedProduct id="case" />
+    </Container>,
+  );
 
   buildList.push(
     <Container key="total" className="mb-5">
