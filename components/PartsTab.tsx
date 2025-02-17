@@ -37,11 +37,12 @@ export default function PartsTab({
       keyword: "",
       min: "",
       max: "",
-      ssd: undefined,
-      gpu: undefined,
-      motherboard: undefined,
-      memory: undefined,
       cpu: undefined,
+      memory: undefined,
+      motherboard: undefined,
+      gpu: undefined,
+      ssd: undefined,
+      psu: undefined,
     });
 
   const [show, setShow] = useState(false);

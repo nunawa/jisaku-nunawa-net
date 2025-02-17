@@ -3,6 +3,7 @@ import gpuJson from "@/json/gpu.json";
 import memoryJson from "@/json/memory.json";
 import motherboardJson from "@/json/motherboard.json";
 import ssdJson from "@/json/ssd.json";
+import psuJson from "@/json/psu.json";
 import { productType } from "@/types";
 import { Accordion, Form, Stack } from "react-bootstrap";
 import { FieldValues, UseFormRegister } from "react-hook-form";
@@ -504,6 +505,83 @@ function SsdAccordion(register: UseFormRegister<FieldValues>) {
   );
 }
 
+function PsuAccordion(register: UseFormRegister<FieldValues>) {
+  const psuCapacityList = psuJson.capacity;
+  const psuCertificationList = psuJson.certification;
+
+  const psuCapacityListLengthHalf = Math.floor(psuCapacityList.length / 3);
+
+  return (
+    <Accordion>
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>容量</Accordion.Header>
+        <Accordion.Body>
+          <Stack direction="horizontal" gap={2}>
+            <div className="p-2">
+              {psuCapacityList.map((value, index) => {
+                if (index <= psuCapacityListLengthHalf) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`psu-capacity-${value}`}
+                      label={value}
+                      {...register(`psu.capacity.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <div className="p-2">
+              {psuCapacityList.map((value, index) => {
+                if (
+                  index > psuCapacityListLengthHalf &&
+                  index <= psuCapacityListLengthHalf * 2
+                ) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`psu-capacity-${value}`}
+                      label={value}
+                      {...register(`psu.capacity.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+            <div className="p-2">
+              {psuCapacityList.map((value, index) => {
+                if (index > psuCapacityListLengthHalf * 2) {
+                  return (
+                    <Form.Check
+                      key={value}
+                      id={`psu-capacity-${value}`}
+                      label={value}
+                      {...register(`psu.capacity.${value}`)}
+                    />
+                  );
+                }
+              })}
+            </div>
+          </Stack>
+        </Accordion.Body>
+      </Accordion.Item>
+      <Accordion.Item eventKey="1">
+        <Accordion.Header>認証</Accordion.Header>
+        <Accordion.Body>
+          {psuCertificationList.map((value, index) => (
+            <Form.Check
+              key={value}
+              id={`psu-certification-${index}`}
+              label={value}
+              {...register(`psu.certification.${index}.${value}`)}
+            />
+          ))}
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  );
+}
+
 export default function Accordions({
   type,
   register,
@@ -522,5 +600,7 @@ export default function Accordions({
       return GpuAccordion(register);
     case "ssd":
       return SsdAccordion(register);
+    case "psu":
+      return PsuAccordion(register);
   }
 }
