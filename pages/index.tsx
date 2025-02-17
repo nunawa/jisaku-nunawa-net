@@ -5,6 +5,7 @@ import { Cpu } from "@/db/Cpu";
 import { Gpu } from "@/db/Gpu";
 import { Memory } from "@/db/Memory";
 import { Motherboard } from "@/db/Motherboard";
+import { Psu } from "@/db/Psu";
 import { Ssd } from "@/db/Ssd";
 import { themeAtom } from "@/jotai/atom";
 import styles from "@/styles/TabNav.module.scss";
@@ -64,6 +65,10 @@ function TabContainer({ dataSource }: { dataSource: DataSource | undefined }) {
     {
       key: "ssd",
       name: "SSD",
+    },
+    {
+      key: "psu",
+      name: "電源",
     },
   ];
 
@@ -223,7 +228,7 @@ export default function Home() {
 
         const dataSource = new DataSource({
           type: "sqljs",
-          entities: [Cpu, Memory, Motherboard, Gpu, Ssd],
+          entities: [Cpu, Memory, Motherboard, Gpu, Ssd, Psu],
           database: new Uint8Array(buf),
         });
 

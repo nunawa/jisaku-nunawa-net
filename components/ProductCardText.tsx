@@ -103,6 +103,19 @@ export default function ProductCardText({
         </Card.Text>
       );
 
+    case "psu":
+      return (
+        <Card.Text>
+          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
+          <Badge className="me-1" bg="secondary">
+            {product.capacity}W
+          </Badge>
+          <Badge className="me-1" bg="secondary">
+            {product.certification}
+          </Badge>
+        </Card.Text>
+      );
+
     default:
       return null;
   }

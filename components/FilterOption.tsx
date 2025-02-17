@@ -2,6 +2,7 @@ import { Cpu } from "@/db/Cpu";
 import { Gpu } from "@/db/Gpu";
 import { Memory } from "@/db/Memory";
 import { Motherboard } from "@/db/Motherboard";
+import { Psu } from "@/db/Psu";
 import { Ssd } from "@/db/Ssd";
 import {
   cpuFilterOption,
@@ -11,6 +12,7 @@ import {
   motherboardFilterOption,
   productInfo,
   productType,
+  psuFilterOption,
   ssdFilterOption,
 } from "@/types";
 import { Dispatch, SetStateAction } from "react";
@@ -374,6 +376,49 @@ function addSsdQuery(
   return resultQueryBuilder;
 }
 
+function addPsuQuery(
+  queryBuilder: SelectQueryBuilder<Psu>,
+  value: psuFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.capacity.length; i++) {
+        if (value.capacity[i] === true) {
+          resultQb = resultQb.orWhere(`capacity = :capacity${i}`, {
+            [`capacity${i}`]: i,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  resultQueryBuilder = resultQueryBuilder.andWhere(
+    new Brackets((qb) => {
+      let resultQb = qb;
+
+      for (let i = 0; i < value.certification.length; i++) {
+        const option = value.certification[i];
+        const [key, isSelected] = Object.entries(option)[0];
+        if (isSelected === true) {
+          resultQb = resultQb.orWhere(`certification = :certification${i}`, {
+            [`certification${i}`]: key,
+          });
+        }
+      }
+
+      return resultQb;
+    }),
+  );
+
+  return resultQueryBuilder;
+}
+
 export default function FilterOption({
   show,
   handleClose,
@@ -402,7 +447,8 @@ export default function FilterOption({
         | SelectQueryBuilder<Memory>
         | SelectQueryBuilder<Motherboard>
         | SelectQueryBuilder<Gpu>
-        | SelectQueryBuilder<Ssd>;
+        | SelectQueryBuilder<Ssd>
+        | SelectQueryBuilder<Psu>;
 
       switch (type) {
         case "cpu":
@@ -446,6 +492,14 @@ export default function FilterOption({
 
           if (data.ssd) {
             queryBuilder = addSsdQuery(queryBuilder, data.ssd);
+          }
+
+          break;
+        case "psu":
+          queryBuilder = dataSource.getRepository(Psu).createQueryBuilder(type);
+
+          if (data.psu) {
+            queryBuilder = addPsuQuery(queryBuilder, data.psu);
           }
 
           break;
@@ -528,6 +582,10 @@ export default function FilterOption({
       setValue("ssd.capacity", submittedFilterOption.ssd.capacity);
       setValue("ssd.size", submittedFilterOption.ssd.size);
       setValue("ssd.interface", submittedFilterOption.ssd.interface);
+    }
+    if (submittedFilterOption.psu) {
+      setValue("psu.capacity", submittedFilterOption.psu.capacity);
+      setValue("psu.certification", submittedFilterOption.psu.certification);
     }
 
     handleClose();

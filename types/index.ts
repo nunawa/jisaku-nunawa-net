@@ -11,6 +11,7 @@ export type productType = {
   motherboard: productInfo | null;
   gpu: productInfo | null;
   ssd: productInfo | null;
+  psu: productInfo | null;
 };
 
 export type cpuFilterOption = {
@@ -46,6 +47,11 @@ export type ssdFilterOption = {
   interface: Object[];
 };
 
+export type psuFilterOption = {
+  capacity: boolean[];
+  certification: Object[];
+};
+
 export type filterOptions = {
   sort: string;
   keyword: string;
@@ -56,4 +62,5 @@ export type filterOptions = {
   motherboard: motherboardFilterOption | undefined;
   gpu: gpuFilterOption | undefined;
   ssd: ssdFilterOption | undefined;
+  psu: psuFilterOption | undefined;
 };
