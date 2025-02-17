@@ -22,7 +22,7 @@ export default function PartsTab({
         let productList: productInfo[] = [];
 
         productList = (await dataSource.manager.query(
-          `SELECT * FROM ${type} LIMIT 30`,
+          `SELECT * FROM "${type}" LIMIT 30`,
         )) as productInfo[];
 
         setOriginProducts(productList);
@@ -43,6 +43,7 @@ export default function PartsTab({
       gpu: undefined,
       ssd: undefined,
       psu: undefined,
+      case: undefined,
     });
 
   const [show, setShow] = useState(false);

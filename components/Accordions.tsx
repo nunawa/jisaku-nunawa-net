@@ -582,6 +582,30 @@ function PsuAccordion(register: UseFormRegister<FieldValues>) {
   );
 }
 
+function CaseAccordion(register: UseFormRegister<FieldValues>) {
+  return (
+    <Accordion>
+      <Accordion.Item eventKey="2">
+        <Accordion.Header>付属電源</Accordion.Header>
+        <Accordion.Body>
+          <Form.Check
+            key="psuIncluded.yes"
+            id={"case-psu-included-yes"}
+            label="あり"
+            {...register("case.psuIncluded.yes")}
+          />
+          <Form.Check
+            key="psuIncluded.no"
+            id={"case-psu-included-no"}
+            label="なし"
+            {...register("case.psuIncluded.no")}
+          />
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  );
+}
+
 export default function Accordions({
   type,
   register,
@@ -602,5 +626,7 @@ export default function Accordions({
       return SsdAccordion(register);
     case "psu":
       return PsuAccordion(register);
+    case "case":
+      return CaseAccordion(register);
   }
 }

@@ -1,6 +1,7 @@
 import BuildTab from "@/components/BuildTab";
 import PartsTab from "@/components/PartsTab";
 import TotalPrice from "@/components/TotalPrice";
+import { Case } from "@/db/Case";
 import { Cpu } from "@/db/Cpu";
 import { Gpu } from "@/db/Gpu";
 import { Memory } from "@/db/Memory";
@@ -69,6 +70,10 @@ function TabContainer({ dataSource }: { dataSource: DataSource | undefined }) {
     {
       key: "psu",
       name: "電源",
+    },
+    {
+      key: "case",
+      name: "ケース",
     },
   ];
 
@@ -228,7 +233,7 @@ export default function Home() {
 
         const dataSource = new DataSource({
           type: "sqljs",
-          entities: [Cpu, Memory, Motherboard, Gpu, Ssd, Psu],
+          entities: [Cpu, Memory, Motherboard, Gpu, Ssd, Psu, Case],
           database: new Uint8Array(buf),
         });
 
