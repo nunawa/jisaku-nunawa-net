@@ -5,6 +5,7 @@ import { Motherboard } from "@/db/Motherboard";
 import { Psu } from "@/db/Psu";
 import { Ssd } from "@/db/Ssd";
 import {
+  caseFilterOption,
   cpuFilterOption,
   filterOptions,
   gpuFilterOption,
@@ -20,6 +21,7 @@ import { Button, Form, InputGroup, Modal } from "react-bootstrap";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { Brackets, DataSource, SelectQueryBuilder } from "typeorm";
 import Accordions from "./Accordions";
+import { Case } from "@/db/Case";
 
 function addCpuQuery(
   queryBuilder: SelectQueryBuilder<Cpu>,
@@ -419,6 +421,21 @@ function addPsuQuery(
   return resultQueryBuilder;
 }
 
+function addCaseQuery(
+  queryBuilder: SelectQueryBuilder<Case>,
+  value: caseFilterOption,
+) {
+  let resultQueryBuilder = queryBuilder;
+
+  if (value.psuIncluded.yes === true && value.psuIncluded.no === false) {
+    resultQueryBuilder = resultQueryBuilder.andWhere("psu_included = true");
+  } else if (value.psuIncluded.yes === false && value.psuIncluded.no === true) {
+    resultQueryBuilder = resultQueryBuilder.andWhere("psu_included = false");
+  }
+
+  return resultQueryBuilder;
+}
+
 export default function FilterOption({
   show,
   handleClose,
@@ -448,7 +465,8 @@ export default function FilterOption({
         | SelectQueryBuilder<Motherboard>
         | SelectQueryBuilder<Gpu>
         | SelectQueryBuilder<Ssd>
-        | SelectQueryBuilder<Psu>;
+        | SelectQueryBuilder<Psu>
+        | SelectQueryBuilder<Case>;
 
       switch (type) {
         case "cpu":
@@ -500,6 +518,16 @@ export default function FilterOption({
 
           if (data.psu) {
             queryBuilder = addPsuQuery(queryBuilder, data.psu);
+          }
+
+          break;
+        case "case":
+          queryBuilder = dataSource
+            .getRepository(Case)
+            .createQueryBuilder(type);
+
+          if (data.case) {
+            queryBuilder = addCaseQuery(queryBuilder, data.case);
           }
 
           break;
@@ -586,6 +614,16 @@ export default function FilterOption({
     if (submittedFilterOption.psu) {
       setValue("psu.capacity", submittedFilterOption.psu.capacity);
       setValue("psu.certification", submittedFilterOption.psu.certification);
+    }
+    if (submittedFilterOption.case) {
+      setValue(
+        "case.psuIncluded.yes",
+        submittedFilterOption.case.psuIncluded.yes,
+      );
+      setValue(
+        "case.psuIncluded.no",
+        submittedFilterOption.case.psuIncluded.no,
+      );
     }
 
     handleClose();
