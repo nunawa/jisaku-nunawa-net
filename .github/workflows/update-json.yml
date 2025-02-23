@@ -8,6 +8,9 @@ on:
 jobs:
   update-json:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Check out source repository
         uses: actions/checkout@v4
