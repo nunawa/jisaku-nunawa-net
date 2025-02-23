@@ -7,6 +7,7 @@ import psuJson from "@/json/psu.json";
 import { productType } from "@/types";
 import { Accordion, Form, Stack } from "react-bootstrap";
 import { FieldValues, UseFormRegister } from "react-hook-form";
+import { formatKb } from "@/utils/formatKb";
 
 function CpuAccordion(register: UseFormRegister<FieldValues>) {
   const coreCountList = cpuJson.core_count;
@@ -125,6 +126,10 @@ function MemoryAccordion(register: UseFormRegister<FieldValues>) {
   const memoryStandardList = memoryJson.standard;
   const memoryInterfaceList = memoryJson.interface;
 
+  const memoryCapacityListLengthHalf = Math.floor(
+    memoryCapacityList.length / 2,
+  );
+
   return (
     <Accordion>
       <Accordion.Item eventKey="0">
@@ -133,12 +138,12 @@ function MemoryAccordion(register: UseFormRegister<FieldValues>) {
           <Stack direction="horizontal" gap={2}>
             <div className="p-2">
               {memoryCapacityList.map((value, index) => {
-                if (index < 8) {
+                if (index <= memoryCapacityListLengthHalf) {
                   return (
                     <Form.Check
                       key={value}
                       id={`memory-capacity-${index}`}
-                      label={value}
+                      label={formatKb(value)}
                       {...register(`memory.capacity.${index}.${value}`)}
                     />
                   );
@@ -147,12 +152,12 @@ function MemoryAccordion(register: UseFormRegister<FieldValues>) {
             </div>
             <div className="p-2">
               {memoryCapacityList.map((value, index) => {
-                if (index >= 8) {
+                if (index > memoryCapacityListLengthHalf) {
                   return (
                     <Form.Check
                       key={value}
                       id={`memory-capacity-${index}`}
-                      label={value}
+                      label={formatKb(value)}
                       {...register(`memory.capacity.${index}.${value}`)}
                     />
                   );
@@ -325,6 +330,8 @@ function GpuAccordion(register: UseFormRegister<FieldValues>) {
   const gpuStandardList = gpuJson.standard;
   const gpuCapacityList = gpuJson.capacity;
 
+  const gpuCapacityListLengthHalf = Math.floor(gpuCapacityList.length / 2);
+
   return (
     <Accordion>
       <Accordion.Item eventKey="0">
@@ -397,12 +404,12 @@ function GpuAccordion(register: UseFormRegister<FieldValues>) {
           <Stack direction="horizontal" gap={2}>
             <div className="p-2">
               {gpuCapacityList.map((value, index) => {
-                if (index < 10) {
+                if (index <= gpuCapacityListLengthHalf) {
                   return (
                     <Form.Check
                       key={value}
                       id={`gpu-capacity-${index}`}
-                      label={value}
+                      label={formatKb(value)}
                       {...register(`gpu.capacity.${index}.${value}`)}
                     />
                   );
@@ -411,12 +418,12 @@ function GpuAccordion(register: UseFormRegister<FieldValues>) {
             </div>
             <div className="p-2">
               {gpuCapacityList.map((value, index) => {
-                if (index >= 10) {
+                if (index > gpuCapacityListLengthHalf) {
                   return (
                     <Form.Check
                       key={value}
                       id={`gpu-capacity-${index}`}
-                      label={value}
+                      label={formatKb(value)}
                       {...register(`gpu.capacity.${index}.${value}`)}
                     />
                   );
@@ -435,6 +442,8 @@ function SsdAccordion(register: UseFormRegister<FieldValues>) {
   const sizeList = ssdJson.size;
   const ssdInterfaceList = ssdJson.interface;
 
+  const ssdCapacityListLengthHalf = Math.floor(ssdCapacityList.length / 2);
+
   return (
     <Accordion>
       <Accordion.Item eventKey="0">
@@ -443,12 +452,12 @@ function SsdAccordion(register: UseFormRegister<FieldValues>) {
           <Stack direction="horizontal" gap={2}>
             <div className="p-2">
               {ssdCapacityList.map((value, index) => {
-                if (index < 19) {
+                if (index <= ssdCapacityListLengthHalf) {
                   return (
                     <Form.Check
                       key={value}
                       id={`ssd-capacity-${index}`}
-                      label={value}
+                      label={formatKb(value)}
                       {...register(`ssd.capacity.${index}.${value}`)}
                     />
                   );
@@ -457,12 +466,12 @@ function SsdAccordion(register: UseFormRegister<FieldValues>) {
             </div>
             <div className="p-2">
               {ssdCapacityList.map((value, index) => {
-                if (index >= 19) {
+                if (index > ssdCapacityListLengthHalf) {
                   return (
                     <Form.Check
                       key={value}
                       id={`ssd-capacity-${index}`}
-                      label={value}
+                      label={formatKb(value)}
                       {...register(`ssd.capacity.${index}.${value}`)}
                     />
                   );

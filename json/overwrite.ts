@@ -28,7 +28,7 @@ async function overwriteCpu(dataSource: DataSource) {
     .where("core_count IS NOT NULL")
     // 一つしか製品がない、もしくは入手困難な製品は除外
     .andWhere("core_count NOT IN (:...coreCount)", {
-      coreCount: [22, 44, 56, 72, 84, 112, 120, 144],
+      coreCount: [22, 38, 44, 56, 72, 84, 112, 120, 144],
     })
     .orderBy("core_count")
     .getRawMany();
@@ -62,9 +62,9 @@ async function overwriteMemory(dataSource: DataSource) {
     .getRepository(Memory)
     .createQueryBuilder("memory")
     .select("DISTINCT capacity")
-    .where("capacity != ''")
+    .where("capacity IS NOT NULL")
     // MBの製品は除外
-    .andWhere("capacity NOT LIKE '%MB%'")
+    .andWhere("capacity >= 1000000")
     .orderBy("capacity")
     .getRawMany();
 
@@ -208,7 +208,9 @@ async function overwriteGpu(dataSource: DataSource) {
     .getRepository(Gpu)
     .createQueryBuilder("gpu")
     .select("DISTINCT capacity")
-    .where("capacity != ''")
+    .where("capacity IS NOT NULL")
+    // MBの製品は除外
+    .andWhere("capacity >= 1000000")
     .orderBy("capacity")
     .getRawMany();
 
@@ -232,6 +234,8 @@ async function overwriteSsd(dataSource: DataSource) {
     .createQueryBuilder("ssd")
     .select("DISTINCT capacity")
     .where("capacity != ''")
+    // 100GB未満の製品は除外
+    .andWhere("capacity >= 100000000")
     .orderBy("capacity")
     .getRawMany();
 
