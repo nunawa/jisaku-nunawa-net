@@ -27,7 +27,7 @@ export class Memory {
   manufacturer!: string | null;
 
   @Column("text", { nullable: true })
-  capacity!: string | null;
+  capacity!: number | null;
 
   @Column("bigint", { nullable: true })
   pcs!: number | null;
