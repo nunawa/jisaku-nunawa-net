@@ -1,3 +1,4 @@
+import { formatKb } from "@/utils/formatKb";
 import { Badge, Card } from "react-bootstrap";
 
 export default function ProductCardText({
@@ -32,7 +33,7 @@ export default function ProductCardText({
         <Card.Text>
           <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
           <Badge className="me-1" bg="secondary">
-            {product.capacity}
+            {product.capacity ? formatKb(product.capacity) : ""}
           </Badge>
           <Badge className="me-1" bg="secondary">
             {product.pcs}枚
@@ -76,7 +77,7 @@ export default function ProductCardText({
             {product.standard}
           </Badge>
           <Badge className="me-1" bg="secondary">
-            {product.capacity}
+            {product.capacity ? formatKb(product.capacity) : ""}
           </Badge>
           <Badge className="me-1" bg="secondary">
             {JSON.parse(product.monitor).join(" / ")}
@@ -89,7 +90,7 @@ export default function ProductCardText({
         <Card.Text>
           <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
           <Badge className="me-1" bg="secondary">
-            {product.capacity}
+            {product.capacity ? formatKb(product.capacity) : ""}
           </Badge>
           <Badge className="me-1" bg="secondary">
             {product.cell_type}
