@@ -39,7 +39,7 @@ export class Gpu {
   standard!: string | null;
 
   @Column("text", { nullable: true })
-  capacity!: string | null;
+  capacity!: number | null;
 
   @Column("text", { nullable: true })
   monitor!: string | null;
