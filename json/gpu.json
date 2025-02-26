@@ -1,5 +1,6 @@
 {
   "gpu_name": [
+    "AMD Radeon Pro W5500",
     "AMD Radeon Pro W5500X",
     "AMD Radeon Pro W6400",
     "AMD Radeon Pro W7700",
@@ -23,6 +24,7 @@
     "AMD Radeon RX 7800 XT",
     "AMD Radeon RX 7900 XT",
     "AMD Radeon RX 7900 XTX",
+    "AMD Vega10",
     "Intel Arc A310",
     "Intel Arc A380",
     "Intel Arc A580",
