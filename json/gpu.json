@@ -22,6 +22,7 @@
     "AMD Radeon RX 7600M XT",
     "AMD Radeon RX 7700 XT",
     "AMD Radeon RX 7800 XT",
+    "AMD Radeon RX 7800M",
     "AMD Radeon RX 7900 XT",
     "AMD Radeon RX 7900 XTX",
     "AMD Vega10",
@@ -78,7 +79,6 @@
     "NVIDIA RTX A6000",
     "NVIDIA T1000",
     "NVIDIA T400",
-    "NVIDIA Tesla T4",
     "NVIDIAlGeForce RTX 4060"
   ],
   "bus_interface": [
