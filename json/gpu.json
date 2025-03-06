@@ -3,6 +3,7 @@
     "AMD Radeon Pro W5500",
     "AMD Radeon Pro W5500X",
     "AMD Radeon Pro W6400",
+    "AMD Radeon Pro W6800",
     "AMD Radeon Pro W7700",
     "AMD Radeon RX 550",
     "AMD Radeon RX 5700 XT",
@@ -54,7 +55,7 @@
     "NVIDIA GeForce RTX 4060",
     "NVIDIA GeForce RTX 4060 Ti",
     "NVIDIA GeForce RTX 4070 Ti",
-    "NVIDIA GeForce RTX 5080",
+    "NVIDIA GeForce RTX 4080",
     "NVIDIA H100 NVL",
     "NVIDIA H200 NVL",
     "NVIDIA L40",
@@ -79,6 +80,7 @@
     "NVIDIA RTX A6000",
     "NVIDIA T1000",
     "NVIDIA T400",
+    "NVIDIA Tesla T4",
     "NVIDIAlGeForce RTX 4060"
   ],
   "bus_interface": [
@@ -98,7 +100,6 @@
     "GDDR5",
     "GDDR6",
     "GDDR6X",
-    "GDDR7",
     "HBM2",
     "HBM3",
     "HBM3e"
