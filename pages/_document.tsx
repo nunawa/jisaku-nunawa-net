@@ -14,6 +14,15 @@ export default function Document() {
           as="fetch"
           crossOrigin="anonymous"
         />
+        <link
+          rel="preload"
+          href={new URL(
+            "sql.js/dist/sql-wasm.wasm",
+            import.meta.url,
+          ).toString()}
+          as="fetch"
+          crossOrigin="anonymous"
+        />
         <Main />
         <NextScript />
       </body>
