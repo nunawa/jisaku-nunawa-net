@@ -1,9 +1,12 @@
 import { Html, Head, Main, NextScript } from "next/document";
+import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 
 export default function Document() {
   return (
-    <Html lang="en" data-bs-theme="light">
-      <Head />
+    <Html lang="en" data-bs-theme="light" {...mantineHtmlProps}>
+      <Head>
+        <ColorSchemeScript defaultColorScheme="auto" />
+      </Head>
       <body>
         <link
           rel="preload"
