@@ -1,0 +1,30 @@
+[
+  {
+    "key": "cpu",
+    "name": "CPU"
+  },
+  {
+    "key": "memory",
+    "name": "メモリ"
+  },
+  {
+    "key": "motherboard",
+    "name": "マザーボード"
+  },
+  {
+    "key": "gpu",
+    "name": "GPU"
+  },
+  {
+    "key": "ssd",
+    "name": "SSD"
+  },
+  {
+    "key": "psu",
+    "name": "電源"
+  },
+  {
+    "key": "case",
+    "name": "ケース"
+  }
+]
