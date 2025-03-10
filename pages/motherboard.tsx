@@ -66,7 +66,7 @@ export default function Motherboard() {
     <AppShell
       header={{ height: 60 }}
       navbar={{
-        width: 300,
+        width: 250,
         breakpoint: "sm",
         collapsed: { mobile: !opened },
       }}

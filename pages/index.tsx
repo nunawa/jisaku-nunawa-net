@@ -29,7 +29,7 @@ export default function Home() {
     <AppShell
       header={{ height: 60 }}
       navbar={{
-        width: 300,
+        width: 250,
         breakpoint: 9999,
         collapsed: { mobile: !opened },
       }}
