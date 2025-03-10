@@ -1,4 +1,5 @@
 import { ThemeDropdown } from "@/components/ThemeDropdown";
+import classes from "@/styles/index.module.scss";
 import pages from "@/utils/pages.json";
 import {
   Anchor,
@@ -9,6 +10,7 @@ import {
   Group,
   Image,
   NavLink,
+  Overlay,
   Stack,
   Text,
   Title,
@@ -69,18 +71,18 @@ export default function Home() {
             alt="background"
             width={800}
             height={800}
-            style={{
-              position: "absolute",
-              top: "var(--app-shell-header-height)",
-              left: 0,
-              zIndex: -1,
-              filter: "blur(5px) brightness(0.5)",
-            }}
+            className={classes.image}
+          />
+          <Overlay
+            color="#000"
+            backgroundOpacity={0.5}
+            blur={3}
+            className={classes.overlay}
           />
           <Container>
             <Stack align="flex-start" pt="20vh">
-              <Title>最強の自作PCを手に入れよう</Title>
-              <Text>
+              <Title className={classes.text}>最強の自作PCを手に入れよう</Title>
+              <Text className={classes.text}>
                 パーツの知識不要、最高の自作PCをあなたの手で作り上げましょう。
               </Text>
               <Button component={Link} href="/cpu" variant="primary">
