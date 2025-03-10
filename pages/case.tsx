@@ -1,5 +1,6 @@
 import PartsTab from "@/components/PartsTab";
 import { ThemeDropdown } from "@/components/ThemeDropdown";
+import TotalPrice from "@/components/TotalPrice";
 import { Case as CaseEntity } from "@/db/Case";
 import pages from "@/utils/pages.json";
 import { Anchor, AppShell, Burger, Group, NavLink } from "@mantine/core";
@@ -110,6 +111,12 @@ export default function Case() {
             );
           }
         })}
+        <NavLink
+          key="build"
+          label={<TotalPrice />}
+          component={Link}
+          href="/build"
+        />
       </AppShell.Navbar>
       <AppShell.Main>
         <PartsTab type="case" dataSource={dataSource} />
