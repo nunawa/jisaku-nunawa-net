@@ -1,4 +1,5 @@
 import { ThemeDropdown } from "@/components/ThemeDropdown";
+import TotalPrice from "@/components/TotalPrice";
 import classes from "@/styles/index.module.scss";
 import pages from "@/utils/pages.json";
 import {
@@ -62,6 +63,12 @@ export default function Home() {
             href={`/${x.key}`}
           />
         ))}
+        <NavLink
+          key="build"
+          label={<TotalPrice />}
+          component={Link}
+          href="/build"
+        />
       </AppShell.Navbar>
       <AppShell.Main>
         <Flex direction="column" align="flex-start">
