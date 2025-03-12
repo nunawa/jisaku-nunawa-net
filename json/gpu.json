@@ -26,6 +26,7 @@
     "AMD Radeon RX 7800M",
     "AMD Radeon RX 7900 XT",
     "AMD Radeon RX 7900 XTX",
+    "AMD Radeon RX 9070",
     "AMD Vega10",
     "Intel Arc A310",
     "Intel Arc A380",
@@ -54,8 +55,10 @@
     "NVIDIA GeForce RTX 3080 Ti",
     "NVIDIA GeForce RTX 4060",
     "NVIDIA GeForce RTX 4060 Ti",
+    "NVIDIA GeForce RTX 4070",
     "NVIDIA GeForce RTX 4070 Ti",
-    "NVIDIA GeForce RTX 4080",
+    "NVIDIA GeForce RTX 5070",
+    "NVIDIA GeForce RTX 5080",
     "NVIDIA H100 NVL",
     "NVIDIA H200 NVL",
     "NVIDIA L40",
@@ -80,7 +83,6 @@
     "NVIDIA RTX A6000",
     "NVIDIA T1000",
     "NVIDIA T400",
-    "NVIDIA Tesla T4",
     "NVIDIAlGeForce RTX 4060"
   ],
   "bus_interface": [
@@ -100,6 +102,7 @@
     "GDDR5",
     "GDDR6",
     "GDDR6X",
+    "GDDR7",
     "HBM2",
     "HBM3",
     "HBM3e"
