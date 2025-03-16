@@ -1,6 +1,7 @@
+import classes from "@/styles/PartsTab.module.scss";
 import { filterOptions, productInfo, productType } from "@/types";
+import { Button, Container } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { Button, Container } from "react-bootstrap";
 import { DataSource } from "typeorm";
 import FilterOption from "./FilterOption";
 import ProductList from "./ProductList";
@@ -52,13 +53,11 @@ export default function PartsTab({
   const handleClose = () => setShow(false);
 
   return (
-    <>
+    <Container>
       <SelectedProduct id={type} />
-      <div className="d-grid gap-2 mb-3">
-        <Button variant="secondary" onClick={() => handleShow()}>
-          オプション
-        </Button>
-      </div>
+      <Button variant="default" fullWidth mb="sm" onClick={() => handleShow()}>
+        オプション
+      </Button>
       <FilterOption
         show={show}
         handleClose={() => handleClose()}
@@ -68,9 +67,9 @@ export default function PartsTab({
         submittedFilterOption={submittedFilterOption}
         setSubmittedFilterOption={setSubmittedFilterOption}
       />
-      <Container style={{ height: "70vh" }} className="overflow-auto">
+      <div className={classes.list}>
         <ProductList id={type} products={convertedProducts!} />
-      </Container>
-    </>
+      </div>
+    </Container>
   );
 }

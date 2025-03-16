@@ -1,9 +1,9 @@
 import { selectedProductsAtom } from "@/jotai/atom";
-import styles from "@/styles/ProductCardLink.module.scss";
+import classes from "@/styles/ProductCardLink.module.scss";
 import { productType } from "@/types";
+import { Box, Card, Group, Text } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import Link from "next/link";
-import { Card, Stack } from "react-bootstrap";
 import ProductCardText from "./ProductCardText";
 
 export default function SelectedProduct({ id }: { id: keyof productType }) {
@@ -12,37 +12,35 @@ export default function SelectedProduct({ id }: { id: keyof productType }) {
 
   if (product) {
     return (
-      <Card className="mb-3">
-        <Card.Header as="h5">
-          <Stack direction="horizontal">
-            <div className={"me-auto " + styles["div"]}>
+      <Card withBorder shadow="sm" padding="sm" my="sm">
+        <Card.Section withBorder inheritPadding py="xs">
+          <Group justify="space-between">
+            <Box className={classes.boxSelected}>
               <Link
                 href={"https://kakaku.com/item/" + product.id}
-                className={styles["link"]}
+                rel="noreferrer"
+                target="_blank"
+                className={classes.link}
               >
                 {product.manufacturer} {product.name}
               </Link>
-            </div>
-            <div className={"text-muted ms-2 " + styles["status"]}>選択中</div>
-          </Stack>
-        </Card.Header>
-        <Card.Body>
-          <Card.Title>￥{product.price.toLocaleString()}</Card.Title>
-          <ProductCardText type={id} product={product} />
-        </Card.Body>
+            </Box>
+            <Text c="dimmed">選択中</Text>
+          </Group>
+        </Card.Section>
+
+        <Text mt="xs" size="lg" fw={500}>
+          ￥{product.price.toLocaleString()}
+        </Text>
+        <ProductCardText type={id} product={product} />
       </Card>
     );
   } else {
     return (
-      <Card className="mb-3">
-        <Card.Body>
-          <Card.Text
-            className="text-muted"
-            style={{ wordBreak: "keep-all", textAlign: "center" }}
-          >
-            未選択
-          </Card.Text>
-        </Card.Body>
+      <Card withBorder shadow="sm" padding="sm" my="sm" h={131.8}>
+        <Text my="auto" size="lg" c="dimmed" ta="center">
+          未選択
+        </Text>
       </Card>
     );
   }

@@ -1,18 +1,22 @@
-.div {
+.boxList {
   overflow: hidden;
   white-space: nowrap;
-  max-width: 700px;
+  max-width: calc(100% - 45px);
+  text-overflow: ellipsis;
+}
+
+.boxSelected {
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: calc(100% - 65px);
   text-overflow: ellipsis;
 }
 
 .link {
+  font-size: var(--mantine-font-size-lg);
+  font-weight: 500;
   text-decoration: none;
   &:hover {
     text-decoration: underline;
   }
-}
-
-.status {
-  font-weight: normal;
-  word-break: keep-all;
 }
