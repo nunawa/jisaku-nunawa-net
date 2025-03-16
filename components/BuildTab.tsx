@@ -1,4 +1,4 @@
-import { Container } from "react-bootstrap";
+import { Container, Title } from "@mantine/core";
 import SelectedProduct from "./SelectedProduct";
 import TotalPrice from "./TotalPrice";
 
@@ -6,55 +6,55 @@ export default function BuildTab() {
   let buildList = [];
 
   buildList.push(
-    <Container key="cpu">
-      <h5>CPU</h5>
+    <div key="cpu">
+      <Title size="lg">CPU</Title>
       <SelectedProduct id="cpu" />
-    </Container>,
+    </div>,
   );
   buildList.push(
-    <Container key="memory">
-      <h5>メモリ</h5>
+    <div key="memory">
+      <Title size="lg">メモリ</Title>
       <SelectedProduct id="memory" />
-    </Container>,
+    </div>,
   );
   buildList.push(
-    <Container key="motherboard">
-      <h5>マザーボード</h5>
+    <div key="motherboard">
+      <Title size="lg">マザーボード</Title>
       <SelectedProduct id="motherboard" />
-    </Container>,
+    </div>,
   );
   buildList.push(
-    <Container key="gpu">
-      <h5>GPU</h5>
+    <div key="gpu">
+      <Title size="lg">GPU</Title>
       <SelectedProduct id="gpu" />
-    </Container>,
+    </div>,
   );
   buildList.push(
-    <Container key="ssd">
-      <h5>SSD</h5>
+    <div key="ssd">
+      <Title size="lg">SSD</Title>
       <SelectedProduct id="ssd" />
-    </Container>,
+    </div>,
   );
   buildList.push(
-    <Container key="psu">
-      <h5>電源</h5>
+    <div key="psu">
+      <Title size="lg">電源</Title>
       <SelectedProduct id="psu" />
-    </Container>,
+    </div>,
   );
   buildList.push(
-    <Container key="case">
-      <h5>ケース</h5>
+    <div key="case">
+      <Title size="lg">ケース</Title>
       <SelectedProduct id="case" />
-    </Container>,
+    </div>,
   );
 
   buildList.push(
-    <Container key="total" className="mb-5">
-      <h5>
+    <div key="total" className="mb-5">
+      <Title size="lg">
         合計 <TotalPrice />
-      </h5>
-    </Container>,
+      </Title>
+    </div>,
   );
 
-  return buildList;
+  return <Container mt="sm">{buildList}</Container>;
 }
