@@ -1,6 +1,7 @@
 import classes from "@/styles/PartsTab.module.scss";
 import { filterOptions, productInfo, productType } from "@/types";
 import { Button, Container } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { DataSource } from "typeorm";
 import FilterOption from "./FilterOption";
@@ -47,20 +48,17 @@ export default function PartsTab({
       case: undefined,
     });
 
-  const [show, setShow] = useState(false);
-
-  const handleShow = () => setShow(true);
-  const handleClose = () => setShow(false);
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <Container>
       <SelectedProduct id={type} />
-      <Button variant="default" fullWidth mb="sm" onClick={() => handleShow()}>
+      <Button variant="default" fullWidth mb="sm" onClick={open}>
         オプション
       </Button>
       <FilterOption
-        show={show}
-        handleClose={() => handleClose()}
+        opened={opened}
+        close={close}
         type={type}
         dataSource={dataSource}
         setConvertedProducts={setConvertedProducts}
