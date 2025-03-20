@@ -1,3 +1,4 @@
+import { Case } from "@/db/Case";
 import { Cpu } from "@/db/Cpu";
 import { Gpu } from "@/db/Gpu";
 import { Memory } from "@/db/Memory";
@@ -16,12 +17,12 @@ import {
   psuFilterOption,
   ssdFilterOption,
 } from "@/types";
+import { Modal as MModal } from "@mantine/core";
 import { Dispatch, SetStateAction } from "react";
 import { Button, Form, InputGroup, Modal } from "react-bootstrap";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { Brackets, DataSource, SelectQueryBuilder } from "typeorm";
 import Accordions from "./Accordions";
-import { Case } from "@/db/Case";
 
 function addCpuQuery(
   queryBuilder: SelectQueryBuilder<Cpu>,
@@ -437,16 +438,16 @@ function addCaseQuery(
 }
 
 export default function FilterOption({
-  show,
-  handleClose,
+  opened,
+  close,
   type,
   dataSource,
   setConvertedProducts,
   submittedFilterOption,
   setSubmittedFilterOption,
 }: {
-  show: boolean;
-  handleClose: () => void;
+  opened: boolean;
+  close: () => void;
   type: keyof productType;
   dataSource: DataSource | undefined;
   setConvertedProducts: Dispatch<SetStateAction<productInfo[] | undefined>>;
@@ -568,7 +569,7 @@ export default function FilterOption({
       setConvertedProducts(productList);
     }
 
-    handleClose();
+    close();
   }
 
   function onHide() {
@@ -626,12 +627,12 @@ export default function FilterOption({
       );
     }
 
-    handleClose();
+    close();
   }
 
   return (
-    <Modal show={show} onHide={onHide}>
-      <Form onSubmit={handleSubmit(onSubmit as SubmitHandler<FieldValues>)}>
+    <MModal opened={opened} onClose={onHide}>
+      <form onSubmit={handleSubmit(onSubmit as SubmitHandler<FieldValues>)}>
         <Modal.Body>
           <InputGroup className="mb-3">
             <Form.Select defaultValue="sales_rank_asc" {...register("sort")}>
@@ -684,7 +685,7 @@ export default function FilterOption({
             適用
           </Button>
         </Modal.Footer>
-      </Form>
-    </Modal>
+      </form>
+    </MModal>
   );
 }

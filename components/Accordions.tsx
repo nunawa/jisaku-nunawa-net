@@ -2,12 +2,12 @@ import cpuJson from "@/json/cpu.json";
 import gpuJson from "@/json/gpu.json";
 import memoryJson from "@/json/memory.json";
 import motherboardJson from "@/json/motherboard.json";
-import ssdJson from "@/json/ssd.json";
 import psuJson from "@/json/psu.json";
+import ssdJson from "@/json/ssd.json";
 import { productType } from "@/types";
-import { Accordion, Form, Stack } from "react-bootstrap";
-import { FieldValues, UseFormRegister } from "react-hook-form";
 import { formatKb } from "@/utils/formatKb";
+import { Accordion, Checkbox, Group } from "@mantine/core";
+import { FieldValues, UseFormRegister } from "react-hook-form";
 
 function CpuAccordion(register: UseFormRegister<FieldValues>) {
   const coreCountList = cpuJson.core_count;
@@ -15,15 +15,15 @@ function CpuAccordion(register: UseFormRegister<FieldValues>) {
 
   return (
     <Accordion>
-      <Accordion.Item eventKey="0">
-        <Accordion.Header>コア数</Accordion.Header>
-        <Accordion.Body>
-          <Stack direction="horizontal" gap={3}>
+      <Accordion.Item key="cpu-core-count" value="cpu-core-count">
+        <Accordion.Control>コア数</Accordion.Control>
+        <Accordion.Panel>
+          <Group gap={3}>
             <div className="p-2">
               {coreCountList.map((value, index) => {
                 if (index < 7) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`cpu-core-count-${value}`}
                       label={value}
@@ -37,7 +37,7 @@ function CpuAccordion(register: UseFormRegister<FieldValues>) {
               {coreCountList.map((value, index) => {
                 if (index >= 7 && index < 14) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`cpu-core-count-${value}`}
                       label={value}
@@ -51,7 +51,7 @@ function CpuAccordion(register: UseFormRegister<FieldValues>) {
               {coreCountList.map((value, index) => {
                 if (index >= 14) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`cpu-core-count-${value}`}
                       label={value}
@@ -61,18 +61,18 @@ function CpuAccordion(register: UseFormRegister<FieldValues>) {
                 }
               })}
             </div>
-          </Stack>
-        </Accordion.Body>
+          </Group>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="1">
-        <Accordion.Header>ソケット</Accordion.Header>
-        <Accordion.Body>
-          <Stack direction="horizontal" gap={3}>
+      <Accordion.Item key="cpu-socket" value="cpu-socket">
+        <Accordion.Control>ソケット</Accordion.Control>
+        <Accordion.Panel>
+          <Group gap={3}>
             <div className="p-2">
               {cpuSocketList.map((value, index) => {
                 if (index < 10) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`cpu-socket-${index}`}
                       label={value}
@@ -86,7 +86,7 @@ function CpuAccordion(register: UseFormRegister<FieldValues>) {
               {cpuSocketList.map((value, index) => {
                 if (index >= 10) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`cpu-socket-${index}`}
                       label={value}
@@ -96,25 +96,25 @@ function CpuAccordion(register: UseFormRegister<FieldValues>) {
                 }
               })}
             </div>
-          </Stack>
-        </Accordion.Body>
+          </Group>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="2">
-        <Accordion.Header>内蔵GPU</Accordion.Header>
-        <Accordion.Body>
-          <Form.Check
+      <Accordion.Item key="cpu-igpu" value="cpu-igpu">
+        <Accordion.Control>内蔵GPU</Accordion.Control>
+        <Accordion.Panel>
+          <Checkbox
             key="igpu.yes"
             id={"cpu-igpu-yes"}
             label="あり"
             {...register("cpu.igpu.yes")}
           />
-          <Form.Check
+          <Checkbox
             key="igpu.no"
             id={"cpu-igpu-no"}
             label="なし"
             {...register("cpu.igpu.no")}
           />
-        </Accordion.Body>
+        </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
   );
@@ -132,15 +132,15 @@ function MemoryAccordion(register: UseFormRegister<FieldValues>) {
 
   return (
     <Accordion>
-      <Accordion.Item eventKey="0">
-        <Accordion.Header>容量</Accordion.Header>
-        <Accordion.Body>
-          <Stack direction="horizontal" gap={2}>
+      <Accordion.Item key="memory-capacity" value="memory-capacity">
+        <Accordion.Control>容量</Accordion.Control>
+        <Accordion.Panel>
+          <Group gap={2}>
             <div className="p-2">
               {memoryCapacityList.map((value, index) => {
                 if (index <= memoryCapacityListLengthHalf) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`memory-capacity-${index}`}
                       label={formatKb(value)}
@@ -154,7 +154,7 @@ function MemoryAccordion(register: UseFormRegister<FieldValues>) {
               {memoryCapacityList.map((value, index) => {
                 if (index > memoryCapacityListLengthHalf) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`memory-capacity-${index}`}
                       label={formatKb(value)}
@@ -164,42 +164,42 @@ function MemoryAccordion(register: UseFormRegister<FieldValues>) {
                 }
               })}
             </div>
-          </Stack>
-        </Accordion.Body>
+          </Group>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="1">
-        <Accordion.Header>枚数</Accordion.Header>
-        <Accordion.Body>
+      <Accordion.Item key="memory-pcs" value="memory-pcs">
+        <Accordion.Control>枚数</Accordion.Control>
+        <Accordion.Panel>
           {pcsList.map((value) => (
-            <Form.Check
+            <Checkbox
               key={value}
               id={`memory-pcs-${value}`}
               label={value}
               {...register(`memory.pcs.${value}`)}
             />
           ))}
-        </Accordion.Body>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="2">
-        <Accordion.Header>規格</Accordion.Header>
-        <Accordion.Body>
+      <Accordion.Item key="memory-standard" value="memory-standard">
+        <Accordion.Control>規格</Accordion.Control>
+        <Accordion.Panel>
           {memoryStandardList.map((value, index) => (
-            <Form.Check
+            <Checkbox
               key={value}
               id={`memory-standard-${index}`}
               label={value}
               {...register(`memory.standard.${index}.${value}`)}
             />
           ))}
-        </Accordion.Body>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="3">
-        <Accordion.Header>インターフェース</Accordion.Header>
-        <Accordion.Body>
+      <Accordion.Item key="memory-interface" value="memory-interface">
+        <Accordion.Control>インターフェース</Accordion.Control>
+        <Accordion.Panel>
           {memoryInterfaceList.map((value, index) => {
             const escapedValue = value.replaceAll(".", "_");
             return (
-              <Form.Check
+              <Checkbox
                 key={value}
                 id={`memory-interface-${index}`}
                 label={value}
@@ -207,7 +207,7 @@ function MemoryAccordion(register: UseFormRegister<FieldValues>) {
               />
             );
           })}
-        </Accordion.Body>
+        </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
   );
@@ -221,28 +221,31 @@ function MotherboardAccordion(register: UseFormRegister<FieldValues>) {
 
   return (
     <Accordion>
-      <Accordion.Item eventKey="0">
-        <Accordion.Header>フォームファクタ</Accordion.Header>
-        <Accordion.Body>
+      <Accordion.Item
+        key="motherboard-form-factor"
+        value="motherboard-form-factor"
+      >
+        <Accordion.Control>フォームファクタ</Accordion.Control>
+        <Accordion.Panel>
           {formFactorList.map((value, index) => (
-            <Form.Check
+            <Checkbox
               key={value}
               id={`motherboard-form-factor-${index}`}
               label={value}
               {...register(`motherboard.formFactor.${index}.${value}`)}
             />
           ))}
-        </Accordion.Body>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="1">
-        <Accordion.Header>ソケット</Accordion.Header>
-        <Accordion.Body>
-          <Stack direction="horizontal" gap={2}>
+      <Accordion.Item key="motherboard-socket" value="motherboard-socket">
+        <Accordion.Control>ソケット</Accordion.Control>
+        <Accordion.Panel>
+          <Group gap={2}>
             <div className="p-2">
               {motherboardSocketList.map((value, index) => {
                 if (index < 7) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`motherboard-socket-${index}`}
                       label={value}
@@ -256,7 +259,7 @@ function MotherboardAccordion(register: UseFormRegister<FieldValues>) {
               {motherboardSocketList.map((value, index) => {
                 if (index >= 7) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`motherboard-socket-${index}`}
                       label={value}
@@ -266,18 +269,18 @@ function MotherboardAccordion(register: UseFormRegister<FieldValues>) {
                 }
               })}
             </div>
-          </Stack>
-        </Accordion.Body>
+          </Group>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="2">
-        <Accordion.Header>チップセット</Accordion.Header>
-        <Accordion.Body>
-          <Stack direction="horizontal" gap={2}>
+      <Accordion.Item key="motherboard-chipset" value="motherboard-chipset">
+        <Accordion.Control>チップセット</Accordion.Control>
+        <Accordion.Panel>
+          <Group gap={2}>
             <div className="p-2">
               {chipsetList.map((value, index) => {
                 if (index < 28) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`motherboard-chipset-${index}`}
                       label={value}
@@ -291,7 +294,7 @@ function MotherboardAccordion(register: UseFormRegister<FieldValues>) {
               {chipsetList.map((value, index) => {
                 if (index >= 28) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`motherboard-chipset-${index}`}
                       label={value}
@@ -301,16 +304,16 @@ function MotherboardAccordion(register: UseFormRegister<FieldValues>) {
                 }
               })}
             </div>
-          </Stack>
-        </Accordion.Body>
+          </Group>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="3">
-        <Accordion.Header>メモリ</Accordion.Header>
-        <Accordion.Body>
+      <Accordion.Item key="motherboard-memory" value="motherboard-memory">
+        <Accordion.Control>メモリ</Accordion.Control>
+        <Accordion.Panel>
           {motherboardMemoryList.map((value, index) => {
             const escapedValue = value.replaceAll(".", "_");
             return (
-              <Form.Check
+              <Checkbox
                 key={value}
                 id={`motherboard-memory-${index}`}
                 label={value}
@@ -318,7 +321,7 @@ function MotherboardAccordion(register: UseFormRegister<FieldValues>) {
               />
             );
           })}
-        </Accordion.Body>
+        </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
   );
@@ -334,26 +337,26 @@ function GpuAccordion(register: UseFormRegister<FieldValues>) {
 
   return (
     <Accordion>
-      <Accordion.Item eventKey="0">
-        <Accordion.Header>GPU</Accordion.Header>
-        <Accordion.Body>
+      <Accordion.Item key="gpu-name" value="gpu-name">
+        <Accordion.Control>GPU</Accordion.Control>
+        <Accordion.Panel>
           {gpuNameList.map((value, index) => (
-            <Form.Check
+            <Checkbox
               key={value}
               id={`gpu-gpu-name-${index}`}
               label={value}
               {...register(`gpu.gpuName.${index}.${value}`)}
             />
           ))}
-        </Accordion.Body>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="1">
-        <Accordion.Header>バスインターフェース</Accordion.Header>
-        <Accordion.Body>
+      <Accordion.Item key="gpu-bus-interface" value="gpu-bus-interfacey">
+        <Accordion.Control>バスインターフェース</Accordion.Control>
+        <Accordion.Panel>
           {busList.map((value, index) => {
             const escapedValue = value.replaceAll(".", "_");
             return (
-              <Form.Check
+              <Checkbox
                 key={value}
                 id={`gpu-bus-interface-${index}`}
                 label={value}
@@ -361,17 +364,17 @@ function GpuAccordion(register: UseFormRegister<FieldValues>) {
               />
             );
           })}
-        </Accordion.Body>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="2">
-        <Accordion.Header>規格</Accordion.Header>
-        <Accordion.Body>
-          <Stack direction="horizontal" gap={2}>
+      <Accordion.Item key="gpu-standard" value="gpu-standard">
+        <Accordion.Control>規格</Accordion.Control>
+        <Accordion.Panel>
+          <Group gap={2}>
             <div className="p-2">
               {gpuStandardList.map((value, index) => {
                 if (index < 5) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`gpu-standard-${index}`}
                       label={value}
@@ -385,7 +388,7 @@ function GpuAccordion(register: UseFormRegister<FieldValues>) {
               {gpuStandardList.map((value, index) => {
                 if (index >= 5) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`gpu-standard-${index}`}
                       label={value}
@@ -395,18 +398,18 @@ function GpuAccordion(register: UseFormRegister<FieldValues>) {
                 }
               })}
             </div>
-          </Stack>
-        </Accordion.Body>
+          </Group>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="3">
-        <Accordion.Header>容量</Accordion.Header>
-        <Accordion.Body>
-          <Stack direction="horizontal" gap={2}>
+      <Accordion.Item key="gpu-capacity" value="gpu-capacity">
+        <Accordion.Control>容量</Accordion.Control>
+        <Accordion.Panel>
+          <Group gap={2}>
             <div className="p-2">
               {gpuCapacityList.map((value, index) => {
                 if (index <= gpuCapacityListLengthHalf) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`gpu-capacity-${index}`}
                       label={formatKb(value)}
@@ -420,7 +423,7 @@ function GpuAccordion(register: UseFormRegister<FieldValues>) {
               {gpuCapacityList.map((value, index) => {
                 if (index > gpuCapacityListLengthHalf) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`gpu-capacity-${index}`}
                       label={formatKb(value)}
@@ -430,8 +433,8 @@ function GpuAccordion(register: UseFormRegister<FieldValues>) {
                 }
               })}
             </div>
-          </Stack>
-        </Accordion.Body>
+          </Group>
+        </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
   );
@@ -446,15 +449,15 @@ function SsdAccordion(register: UseFormRegister<FieldValues>) {
 
   return (
     <Accordion>
-      <Accordion.Item eventKey="0">
-        <Accordion.Header>容量</Accordion.Header>
-        <Accordion.Body>
-          <Stack direction="horizontal" gap={2}>
+      <Accordion.Item key="ssd-capacity" value="ssd-capacity">
+        <Accordion.Control>容量</Accordion.Control>
+        <Accordion.Panel>
+          <Group gap={2}>
             <div className="p-2">
               {ssdCapacityList.map((value, index) => {
                 if (index <= ssdCapacityListLengthHalf) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`ssd-capacity-${index}`}
                       label={formatKb(value)}
@@ -468,7 +471,7 @@ function SsdAccordion(register: UseFormRegister<FieldValues>) {
               {ssdCapacityList.map((value, index) => {
                 if (index > ssdCapacityListLengthHalf) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`ssd-capacity-${index}`}
                       label={formatKb(value)}
@@ -478,16 +481,16 @@ function SsdAccordion(register: UseFormRegister<FieldValues>) {
                 }
               })}
             </div>
-          </Stack>
-        </Accordion.Body>
+          </Group>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="1">
-        <Accordion.Header>サイズ</Accordion.Header>
-        <Accordion.Body>
+      <Accordion.Item key="ssd-size" value="ssd-size">
+        <Accordion.Control>サイズ</Accordion.Control>
+        <Accordion.Panel>
           {sizeList.map((value, index) => {
             const escapedValue = value.replace(".", "_");
             return (
-              <Form.Check
+              <Checkbox
                 key={value}
                 id={`ssd-size-${index}`}
                 label={value}
@@ -495,20 +498,20 @@ function SsdAccordion(register: UseFormRegister<FieldValues>) {
               />
             );
           })}
-        </Accordion.Body>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="2">
-        <Accordion.Header>インターフェース</Accordion.Header>
-        <Accordion.Body>
+      <Accordion.Item key="ssd-interface" value="ssd-interface">
+        <Accordion.Control>インターフェース</Accordion.Control>
+        <Accordion.Panel>
           {ssdInterfaceList.map((value, index) => (
-            <Form.Check
+            <Checkbox
               key={value}
               id={`ssd-interface-${index}`}
               label={value}
               {...register(`ssd.interface.${index}.${value}`)}
             />
           ))}
-        </Accordion.Body>
+        </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
   );
@@ -522,15 +525,15 @@ function PsuAccordion(register: UseFormRegister<FieldValues>) {
 
   return (
     <Accordion>
-      <Accordion.Item eventKey="0">
-        <Accordion.Header>容量</Accordion.Header>
-        <Accordion.Body>
-          <Stack direction="horizontal" gap={2}>
+      <Accordion.Item key="psu-capacity" value="psu-capacity">
+        <Accordion.Control>容量</Accordion.Control>
+        <Accordion.Panel>
+          <Group gap={2}>
             <div className="p-2">
               {psuCapacityList.map((value, index) => {
                 if (index <= psuCapacityListLengthHalf) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`psu-capacity-${value}`}
                       label={value}
@@ -547,7 +550,7 @@ function PsuAccordion(register: UseFormRegister<FieldValues>) {
                   index <= psuCapacityListLengthHalf * 2
                 ) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`psu-capacity-${value}`}
                       label={value}
@@ -561,7 +564,7 @@ function PsuAccordion(register: UseFormRegister<FieldValues>) {
               {psuCapacityList.map((value, index) => {
                 if (index > psuCapacityListLengthHalf * 2) {
                   return (
-                    <Form.Check
+                    <Checkbox
                       key={value}
                       id={`psu-capacity-${value}`}
                       label={value}
@@ -571,21 +574,21 @@ function PsuAccordion(register: UseFormRegister<FieldValues>) {
                 }
               })}
             </div>
-          </Stack>
-        </Accordion.Body>
+          </Group>
+        </Accordion.Panel>
       </Accordion.Item>
-      <Accordion.Item eventKey="1">
-        <Accordion.Header>認証</Accordion.Header>
-        <Accordion.Body>
+      <Accordion.Item key="psu-certification" value="psu-certification">
+        <Accordion.Control>認証</Accordion.Control>
+        <Accordion.Panel>
           {psuCertificationList.map((value, index) => (
-            <Form.Check
+            <Checkbox
               key={value}
               id={`psu-certification-${index}`}
               label={value}
               {...register(`psu.certification.${index}.${value}`)}
             />
           ))}
-        </Accordion.Body>
+        </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
   );
@@ -594,22 +597,22 @@ function PsuAccordion(register: UseFormRegister<FieldValues>) {
 function CaseAccordion(register: UseFormRegister<FieldValues>) {
   return (
     <Accordion>
-      <Accordion.Item eventKey="2">
-        <Accordion.Header>付属電源</Accordion.Header>
-        <Accordion.Body>
-          <Form.Check
+      <Accordion.Item key="case-psu-included" value="case-psu-included">
+        <Accordion.Control>付属電源</Accordion.Control>
+        <Accordion.Panel>
+          <Checkbox
             key="psuIncluded.yes"
             id={"case-psu-included-yes"}
             label="あり"
             {...register("case.psuIncluded.yes")}
           />
-          <Form.Check
+          <Checkbox
             key="psuIncluded.no"
             id={"case-psu-included-no"}
             label="なし"
             {...register("case.psuIncluded.no")}
           />
-        </Accordion.Body>
+        </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
   );
