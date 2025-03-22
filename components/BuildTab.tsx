@@ -49,12 +49,16 @@ export default function BuildTab() {
   );
 
   buildList.push(
-    <div key="total" className="mb-5">
+    <div key="total">
       <Title size="lg">
         合計 <TotalPrice />
       </Title>
     </div>,
   );
 
-  return <Container mt="sm">{buildList}</Container>;
+  return (
+    <Container mt="sm" mb="xl">
+      {buildList}
+    </Container>
+  );
 }
