@@ -1,6 +1,25 @@
 import { formatKb } from "@/utils/formatKb";
 import { Badge, Group } from "@mantine/core";
 
+function HideableBadge({
+  text,
+  suffix = "",
+}: {
+  text: string | null;
+  suffix?: string;
+}) {
+  if (text) {
+    return (
+      <Badge variant="default" tt="none">
+        {text}
+        {suffix}
+      </Badge>
+    );
+  } else {
+    return <></>;
+  }
+}
+
 export default function ProductCardText({
   type,
   product,
@@ -13,18 +32,10 @@ export default function ProductCardText({
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
-          <Badge variant="default" tt="none">
-            {product.frequency}GHz
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.socket}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.core_count}コア
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.thread_count}スレッド
-          </Badge>
+          <HideableBadge text={product.frequency} suffix="GHz" />
+          <HideableBadge text={product.socket} />
+          <HideableBadge text={product.core_count} suffix="コア" />
+          <HideableBadge text={product.thread_count} suffix="スレッド" />
         </Group>
       );
 
@@ -32,18 +43,12 @@ export default function ProductCardText({
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
-          <Badge variant="default" tt="none">
-            {product.capacity ? formatKb(product.capacity) : ""}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.pcs}枚
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.standard}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.interface}
-          </Badge>
+          <HideableBadge
+            text={product.capacity ? formatKb(product.capacity) : null}
+          />
+          <HideableBadge text={product.pcs} suffix="枚" />
+          <HideableBadge text={product.standard} />
+          <HideableBadge text={product.interface} />
         </Group>
       );
 
@@ -51,18 +56,10 @@ export default function ProductCardText({
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
-          <Badge variant="default" tt="none">
-            {product.form_factor}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.socket}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.chipset}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.memory}
-          </Badge>
+          <HideableBadge text={product.form_factor} />
+          <HideableBadge text={product.socket} />
+          <HideableBadge text={product.chipset} />
+          <HideableBadge text={product.memory} />
         </Group>
       );
 
@@ -70,18 +67,12 @@ export default function ProductCardText({
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
-          <Badge variant="default" tt="none">
-            {product.bus_interface}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.standard}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.capacity ? formatKb(product.capacity) : ""}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {JSON.parse(product.monitor).join(" / ")}
-          </Badge>
+          <HideableBadge text={product.bus_interface} />
+          <HideableBadge text={product.standard} />
+          <HideableBadge
+            text={product.capacity ? formatKb(product.capacity) : null}
+          />
+          <HideableBadge text={JSON.parse(product.monitor).join(" / ")} />
         </Group>
       );
 
@@ -89,18 +80,12 @@ export default function ProductCardText({
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
-          <Badge variant="default" tt="none">
-            {product.capacity ? formatKb(product.capacity) : ""}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.cell_type}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.size}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.interface}
-          </Badge>
+          <HideableBadge
+            text={product.capacity ? formatKb(product.capacity) : null}
+          />
+          <HideableBadge text={product.cell_type} />
+          <HideableBadge text={product.size} />
+          <HideableBadge text={product.interface} />
         </Group>
       );
 
@@ -108,12 +93,8 @@ export default function ProductCardText({
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
-          <Badge variant="default" tt="none">
-            {product.capacity}W
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.certification}
-          </Badge>
+          <HideableBadge text={product.capacity} suffix="W" />
+          <HideableBadge text={product.certification} />
         </Group>
       );
 
@@ -121,15 +102,11 @@ export default function ProductCardText({
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
-          <Badge variant="default" tt="none">
-            {JSON.parse(product.support_motherboard).join(" / ")}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.volume ? `${product.volume}L` : ""}
-          </Badge>
-          <Badge variant="default" tt="none">
-            {product.psu_included ? "電源付属" : ""}
-          </Badge>
+          <HideableBadge
+            text={JSON.parse(product.support_motherboard).join(" / ")}
+          />
+          <HideableBadge text={product.volume} suffix="L" />
+          <HideableBadge text={product.psu_included ? "電源付属" : null} />
         </Group>
       );
 
