@@ -657,6 +657,7 @@ export default function FilterOption({
               { value: "price_asc", label: "価格順" },
             ]}
             allowDeselect={false}
+            key={form.key("sort")}
             {...form.getInputProps("sort")}
           />
 
@@ -668,6 +669,7 @@ export default function FilterOption({
               />
             }
             rightSectionPointerEvents="auto"
+            key={form.key("keyword")}
             {...form.getInputProps("keyword")}
           />
 
@@ -684,6 +686,7 @@ export default function FilterOption({
               rightSectionPointerEvents="auto"
               allowNegative={false}
               allowDecimal={false}
+              key={form.key("min")}
               {...form.getInputProps("min")}
             />
             <Text pt="5px" style={{ flexGrow: 0 }}>
@@ -701,6 +704,7 @@ export default function FilterOption({
               rightSectionPointerEvents="auto"
               allowNegative={false}
               allowDecimal={false}
+              key={form.key("max")}
               {...form.getInputProps("max")}
             />
           </Flex>
