@@ -7,6 +7,7 @@ import {
   AppShell,
   Burger,
   Button,
+  Container,
   Flex,
   Group,
   Image,
@@ -19,7 +20,6 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { default as NextImage } from "next/image";
 import Link from "next/link";
-import { Container } from "react-bootstrap";
 
 const pageList = pages;
 
