@@ -1,5 +1,5 @@
 import classes from "@/styles/PartsTab.module.scss";
-import { filterOptions, productInfo, productType } from "@/types";
+import { productInfo, productType } from "@/types";
 import { Button, Container } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
@@ -33,21 +33,6 @@ export default function PartsTab({
     }
   }, [dataSource, type]);
 
-  const [submittedFilterOption, setSubmittedFilterOption] =
-    useState<filterOptions>({
-      sort: "sales_rank_asc",
-      keyword: "",
-      min: "",
-      max: "",
-      cpu: undefined,
-      memory: undefined,
-      motherboard: undefined,
-      gpu: undefined,
-      ssd: undefined,
-      psu: undefined,
-      case: undefined,
-    });
-
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -62,8 +47,6 @@ export default function PartsTab({
         type={type}
         dataSource={dataSource}
         setConvertedProducts={setConvertedProducts}
-        submittedFilterOption={submittedFilterOption}
-        setSubmittedFilterOption={setSubmittedFilterOption}
       />
       <div className={classes.list}>
         <ProductList id={type} products={convertedProducts!} />
