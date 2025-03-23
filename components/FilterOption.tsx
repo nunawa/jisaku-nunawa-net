@@ -24,6 +24,7 @@ import {
   Input,
   Modal,
   NumberInput,
+  ScrollArea,
   Select,
   Stack,
   Text,
@@ -648,7 +649,12 @@ export default function FilterOption({
   }
 
   return (
-    <Modal opened={opened} onClose={close} title="オプション">
+    <Modal
+      opened={opened}
+      onClose={close}
+      title="オプション"
+      scrollAreaComponent={ScrollArea.Autosize}
+    >
       <form onSubmit={form.onSubmit(onSubmit)}>
         <Stack>
           <Select
