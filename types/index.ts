@@ -16,41 +16,41 @@ export type productType = {
 };
 
 export type cpuFilterOption = {
-  coreCount: boolean[];
-  socket: Object[];
+  coreCount: Record<number, boolean>;
+  socket: Record<string, boolean>;
   igpu: { yes: boolean; no: boolean };
 };
 
 export type memoryFilterOption = {
-  capacity: Object[];
-  pcs: boolean[];
-  standard: Object[];
-  interface: Object[];
+  capacity: Record<number, boolean>;
+  pcs: Record<number, boolean>;
+  standard: Record<string, boolean>;
+  interface: Record<string, boolean>;
 };
 
 export type motherboardFilterOption = {
-  formFactor: Object[];
-  socket: Object[];
-  chipset: Object[];
-  memory: Object[];
+  formFactor: Record<string, boolean>;
+  socket: Record<string, boolean>;
+  chipset: Record<string, boolean>;
+  memory: Record<string, boolean>;
 };
 
 export type gpuFilterOption = {
-  gpuName: Object[];
-  busInterface: Object[];
-  standard: Object[];
-  capacity: Object[];
+  gpuName: Record<string, boolean>;
+  busInterface: Record<string, boolean>;
+  standard: Record<string, boolean>;
+  capacity: Record<number, boolean>;
 };
 
 export type ssdFilterOption = {
-  capacity: Object[];
-  size: Object[];
-  interface: Object[];
+  capacity: Record<number, boolean>;
+  size: Record<string, boolean>;
+  interface: Record<string, boolean>;
 };
 
 export type psuFilterOption = {
-  capacity: boolean[];
-  certification: Object[];
+  capacity: Record<number, boolean>;
+  certification: Record<string, boolean>;
 };
 
 export type caseFilterOption = {
@@ -62,11 +62,11 @@ export type filterOptions = {
   keyword: string;
   min: string;
   max: string;
-  cpu: cpuFilterOption | undefined;
-  memory: memoryFilterOption | undefined;
-  motherboard: motherboardFilterOption | undefined;
-  gpu: gpuFilterOption | undefined;
-  ssd: ssdFilterOption | undefined;
-  psu: psuFilterOption | undefined;
-  case: caseFilterOption | undefined;
+  cpu: cpuFilterOption;
+  memory: memoryFilterOption;
+  motherboard: motherboardFilterOption;
+  gpu: gpuFilterOption;
+  ssd: ssdFilterOption;
+  psu: psuFilterOption;
+  case: caseFilterOption;
 };
