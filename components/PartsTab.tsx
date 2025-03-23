@@ -1,6 +1,6 @@
 import classes from "@/styles/PartsTab.module.scss";
 import { productInfo, productType } from "@/types";
-import { Button, Container } from "@mantine/core";
+import { Button, Container, Flex } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { DataSource } from "typeorm";
@@ -37,20 +37,24 @@ export default function PartsTab({
 
   return (
     <Container>
-      <SelectedProduct id={type} />
-      <Button variant="default" fullWidth mb="sm" onClick={open}>
-        オプション
-      </Button>
-      <FilterOption
-        opened={opened}
-        close={close}
-        type={type}
-        dataSource={dataSource}
-        setConvertedProducts={setConvertedProducts}
-      />
-      <div className={classes.list}>
-        <ProductList id={type} products={convertedProducts!} />
-      </div>
+      <Flex direction="column" h="calc(100vh - var(--app-shell-header-height))">
+        <div>
+          <SelectedProduct id={type} />
+          <Button variant="default" fullWidth mb="sm" onClick={open}>
+            オプション
+          </Button>
+          <FilterOption
+            opened={opened}
+            close={close}
+            type={type}
+            dataSource={dataSource}
+            setConvertedProducts={setConvertedProducts}
+          />
+        </div>
+        <div className={classes.list}>
+          <ProductList id={type} products={convertedProducts!} />
+        </div>
+      </Flex>
     </Container>
   );
 }
