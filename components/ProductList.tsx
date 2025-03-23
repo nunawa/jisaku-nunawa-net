@@ -1,9 +1,17 @@
 import { selectedProductsAtom } from "@/jotai/atom";
-import styles from "@/styles/ProductCardLink.module.scss";
+import classes from "@/styles/ProductCardLink.module.scss";
 import { productInfo, productType } from "@/types";
+import {
+  ActionIcon,
+  Box,
+  Card,
+  Container,
+  Group,
+  Loader,
+  Text,
+} from "@mantine/core";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { Button, Card, Container, Spinner, Stack } from "react-bootstrap";
 import { BsPlusLg } from "react-icons/bs";
 import ProductCardText from "./ProductCardText";
 
@@ -20,20 +28,21 @@ export default function ProductList({
   if (products) {
     for (const iterator of products.slice(0, 30)) {
       productList.push(
-        <Card key={iterator.id} className="mb-2">
-          <Card.Header as="h5">
-            <Stack direction="horizontal">
-              <div className={"me-auto " + styles["div"]}>
+        <Card withBorder shadow="sm" padding="sm" mb="sm" key={iterator.id}>
+          <Card.Section withBorder inheritPadding py="xs">
+            <Group justify="space-between">
+              <Box className={classes.boxList}>
                 <Link
                   href={"https://kakaku.com/item/" + iterator.id}
-                  className={styles["link"]}
+                  rel="noreferrer"
+                  target="_blank"
+                  className={classes.link}
                 >
                   {iterator.manufacturer} {iterator.name}
                 </Link>
-              </div>
-              <Button
-                variant="primary"
-                className="ms-2"
+              </Box>
+              <ActionIcon
+                variant="filled"
                 onClick={() => {
                   let newSelectedProducts = Object.assign({}, selectedProducts);
                   newSelectedProducts[id] = iterator;
@@ -41,14 +50,18 @@ export default function ProductList({
                   setSelectedProducts(newSelectedProducts);
                 }}
               >
-                <BsPlusLg />
-              </Button>
-            </Stack>
-          </Card.Header>
-          <Card.Body>
-            <Card.Title>￥{iterator.price.toLocaleString()}</Card.Title>
-            <ProductCardText type={id} product={iterator} />
-          </Card.Body>
+                <BsPlusLg
+                  style={{ width: "70%", height: "70%" }}
+                  color="white"
+                />
+              </ActionIcon>
+            </Group>
+          </Card.Section>
+
+          <Text mt="xs" size="lg" fw={500}>
+            ￥{iterator.price.toLocaleString()}
+          </Text>
+          <ProductCardText type={id} product={iterator} />
         </Card>,
       );
     }
@@ -56,8 +69,8 @@ export default function ProductList({
     return productList;
   } else {
     return (
-      <Container style={{ textAlign: "center" }}>
-        <Spinner animation="border" />
+      <Container pt="sm" ta="center">
+        <Loader color="blue" />
       </Container>
     );
   }

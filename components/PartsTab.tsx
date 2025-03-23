@@ -1,6 +1,8 @@
-import { filterOptions, productInfo, productType } from "@/types";
+import classes from "@/styles/PartsTab.module.scss";
+import { productInfo, productType } from "@/types";
+import { Button, Container, Flex } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { Button, Container } from "react-bootstrap";
 import { DataSource } from "typeorm";
 import FilterOption from "./FilterOption";
 import ProductList from "./ProductList";
@@ -31,46 +33,28 @@ export default function PartsTab({
     }
   }, [dataSource, type]);
 
-  const [submittedFilterOption, setSubmittedFilterOption] =
-    useState<filterOptions>({
-      sort: "sales_rank_asc",
-      keyword: "",
-      min: "",
-      max: "",
-      cpu: undefined,
-      memory: undefined,
-      motherboard: undefined,
-      gpu: undefined,
-      ssd: undefined,
-      psu: undefined,
-      case: undefined,
-    });
-
-  const [show, setShow] = useState(false);
-
-  const handleShow = () => setShow(true);
-  const handleClose = () => setShow(false);
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
-    <>
-      <SelectedProduct id={type} />
-      <div className="d-grid gap-2 mb-3">
-        <Button variant="secondary" onClick={() => handleShow()}>
-          オプション
-        </Button>
-      </div>
-      <FilterOption
-        show={show}
-        handleClose={() => handleClose()}
-        type={type}
-        dataSource={dataSource}
-        setConvertedProducts={setConvertedProducts}
-        submittedFilterOption={submittedFilterOption}
-        setSubmittedFilterOption={setSubmittedFilterOption}
-      />
-      <Container style={{ height: "70vh" }} className="overflow-auto">
-        <ProductList id={type} products={convertedProducts!} />
-      </Container>
-    </>
+    <Container>
+      <Flex direction="column" h="calc(100vh - var(--app-shell-header-height))">
+        <div>
+          <SelectedProduct id={type} />
+          <Button variant="default" fullWidth mb="sm" onClick={open}>
+            オプション
+          </Button>
+          <FilterOption
+            opened={opened}
+            close={close}
+            type={type}
+            dataSource={dataSource}
+            setConvertedProducts={setConvertedProducts}
+          />
+        </div>
+        <div className={classes.list}>
+          <ProductList id={type} products={convertedProducts!} />
+        </div>
+      </Flex>
+    </Container>
   );
 }

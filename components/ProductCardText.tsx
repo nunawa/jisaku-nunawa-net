@@ -1,5 +1,24 @@
 import { formatKb } from "@/utils/formatKb";
-import { Badge, Card } from "react-bootstrap";
+import { Badge, Group } from "@mantine/core";
+
+function HideableBadge({
+  text,
+  suffix = "",
+}: {
+  text: string | null;
+  suffix?: string;
+}) {
+  if (text) {
+    return (
+      <Badge variant="default" tt="none">
+        {text}
+        {suffix}
+      </Badge>
+    );
+  } else {
+    return <></>;
+  }
+}
 
 export default function ProductCardText({
   type,
@@ -11,126 +30,84 @@ export default function ProductCardText({
   switch (type) {
     case "cpu":
       return (
-        <Card.Text>
-          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.frequency}GHz
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.socket}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.core_count}コア
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.thread_count}スレッド
-          </Badge>
-        </Card.Text>
+        <Group mt="xs" gap="5px">
+          <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
+          <HideableBadge text={product.frequency} suffix="GHz" />
+          <HideableBadge text={product.socket} />
+          <HideableBadge text={product.core_count} suffix="コア" />
+          <HideableBadge text={product.thread_count} suffix="スレッド" />
+        </Group>
       );
 
     case "memory":
       return (
-        <Card.Text>
-          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.capacity ? formatKb(product.capacity) : ""}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.pcs}枚
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.standard}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.interface}
-          </Badge>
-        </Card.Text>
+        <Group mt="xs" gap="5px">
+          <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
+          <HideableBadge
+            text={product.capacity ? formatKb(product.capacity) : null}
+          />
+          <HideableBadge text={product.pcs} suffix="枚" />
+          <HideableBadge text={product.standard} />
+          <HideableBadge text={product.interface} />
+        </Group>
       );
 
     case "motherboard":
       return (
-        <Card.Text>
-          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.form_factor}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.socket}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.chipset}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.memory}
-          </Badge>
-        </Card.Text>
+        <Group mt="xs" gap="5px">
+          <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
+          <HideableBadge text={product.form_factor} />
+          <HideableBadge text={product.socket} />
+          <HideableBadge text={product.chipset} />
+          <HideableBadge text={product.memory} />
+        </Group>
       );
 
     case "gpu":
       return (
-        <Card.Text>
-          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.bus_interface}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.standard}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.capacity ? formatKb(product.capacity) : ""}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {JSON.parse(product.monitor).join(" / ")}
-          </Badge>
-        </Card.Text>
+        <Group mt="xs" gap="5px">
+          <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
+          <HideableBadge text={product.bus_interface} />
+          <HideableBadge text={product.standard} />
+          <HideableBadge
+            text={product.capacity ? formatKb(product.capacity) : null}
+          />
+          <HideableBadge text={JSON.parse(product.monitor).join(" / ")} />
+        </Group>
       );
 
     case "ssd":
       return (
-        <Card.Text>
-          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.capacity ? formatKb(product.capacity) : ""}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.cell_type}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.size}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.interface}
-          </Badge>
-        </Card.Text>
+        <Group mt="xs" gap="5px">
+          <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
+          <HideableBadge
+            text={product.capacity ? formatKb(product.capacity) : null}
+          />
+          <HideableBadge text={product.cell_type} />
+          <HideableBadge text={product.size} />
+          <HideableBadge text={product.interface} />
+        </Group>
       );
 
     case "psu":
       return (
-        <Card.Text>
-          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.capacity}W
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.certification}
-          </Badge>
-        </Card.Text>
+        <Group mt="xs" gap="5px">
+          <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
+          <HideableBadge text={product.capacity} suffix="W" />
+          <HideableBadge text={product.certification} />
+        </Group>
       );
 
     case "case":
       return (
-        <Card.Text>
-          <Badge className="me-1">{product.sales_rank ?? "- "}位</Badge>
-          <Badge className="me-1" bg="secondary">
-            {JSON.parse(product.support_motherboard).join(" / ")}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.volume ? `${product.volume}L` : ""}
-          </Badge>
-          <Badge className="me-1" bg="secondary">
-            {product.psu_included ? "電源付属" : ""}
-          </Badge>
-        </Card.Text>
+        <Group mt="xs" gap="5px">
+          <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
+          <HideableBadge
+            text={JSON.parse(product.support_motherboard).join(" / ")}
+          />
+          <HideableBadge text={product.volume} suffix="L" />
+          <HideableBadge text={product.psu_included ? "電源付属" : null} />
+        </Group>
       );
 
     default:
