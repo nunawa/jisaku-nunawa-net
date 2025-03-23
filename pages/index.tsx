@@ -20,6 +20,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { default as NextImage } from "next/image";
 import Link from "next/link";
+import background from "@/public/background.png";
 
 const pageList = pages;
 
@@ -74,10 +75,11 @@ export default function Home() {
         <Flex direction="column" align="flex-start">
           <Image
             component={NextImage}
-            src="/background.png"
-            alt="background"
+            src={background}
             width={800}
             height={800}
+            priority={true}
+            alt="背景画像"
             className={classes.image}
           />
           <Overlay
