@@ -638,6 +638,30 @@ export default function FilterOption({
         );
       } else if (values.sort == "price_asc") {
         queryBuilder = queryBuilder.orderBy("price", undefined, "NULLS LAST");
+      } else if (
+        type === "cpu" &&
+        values.sort === "multi_thread_price_performance_desc"
+      ) {
+        queryBuilder = queryBuilder
+          .addSelect(
+            "CAST(multi_thread_score as REAL) / CAST(price as REAL)",
+            "multi_pp",
+          )
+          .orderBy("multi_pp", "DESC", "NULLS LAST");
+      } else if (
+        type === "cpu" &&
+        values.sort === "single_thread_price_performance_desc"
+      ) {
+        queryBuilder = queryBuilder
+          .addSelect(
+            "CAST(single_thread_score as REAL) / CAST(price as REAL)",
+            "single_pp",
+          )
+          .orderBy("single_pp", "DESC", "NULLS LAST");
+      } else if (type === "gpu" && values.sort === "price_performance_desc") {
+        queryBuilder = queryBuilder
+          .addSelect("CAST(score as REAL) / CAST(price as REAL)", "pp")
+          .orderBy("pp", "DESC", "NULLS LAST");
       }
 
       const productList = (await queryBuilder.getMany()) as productInfo[];
@@ -646,6 +670,34 @@ export default function FilterOption({
     }
 
     close();
+  }
+
+  let sortData = [
+    { value: "sales_rank_asc", label: "売上順" },
+    { value: "price_asc", label: "価格順" },
+  ];
+  if (type === "cpu") {
+    sortData = [
+      { value: "sales_rank_asc", label: "売上順" },
+      { value: "price_asc", label: "価格順" },
+      {
+        value: "multi_thread_price_performance_desc",
+        label: "コストパフォーマンス順（マルチスレッド）",
+      },
+      {
+        value: "single_thread_price_performance_desc",
+        label: "コストパフォーマンス順（シングルスレッド）",
+      },
+    ];
+  } else if (type === "gpu") {
+    sortData = [
+      { value: "sales_rank_asc", label: "売上順" },
+      { value: "price_asc", label: "価格順" },
+      {
+        value: "price_performance_desc",
+        label: "コストパフォーマンス順",
+      },
+    ];
   }
 
   return (
@@ -658,10 +710,7 @@ export default function FilterOption({
       <form onSubmit={form.onSubmit(onSubmit)}>
         <Stack>
           <Select
-            data={[
-              { value: "sales_rank_asc", label: "売上順" },
-              { value: "price_asc", label: "価格順" },
-            ]}
+            data={sortData}
             allowDeselect={false}
             key={form.key("sort")}
             {...form.getInputProps("sort")}
