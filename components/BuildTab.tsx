@@ -3,7 +3,7 @@ import SelectedProduct from "./SelectedProduct";
 import TotalPrice from "./TotalPrice";
 
 export default function BuildTab() {
-  let buildList = [];
+  const buildList = [];
 
   buildList.push(
     <div key="cpu">

@@ -15,7 +15,6 @@ export default function PartsTab({
   type: keyof productType;
   dataSource: DataSource | undefined;
 }) {
-  const [originProducts, setOriginProducts] = useState<productInfo[]>();
   const [convertedProducts, setConvertedProducts] = useState<productInfo[]>();
 
   useEffect(() => {
@@ -27,7 +26,6 @@ export default function PartsTab({
           `SELECT * FROM "${type}" LIMIT 30`,
         )) as productInfo[];
 
-        setOriginProducts(productList);
         setConvertedProducts(productList);
       })();
     }

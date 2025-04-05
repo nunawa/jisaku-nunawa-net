@@ -4,12 +4,17 @@ import memoryJson from "@/json/memory.json";
 import motherboardJson from "@/json/motherboard.json";
 import psuJson from "@/json/psu.json";
 import ssdJson from "@/json/ssd.json";
-import { productType } from "@/types";
+import { filterOptions, productType } from "@/types";
 import { formatKb } from "@/utils/formatKb";
 import { Accordion, Checkbox, Group, Stack } from "@mantine/core";
 import { UseFormReturnType } from "@mantine/form";
 
-function CpuAccordion(form: UseFormReturnType<any>) {
+function CpuAccordion(
+  form: UseFormReturnType<
+    filterOptions,
+    (values: filterOptions) => filterOptions
+  >,
+) {
   const coreCountList = cpuJson.core_count;
   const cpuSocketList = cpuJson.socket;
 
@@ -125,7 +130,12 @@ function CpuAccordion(form: UseFormReturnType<any>) {
   );
 }
 
-function MemoryAccordion(form: UseFormReturnType<any>) {
+function MemoryAccordion(
+  form: UseFormReturnType<
+    filterOptions,
+    (values: filterOptions) => filterOptions
+  >,
+) {
   const memoryCapacityList = memoryJson.capacity;
   const pcsList = memoryJson.pcs;
   const memoryStandardList = memoryJson.standard;
@@ -194,7 +204,7 @@ function MemoryAccordion(form: UseFormReturnType<any>) {
         <Accordion.Control>規格</Accordion.Control>
         <Accordion.Panel>
           <Stack mt="sm" gap="sm">
-            {memoryStandardList.map((value, index) => (
+            {memoryStandardList.map((value) => (
               <Checkbox
                 label={value}
                 key={form.key(`memory.standard.${value}`)}
@@ -210,7 +220,7 @@ function MemoryAccordion(form: UseFormReturnType<any>) {
         <Accordion.Control>インターフェース</Accordion.Control>
         <Accordion.Panel>
           <Stack mt="sm" gap="sm">
-            {memoryInterfaceList.map((value, index) => {
+            {memoryInterfaceList.map((value) => {
               const escapedValue = value.replaceAll(".", "_");
               return (
                 <Checkbox
@@ -229,7 +239,12 @@ function MemoryAccordion(form: UseFormReturnType<any>) {
   );
 }
 
-function MotherboardAccordion(form: UseFormReturnType<any>) {
+function MotherboardAccordion(
+  form: UseFormReturnType<
+    filterOptions,
+    (values: filterOptions) => filterOptions
+  >,
+) {
   const formFactorList = motherboardJson.form_factor;
   const motherboardSocketList = motherboardJson.socket;
   const chipsetList = motherboardJson.chipset;
@@ -244,7 +259,7 @@ function MotherboardAccordion(form: UseFormReturnType<any>) {
         <Accordion.Control>フォームファクタ</Accordion.Control>
         <Accordion.Panel>
           <Stack mt="sm" gap="sm">
-            {formFactorList.map((value, index) => (
+            {formFactorList.map((value) => (
               <Checkbox
                 label={value}
                 key={form.key(`motherboard.formFactor.${value}`)}
@@ -334,7 +349,7 @@ function MotherboardAccordion(form: UseFormReturnType<any>) {
         <Accordion.Control>メモリ</Accordion.Control>
         <Accordion.Panel>
           <Stack mt="sm" gap="sm">
-            {motherboardMemoryList.map((value, index) => {
+            {motherboardMemoryList.map((value) => {
               const escapedValue = value.replaceAll(".", "_");
               return (
                 <Checkbox
@@ -353,7 +368,12 @@ function MotherboardAccordion(form: UseFormReturnType<any>) {
   );
 }
 
-function GpuAccordion(form: UseFormReturnType<any>) {
+function GpuAccordion(
+  form: UseFormReturnType<
+    filterOptions,
+    (values: filterOptions) => filterOptions
+  >,
+) {
   const gpuNameList = gpuJson.gpu_name;
   const busList = gpuJson.bus_interface;
   const gpuStandardList = gpuJson.standard;
@@ -367,7 +387,7 @@ function GpuAccordion(form: UseFormReturnType<any>) {
         <Accordion.Control>GPU</Accordion.Control>
         <Accordion.Panel>
           <Stack mt="sm" gap="sm">
-            {gpuNameList.map((value, index) => (
+            {gpuNameList.map((value) => (
               <Checkbox
                 label={value}
                 key={form.key(`gpu.gpuName.${value}`)}
@@ -383,7 +403,7 @@ function GpuAccordion(form: UseFormReturnType<any>) {
         <Accordion.Control>バスインターフェース</Accordion.Control>
         <Accordion.Panel>
           <Stack mt="sm" gap="sm">
-            {busList.map((value, index) => {
+            {busList.map((value) => {
               const escapedValue = value.replaceAll(".", "_");
               return (
                 <Checkbox
@@ -476,7 +496,12 @@ function GpuAccordion(form: UseFormReturnType<any>) {
   );
 }
 
-function SsdAccordion(form: UseFormReturnType<any>) {
+function SsdAccordion(
+  form: UseFormReturnType<
+    filterOptions,
+    (values: filterOptions) => filterOptions
+  >,
+) {
   const ssdCapacityList = ssdJson.capacity;
   const sizeList = ssdJson.size;
   const ssdInterfaceList = ssdJson.interface;
@@ -526,7 +551,7 @@ function SsdAccordion(form: UseFormReturnType<any>) {
         <Accordion.Control>サイズ</Accordion.Control>
         <Accordion.Panel>
           <Stack mt="sm" gap="sm">
-            {sizeList.map((value, index) => {
+            {sizeList.map((value) => {
               const escapedValue = value.replace(".", "_");
               return (
                 <Checkbox
@@ -545,7 +570,7 @@ function SsdAccordion(form: UseFormReturnType<any>) {
         <Accordion.Control>インターフェース</Accordion.Control>
         <Accordion.Panel>
           <Stack mt="sm" gap="sm">
-            {ssdInterfaceList.map((value, index) => (
+            {ssdInterfaceList.map((value) => (
               <Checkbox
                 label={value}
                 key={form.key(`ssd.interface.${value}`)}
@@ -561,7 +586,12 @@ function SsdAccordion(form: UseFormReturnType<any>) {
   );
 }
 
-function PsuAccordion(form: UseFormReturnType<any>) {
+function PsuAccordion(
+  form: UseFormReturnType<
+    filterOptions,
+    (values: filterOptions) => filterOptions
+  >,
+) {
   const psuCapacityList = psuJson.capacity;
   const psuCertificationList = psuJson.certification;
 
@@ -628,7 +658,7 @@ function PsuAccordion(form: UseFormReturnType<any>) {
         <Accordion.Control>認証</Accordion.Control>
         <Accordion.Panel>
           <Stack mt="sm" gap="sm">
-            {psuCertificationList.map((value, index) => (
+            {psuCertificationList.map((value) => (
               <Checkbox
                 label={value}
                 key={form.key(`psu.certification.${value}`)}
@@ -644,7 +674,12 @@ function PsuAccordion(form: UseFormReturnType<any>) {
   );
 }
 
-function CaseAccordion(form: UseFormReturnType<any>) {
+function CaseAccordion(
+  form: UseFormReturnType<
+    filterOptions,
+    (values: filterOptions) => filterOptions
+  >,
+) {
   return (
     <Accordion>
       <Accordion.Item key="case-psu-included" value="case-psu-included">
@@ -677,7 +712,10 @@ export default function Accordions({
   form,
 }: {
   type: keyof productType;
-  form: UseFormReturnType<any>;
+  form: UseFormReturnType<
+    filterOptions,
+    (values: filterOptions) => filterOptions
+  >;
 }) {
   switch (type) {
     case "cpu":

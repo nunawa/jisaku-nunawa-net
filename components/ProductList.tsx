@@ -23,7 +23,7 @@ export default function ProductList({
   products: productInfo[];
 }) {
   const [selectedProducts, setSelectedProducts] = useAtom(selectedProductsAtom);
-  let productList = [];
+  const productList = [];
 
   if (products) {
     for (const iterator of products.slice(0, 30)) {
