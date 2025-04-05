@@ -25,7 +25,6 @@
     "typeorm": "^0.3.22"
   },
   "devDependencies": {
-    "@swc-jotai/react-refresh": "^0.3.0",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
