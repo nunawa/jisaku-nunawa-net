@@ -17,7 +17,7 @@ const fetcher: Fetcher<ArrayBuffer, string> = (url) =>
   fetch(url).then((res) => res.arrayBuffer());
 
 function useBuf() {
-  let { data } = useSWRImmutable(
+  const { data } = useSWRImmutable(
     "https://bucket.nunawa.net/parts_latest.db",
     fetcher,
   );
@@ -47,7 +47,6 @@ export default function Psu() {
   useEffect(() => {
     if (buf && sql) {
       (async () => {
-        // @ts-ignore
         globalThis.SQL = sql;
 
         const dataSource = new DataSource({

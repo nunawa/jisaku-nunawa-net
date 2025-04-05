@@ -1,5 +1,6 @@
 import { formatKb } from "@/utils/formatKb";
 import { Badge, Group } from "@mantine/core";
+import { productInfo, productType } from "@/types";
 
 function HideableBadge({
   text,
@@ -24,8 +25,8 @@ export default function ProductCardText({
   type,
   product,
 }: {
-  type: any;
-  product: any;
+  type: keyof productType;
+  product: productInfo;
 }) {
   switch (type) {
     case "cpu":
