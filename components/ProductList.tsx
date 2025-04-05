@@ -44,9 +44,10 @@ export default function ProductList({
               <ActionIcon
                 variant="filled"
                 onClick={() => {
-                  let newSelectedProducts = Object.assign({}, selectedProducts);
-                  newSelectedProducts[id] = iterator;
-                  // ここで無限ループ😇
+                  const newSelectedProducts = {
+                    ...selectedProducts,
+                    [id]: iterator,
+                  };
                   setSelectedProducts(newSelectedProducts);
                 }}
               >

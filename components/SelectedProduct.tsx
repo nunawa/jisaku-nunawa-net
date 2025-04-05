@@ -1,13 +1,14 @@
 import { selectedProductsAtom } from "@/jotai/atom";
 import classes from "@/styles/ProductCardLink.module.scss";
 import { productType } from "@/types";
-import { Box, Card, Group, Text } from "@mantine/core";
-import { useAtomValue } from "jotai";
+import { ActionIcon, Box, Card, Group, Text } from "@mantine/core";
+import { useAtom } from "jotai";
 import Link from "next/link";
+import { BsTrashFill } from "react-icons/bs";
 import ProductCardText from "./ProductCardText";
 
 export default function SelectedProduct({ id }: { id: keyof productType }) {
-  const selectedProducts = useAtomValue(selectedProductsAtom);
+  const [selectedProducts, setSelectedProducts] = useAtom(selectedProductsAtom);
   const product = selectedProducts[id];
 
   if (product) {
@@ -25,7 +26,19 @@ export default function SelectedProduct({ id }: { id: keyof productType }) {
                 {product.manufacturer} {product.name}
               </Link>
             </Box>
-            <Text c="dimmed">選択中</Text>
+            <ActionIcon
+              variant="filled"
+              color="red"
+              onClick={() => {
+                const newSelectedProducts = { ...selectedProducts, [id]: null };
+                setSelectedProducts(newSelectedProducts);
+              }}
+            >
+              <BsTrashFill
+                style={{ width: "70%", height: "70%" }}
+                color="white"
+              />
+            </ActionIcon>
           </Group>
         </Card.Section>
 
