@@ -30,8 +30,7 @@ export default function SelectedProduct({ id }: { id: keyof productType }) {
               variant="filled"
               color="red"
               onClick={() => {
-                let newSelectedProducts = Object.assign({}, selectedProducts);
-                newSelectedProducts[id] = null;
+                const newSelectedProducts = { ...selectedProducts, [id]: null };
                 setSelectedProducts(newSelectedProducts);
               }}
             >
