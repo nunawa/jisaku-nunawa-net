@@ -1,17 +1,18 @@
 # jisaku-nunawa-net
 
-[![reviewdog](https://github.com/nunawa/jisaku-nunawa-net/actions/workflows/reviewdog.yml/badge.svg)](https://github.com/nunawa/jisaku-nunawa-net/actions/workflows/reviewdog.yml)
+[![lint-and-format](https://github.com/nunawa/jisaku-nunawa-net/actions/workflows/lint-and-format.yml/badge.svg)](https://github.com/nunawa/jisaku-nunawa-net/actions/workflows/lint-and-format.yml)
 
 Frontend source code for online pc builder [jisaku.nunawa.net](https://jisaku.nunawa.net/)
 
 ## Tech Stack
 
+- [TypeScript](https://www.typescriptlang.org/)
 - [React](https://ja.react.dev/)
 - [Next.js](https://nextjs.org/)
-- [React Bootstrap](https://react-bootstrap.netlify.app/)
-- [React Hook Form](https://www.react-hook-form.com/)
+- [Mantine](https://mantine.dev/)
 - [React Icons](https://react-icons.github.io/react-icons/)
 - [sql.js](https://sql.js.org/#/)
+- [TypeORM](https://typeorm.io/)
 - [Jotai](https://jotai.org/)
 - [SWR](https://swr.vercel.app/ja)
 
