@@ -1,7 +1,9 @@
+"use client";
+
 import PartsTab from "@/components/PartsTab";
 import { ThemeDropdown } from "@/components/ThemeDropdown";
 import TotalPrice from "@/components/TotalPrice";
-import { Memory as MemoryEntity } from "@/db/Memory";
+import { Case as CaseEntity } from "@/db/Case";
 import pages from "@/utils/pages.json";
 import { Anchor, AppShell, Burger, Group, NavLink } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -29,7 +31,7 @@ function useBuf() {
 
 const pageList = pages;
 
-export default function Memory() {
+export default function Case() {
   const { buf } = useBuf();
   const [sql, setSql] = useState<initSqlJs.SqlJsStatic>();
   const [dataSource, setDatasource] = useState<DataSource>();
@@ -51,7 +53,7 @@ export default function Memory() {
 
         const dataSource = new DataSource({
           type: "sqljs",
-          entities: [MemoryEntity],
+          entities: [CaseEntity],
           database: new Uint8Array(buf),
         });
 
@@ -97,7 +99,7 @@ export default function Memory() {
       </AppShell.Header>
       <AppShell.Navbar p="md">
         {pageList.map((x) => {
-          if (x.key === "memory") {
+          if (x.key === "case") {
             return <NavLink key={x.key} label={x.name} active />;
           } else {
             return (
@@ -118,7 +120,7 @@ export default function Memory() {
         />
       </AppShell.Navbar>
       <AppShell.Main>
-        <PartsTab type="memory" dataSource={dataSource} />
+        <PartsTab type="case" dataSource={dataSource} />
       </AppShell.Main>
     </AppShell>
   );

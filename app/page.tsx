@@ -1,3 +1,5 @@
+"use client";
+
 import { ThemeDropdown } from "@/components/ThemeDropdown";
 import TotalPrice from "@/components/TotalPrice";
 import classes from "@/styles/index.module.scss";

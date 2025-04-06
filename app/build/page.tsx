@@ -1,3 +1,5 @@
+"use client";
+
 import BuildTab from "@/components/BuildTab";
 import { ThemeDropdown } from "@/components/ThemeDropdown";
 import TotalPrice from "@/components/TotalPrice";
