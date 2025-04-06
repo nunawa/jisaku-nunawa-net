@@ -7,7 +7,7 @@ import Link from "next/link";
 import { BsTrashFill } from "react-icons/bs";
 import ProductCardText from "./ProductCardText";
 
-export default function SelectedProduct({ id }: { id: keyof productType }) {
+export default function SelectedProduct({ id }: { id: productType }) {
   const [selectedProducts, setSelectedProducts] = useAtom(selectedProductsAtom);
   const product = selectedProducts[id];
 
@@ -43,7 +43,7 @@ export default function SelectedProduct({ id }: { id: keyof productType }) {
         </Card.Section>
 
         <Text mt="xs" size="lg" fw={500}>
-          ￥{product.price.toLocaleString()}
+          ￥{product.price?.toLocaleString()}
         </Text>
         <ProductCardText type={id} product={product} />
       </Card>

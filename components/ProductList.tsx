@@ -19,11 +19,11 @@ export default function ProductList({
   id,
   products,
 }: {
-  id: keyof productType;
+  id: productType;
   products: productInfo[];
 }) {
   const [selectedProducts, setSelectedProducts] = useAtom(selectedProductsAtom);
-  let productList = [];
+  const productList = [];
 
   if (products) {
     for (const iterator of products.slice(0, 30)) {
@@ -60,7 +60,7 @@ export default function ProductList({
           </Card.Section>
 
           <Text mt="xs" size="lg" fw={500}>
-            ￥{iterator.price.toLocaleString()}
+            ￥{iterator.price?.toLocaleString()}
           </Text>
           <ProductCardText type={id} product={iterator} />
         </Card>,
