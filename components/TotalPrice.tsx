@@ -6,7 +6,7 @@ export default function TotalPrice() {
 
   let totalPrice = 0;
   for (const iterator of Object.values(selectedProducts)) {
-    if (iterator) {
+    if (iterator?.price) {
       totalPrice += iterator.price;
     }
   }
