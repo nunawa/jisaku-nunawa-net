@@ -1,7 +1,9 @@
+"use client";
+
 import PartsTab from "@/components/PartsTab";
 import { ThemeDropdown } from "@/components/ThemeDropdown";
 import TotalPrice from "@/components/TotalPrice";
-import { Gpu as GpuEntity } from "@/db/Gpu";
+import { Cpu as CpuEntity } from "@/db/Cpu";
 import pages from "@/utils/pages.json";
 import { Anchor, AppShell, Burger, Group, NavLink } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -29,7 +31,7 @@ function useBuf() {
 
 const pageList = pages;
 
-export default function Gpu() {
+export default function Cpu() {
   const { buf } = useBuf();
   const [sql, setSql] = useState<initSqlJs.SqlJsStatic>();
   const [dataSource, setDatasource] = useState<DataSource>();
@@ -51,7 +53,7 @@ export default function Gpu() {
 
         const dataSource = new DataSource({
           type: "sqljs",
-          entities: [GpuEntity],
+          entities: [CpuEntity],
           database: new Uint8Array(buf),
         });
 
@@ -97,7 +99,7 @@ export default function Gpu() {
       </AppShell.Header>
       <AppShell.Navbar p="md">
         {pageList.map((x) => {
-          if (x.key === "gpu") {
+          if (x.key === "cpu") {
             return <NavLink key={x.key} label={x.name} active />;
           } else {
             return (
@@ -118,7 +120,7 @@ export default function Gpu() {
         />
       </AppShell.Navbar>
       <AppShell.Main>
-        <PartsTab type="gpu" dataSource={dataSource} />
+        <PartsTab type="cpu" dataSource={dataSource} />
       </AppShell.Main>
     </AppShell>
   );

@@ -1,7 +1,9 @@
+"use client";
+
 import PartsTab from "@/components/PartsTab";
 import { ThemeDropdown } from "@/components/ThemeDropdown";
 import TotalPrice from "@/components/TotalPrice";
-import { Psu as PsuEntity } from "@/db/Psu";
+import { Memory as MemoryEntity } from "@/db/Memory";
 import pages from "@/utils/pages.json";
 import { Anchor, AppShell, Burger, Group, NavLink } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -29,7 +31,7 @@ function useBuf() {
 
 const pageList = pages;
 
-export default function Psu() {
+export default function Memory() {
   const { buf } = useBuf();
   const [sql, setSql] = useState<initSqlJs.SqlJsStatic>();
   const [dataSource, setDatasource] = useState<DataSource>();
@@ -51,7 +53,7 @@ export default function Psu() {
 
         const dataSource = new DataSource({
           type: "sqljs",
-          entities: [PsuEntity],
+          entities: [MemoryEntity],
           database: new Uint8Array(buf),
         });
 
@@ -97,7 +99,7 @@ export default function Psu() {
       </AppShell.Header>
       <AppShell.Navbar p="md">
         {pageList.map((x) => {
-          if (x.key === "psu") {
+          if (x.key === "memory") {
             return <NavLink key={x.key} label={x.name} active />;
           } else {
             return (
@@ -118,7 +120,7 @@ export default function Psu() {
         />
       </AppShell.Navbar>
       <AppShell.Main>
-        <PartsTab type="psu" dataSource={dataSource} />
+        <PartsTab type="memory" dataSource={dataSource} />
       </AppShell.Main>
     </AppShell>
   );

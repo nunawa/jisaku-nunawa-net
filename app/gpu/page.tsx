@@ -1,7 +1,9 @@
+"use client";
+
 import PartsTab from "@/components/PartsTab";
 import { ThemeDropdown } from "@/components/ThemeDropdown";
 import TotalPrice from "@/components/TotalPrice";
-import { Ssd as SsdEntity } from "@/db/Ssd";
+import { Gpu as GpuEntity } from "@/db/Gpu";
 import pages from "@/utils/pages.json";
 import { Anchor, AppShell, Burger, Group, NavLink } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -29,7 +31,7 @@ function useBuf() {
 
 const pageList = pages;
 
-export default function Ssd() {
+export default function Gpu() {
   const { buf } = useBuf();
   const [sql, setSql] = useState<initSqlJs.SqlJsStatic>();
   const [dataSource, setDatasource] = useState<DataSource>();
@@ -51,7 +53,7 @@ export default function Ssd() {
 
         const dataSource = new DataSource({
           type: "sqljs",
-          entities: [SsdEntity],
+          entities: [GpuEntity],
           database: new Uint8Array(buf),
         });
 
@@ -97,7 +99,7 @@ export default function Ssd() {
       </AppShell.Header>
       <AppShell.Navbar p="md">
         {pageList.map((x) => {
-          if (x.key === "ssd") {
+          if (x.key === "gpu") {
             return <NavLink key={x.key} label={x.name} active />;
           } else {
             return (
@@ -118,7 +120,7 @@ export default function Ssd() {
         />
       </AppShell.Navbar>
       <AppShell.Main>
-        <PartsTab type="ssd" dataSource={dataSource} />
+        <PartsTab type="gpu" dataSource={dataSource} />
       </AppShell.Main>
     </AppShell>
   );
