@@ -12,7 +12,7 @@ export default function PartsTab({
   type,
   dataSource,
 }: {
-  type: keyof productType;
+  type: productType;
   dataSource: DataSource | undefined;
 }) {
   const [convertedProducts, setConvertedProducts] = useState<productInfo[]>();

@@ -711,7 +711,7 @@ export default function Accordions({
   type,
   form,
 }: {
-  type: keyof productType;
+  type: productType;
   form: UseFormReturnType<
     filterOptions,
     (values: filterOptions) => filterOptions
