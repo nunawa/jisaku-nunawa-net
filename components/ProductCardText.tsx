@@ -1,12 +1,19 @@
+import { Case } from "@/db/Case";
+import { Cpu } from "@/db/Cpu";
+import { Gpu } from "@/db/Gpu";
+import { Memory } from "@/db/Memory";
+import { Motherboard } from "@/db/Motherboard";
+import { Psu } from "@/db/Psu";
+import { Ssd } from "@/db/Ssd";
+import { productInfo, productType } from "@/types";
 import { formatKb } from "@/utils/formatKb";
 import { Badge, Group } from "@mantine/core";
-import { productInfo, productType } from "@/types";
 
 function HideableBadge({
   text,
   suffix = "",
 }: {
-  text: string | null;
+  text: string | number | null;
   suffix?: string;
 }) {
   if (text) {
@@ -25,11 +32,12 @@ export default function ProductCardText({
   type,
   product,
 }: {
-  type: keyof productType;
+  type: productType;
   product: productInfo;
 }) {
   switch (type) {
     case "cpu":
+      product = product as Cpu;
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
@@ -41,6 +49,7 @@ export default function ProductCardText({
       );
 
     case "memory":
+      product = product as Memory;
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
@@ -54,6 +63,7 @@ export default function ProductCardText({
       );
 
     case "motherboard":
+      product = product as Motherboard;
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
@@ -65,6 +75,7 @@ export default function ProductCardText({
       );
 
     case "gpu":
+      product = product as Gpu;
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
@@ -73,11 +84,16 @@ export default function ProductCardText({
           <HideableBadge
             text={product.capacity ? formatKb(product.capacity) : null}
           />
-          <HideableBadge text={JSON.parse(product.monitor).join(" / ")} />
+          <HideableBadge
+            text={
+              product.monitor ? JSON.parse(product.monitor).join(" / ") : null
+            }
+          />
         </Group>
       );
 
     case "ssd":
+      product = product as Ssd;
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
@@ -91,6 +107,7 @@ export default function ProductCardText({
       );
 
     case "psu":
+      product = product as Psu;
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
@@ -100,11 +117,16 @@ export default function ProductCardText({
       );
 
     case "case":
+      product = product as Case;
       return (
         <Group mt="xs" gap="5px">
           <Badge tt="none">{product.sales_rank ?? "- "}位</Badge>
           <HideableBadge
-            text={JSON.parse(product.support_motherboard).join(" / ")}
+            text={
+              product.support_motherboard
+                ? JSON.parse(product.support_motherboard).join(" / ")
+                : null
+            }
           />
           <HideableBadge text={product.volume} suffix="L" />
           <HideableBadge text={product.psu_included ? "電源付属" : null} />

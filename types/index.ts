@@ -1,19 +1,21 @@
-export type productInfo = {
-  id: string;
-  name: string;
-  price: number;
-  manufacturer: string;
-};
+import { Case } from "@/db/Case";
+import { Cpu } from "@/db/Cpu";
+import { Gpu } from "@/db/Gpu";
+import { Memory } from "@/db/Memory";
+import { Motherboard } from "@/db/Motherboard";
+import { Psu } from "@/db/Psu";
+import { Ssd } from "@/db/Ssd";
 
-export type productType = {
-  cpu: productInfo | null;
-  memory: productInfo | null;
-  motherboard: productInfo | null;
-  gpu: productInfo | null;
-  ssd: productInfo | null;
-  psu: productInfo | null;
-  case: productInfo | null;
-};
+export type productInfo = Cpu | Memory | Gpu | Motherboard | Ssd | Psu | Case;
+
+export type productType =
+  | "cpu"
+  | "memory"
+  | "motherboard"
+  | "gpu"
+  | "ssd"
+  | "psu"
+  | "case";
 
 export type cpuFilterOption = {
   coreCount: Record<number, boolean>;
