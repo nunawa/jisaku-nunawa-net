@@ -474,7 +474,7 @@ export default function FilterOption({
 }: {
   opened: boolean;
   close: () => void;
-  type: keyof productType;
+  type: productType;
   dataSource: DataSource | undefined;
   setConvertedProducts: Dispatch<SetStateAction<productInfo[] | undefined>>;
 }) {
