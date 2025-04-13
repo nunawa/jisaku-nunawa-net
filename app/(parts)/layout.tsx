@@ -9,7 +9,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Page({ children }: { children: React.ReactNode }) {
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle, close }] = useDisclosure();
   const pathname = usePathname();
 
   return (
@@ -56,6 +56,7 @@ export default function Page({ children }: { children: React.ReactNode }) {
                 label={x.name}
                 component={Link}
                 href={`/${x.key}`}
+                onClick={() => close()}
               />
             );
           }
