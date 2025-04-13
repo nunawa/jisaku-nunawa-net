@@ -33,7 +33,8 @@ export default function PartsMain({
   entity,
 }: {
   type: productType;
-  entity: productInfo;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  entity: Function;
 }) {
   const [sql, setSql] = useState<initSqlJs.SqlJsStatic>();
   const { buf } = useBuf();
@@ -56,8 +57,7 @@ export default function PartsMain({
 
         const dataSource = new DataSource({
           type: "sqljs",
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-          entities: [entity as unknown as Function],
+          entities: [entity],
           database: new Uint8Array(buf),
         });
 
