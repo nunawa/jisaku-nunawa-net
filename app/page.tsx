@@ -1,4 +1,6 @@
-import { ThemeDropdown } from "@/components/ThemeDropdown";
+"use client";
+
+import { ThemeButton } from "@/components/ThemeButton";
 import TotalPrice from "@/components/TotalPrice";
 import classes from "@/styles/index.module.scss";
 import pages from "@/utils/pages.json";
@@ -52,7 +54,7 @@ export default function Home() {
               jisaku.nunawa.net
             </Anchor>
           </Group>
-          <ThemeDropdown />
+          <ThemeButton />
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">

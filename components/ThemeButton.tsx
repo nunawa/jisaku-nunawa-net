@@ -7,7 +7,7 @@ import {
 } from "@mantine/core";
 import { BsMoonFill, BsSunFill } from "react-icons/bs";
 
-export function ThemeDropdown() {
+export function ThemeButton() {
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme("light", {
     getInitialValueInEffect: true,

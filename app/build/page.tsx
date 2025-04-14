@@ -1,5 +1,7 @@
-import BuildTab from "@/components/BuildTab";
-import { ThemeDropdown } from "@/components/ThemeDropdown";
+"use client";
+
+import BuildMain from "@/components/BuildMain";
+import { ThemeButton } from "@/components/ThemeButton";
 import TotalPrice from "@/components/TotalPrice";
 import pages from "@/utils/pages.json";
 import { Anchor, AppShell, Burger, Group, NavLink } from "@mantine/core";
@@ -41,7 +43,7 @@ export default function Cpu() {
               jisaku.nunawa.net
             </Anchor>
           </Group>
-          <ThemeDropdown />
+          <ThemeButton />
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
@@ -56,7 +58,7 @@ export default function Cpu() {
         <NavLink key="build" label={<TotalPrice />} active />
       </AppShell.Navbar>
       <AppShell.Main>
-        <BuildTab />
+        <BuildMain />
       </AppShell.Main>
     </AppShell>
   );
