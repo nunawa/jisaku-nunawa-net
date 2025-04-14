@@ -4,7 +4,7 @@ import TotalPrice from "./TotalPrice";
 import pages from "@/utils/pages.json";
 import { productType } from "@/types";
 
-export default function BuildTab() {
+export default function BuildMain() {
   const buildList = [];
 
   for (const page of pages) {
