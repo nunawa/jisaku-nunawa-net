@@ -1,8 +1,8 @@
-import { Container, Title } from "@mantine/core";
-import SelectedProduct from "./SelectedProduct";
-import TotalPrice from "./TotalPrice";
-import pages from "@/utils/pages.json";
 import { productType } from "@/types";
+import pages from "@/utils/pages.json";
+import { Container, Title } from "@mantine/core";
+import { ProductCard } from "./ProductCard";
+import TotalPrice from "./TotalPrice";
 
 export default function BuildMain() {
   const buildList = [];
@@ -11,7 +11,7 @@ export default function BuildMain() {
     buildList.push(
       <div key={page.key}>
         <Title size="lg">{page.name}</Title>
-        <SelectedProduct id={page.key as productType} />
+        <ProductCard.Selected type={page.key as productType} />
       </div>,
     );
   }

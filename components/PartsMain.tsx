@@ -2,17 +2,16 @@
 
 import classes from "@/styles/PartsMain.module.scss";
 import { productInfo, productType } from "@/types";
-import { Button, Container, Flex } from "@mantine/core";
+import { Button, Container, Flex, Loader } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { DataSource } from "typeorm";
-import FilterOption from "./FilterOption";
-import ProductList from "./ProductList";
-import SelectedProduct from "./SelectedProduct";
-import { Fetcher } from "swr";
-import useSWRImmutable from "swr/immutable";
 import "reflect-metadata";
 import initSqlJs from "sql.js";
+import { Fetcher } from "swr";
+import useSWRImmutable from "swr/immutable";
+import { DataSource } from "typeorm";
+import FilterOption from "./FilterOption";
+import { ProductCard } from "./ProductCard";
 
 const fetcher: Fetcher<ArrayBuffer, string> = (url) =>
   fetch(url).then((res) => res.arrayBuffer());
@@ -26,6 +25,35 @@ function useBuf() {
   return {
     buf: data,
   };
+}
+
+function ProductList({
+  type,
+  products,
+}: {
+  type: productType;
+  products: productInfo[] | undefined;
+}) {
+  if (!products) {
+    return (
+      <Container pt="sm" ta="center">
+        <Loader color="blue" />
+      </Container>
+    );
+  }
+
+  const productCardList = [];
+  for (const product of products.slice(0, 30)) {
+    productCardList.push(
+      <ProductCard.ListElement
+        key={product.id}
+        type={type}
+        product={product}
+      />,
+    );
+  }
+
+  return productCardList;
 }
 
 export default function PartsMain({
@@ -79,7 +107,7 @@ export default function PartsMain({
     <Container>
       <Flex direction="column" h="calc(100vh - var(--app-shell-header-height))">
         <div>
-          <SelectedProduct id={type} />
+          <ProductCard.Selected type={type} />
           <Button variant="default" fullWidth mb="sm" onClick={open}>
             オプション
           </Button>
@@ -92,7 +120,7 @@ export default function PartsMain({
           />
         </div>
         <div className={classes.list}>
-          <ProductList id={type} products={convertedProducts!} />
+          <ProductList type={type} products={convertedProducts} />
         </div>
       </Flex>
     </Container>
