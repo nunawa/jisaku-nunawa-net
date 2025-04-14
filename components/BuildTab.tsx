@@ -1,52 +1,20 @@
 import { Container, Title } from "@mantine/core";
 import SelectedProduct from "./SelectedProduct";
 import TotalPrice from "./TotalPrice";
+import pages from "@/utils/pages.json";
+import { productType } from "@/types";
 
 export default function BuildTab() {
   const buildList = [];
 
-  buildList.push(
-    <div key="cpu">
-      <Title size="lg">CPU</Title>
-      <SelectedProduct id="cpu" />
-    </div>,
-  );
-  buildList.push(
-    <div key="memory">
-      <Title size="lg">メモリ</Title>
-      <SelectedProduct id="memory" />
-    </div>,
-  );
-  buildList.push(
-    <div key="motherboard">
-      <Title size="lg">マザーボード</Title>
-      <SelectedProduct id="motherboard" />
-    </div>,
-  );
-  buildList.push(
-    <div key="gpu">
-      <Title size="lg">GPU</Title>
-      <SelectedProduct id="gpu" />
-    </div>,
-  );
-  buildList.push(
-    <div key="ssd">
-      <Title size="lg">SSD</Title>
-      <SelectedProduct id="ssd" />
-    </div>,
-  );
-  buildList.push(
-    <div key="psu">
-      <Title size="lg">電源</Title>
-      <SelectedProduct id="psu" />
-    </div>,
-  );
-  buildList.push(
-    <div key="case">
-      <Title size="lg">ケース</Title>
-      <SelectedProduct id="case" />
-    </div>,
-  );
+  for (const page of pages) {
+    buildList.push(
+      <div key={page.key}>
+        <Title size="lg">{page.name}</Title>
+        <SelectedProduct id={page.key as productType} />
+      </div>,
+    );
+  }
 
   buildList.push(
     <div key="total">
