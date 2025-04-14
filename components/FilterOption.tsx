@@ -32,8 +32,45 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Dispatch, SetStateAction } from "react";
-import { Brackets, DataSource, SelectQueryBuilder } from "typeorm";
+import { DataSource, SelectQueryBuilder } from "typeorm";
 import Accordions from "./Accordions";
+
+function createRandomString(length: number) {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+function addInCondition(
+  queryBuilder:
+    | SelectQueryBuilder<Cpu>
+    | SelectQueryBuilder<Memory>
+    | SelectQueryBuilder<Motherboard>
+    | SelectQueryBuilder<Gpu>
+    | SelectQueryBuilder<Ssd>
+    | SelectQueryBuilder<Psu>
+    | SelectQueryBuilder<Case>,
+  columnName: string,
+  values: Record<string | number, boolean>,
+) {
+  const selectedValues = Object.entries(values)
+    .filter(([, isSelected]) => isSelected)
+    .map(([key]) => (key.includes("_") ? key.replaceAll("_", ".") : key));
+
+  if (selectedValues.length > 0) {
+    // パラメータ名を一意にするため6桁のランダムな文字列を追加
+    const paramName = `${columnName}_${createRandomString(6)}`;
+    return queryBuilder.andWhere(`${columnName} IN (:...${paramName})`, {
+      [paramName]: selectedValues,
+    }) as typeof queryBuilder;
+  }
+
+  return queryBuilder;
+}
 
 function addCpuQuery(
   queryBuilder: SelectQueryBuilder<Cpu>,
@@ -41,41 +78,17 @@ function addCpuQuery(
 ) {
   let resultQueryBuilder = queryBuilder;
 
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "core_count",
+    values.coreCount,
+  ) as SelectQueryBuilder<Cpu>;
 
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.coreCount)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`core_count = :coreCount${suffix}`, {
-            [`coreCount${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
-
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.socket)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`socket = :socket${suffix}`, {
-            [`socket${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "socket",
+    values.socket,
+  ) as SelectQueryBuilder<Cpu>;
 
   if (values.igpu.yes === true && values.igpu.no === false) {
     resultQueryBuilder = resultQueryBuilder.andWhere("gpu IS NOT NULL");
@@ -92,78 +105,29 @@ function addMemoryQuery(
 ) {
   let resultQueryBuilder = queryBuilder;
 
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "capacity",
+    values.capacity,
+  ) as SelectQueryBuilder<Memory>;
 
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.capacity)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`capacity = :capacity${suffix}`, {
-            [`capacity${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "pcs",
+    values.pcs,
+  ) as SelectQueryBuilder<Memory>;
 
-      return resultQb;
-    }),
-  );
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "standard",
+    values.standard,
+  ) as SelectQueryBuilder<Memory>;
 
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.pcs)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`pcs = :pcs${suffix}`, {
-            [`pcs${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
-
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.standard)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`standard = :standard${suffix}`, {
-            [`standard${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
-
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.interface)) {
-        if (isSelected === true) {
-          const restoredKey = key.replaceAll("_", ".");
-          resultQb = resultQb.orWhere(`interface = :interface${suffix}`, {
-            [`interface${suffix}`]: restoredKey,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "interface",
+    values.interface,
+  ) as SelectQueryBuilder<Memory>;
 
   return resultQueryBuilder;
 }
@@ -174,77 +138,29 @@ function addMotherboardQuery(
 ) {
   let resultQueryBuilder = queryBuilder;
 
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "form_factor",
+    values.formFactor,
+  ) as SelectQueryBuilder<Motherboard>;
 
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.formFactor)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`form_factor = :formFactor${suffix}`, {
-            [`formFactor${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "socket",
+    values.socket,
+  ) as SelectQueryBuilder<Motherboard>;
 
-      return resultQb;
-    }),
-  );
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "chipset",
+    values.chipset,
+  ) as SelectQueryBuilder<Motherboard>;
 
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.socket)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`socket = :socket${suffix}`, {
-            [`socket${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
-
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.chipset)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`chipset = :chipset${suffix}`, {
-            [`chipset${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
-
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.memory)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`memory = :memory${suffix}`, {
-            [`memory${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "memory",
+    values.memory,
+  ) as SelectQueryBuilder<Motherboard>;
 
   return resultQueryBuilder;
 }
@@ -255,81 +171,29 @@ function addGpuQuery(
 ) {
   let resultQueryBuilder = queryBuilder;
 
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "gpu_name",
+    values.gpuName,
+  ) as SelectQueryBuilder<Gpu>;
 
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.gpuName)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`gpu_name = :gpuName${suffix}`, {
-            [`gpuName${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "bus_interface",
+    values.busInterface,
+  ) as SelectQueryBuilder<Gpu>;
 
-      return resultQb;
-    }),
-  );
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "standard",
+    values.standard,
+  ) as SelectQueryBuilder<Gpu>;
 
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.busInterface)) {
-        if (isSelected === true) {
-          const restoredKey = key.replaceAll("_", ".");
-          resultQb = resultQb.orWhere(
-            `bus_interface = :busInterface${suffix}`,
-            {
-              [`busInterface${suffix}`]: restoredKey,
-            },
-          );
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
-
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.standard)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`standard = :standard${suffix}`, {
-            [`standard${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
-
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.capacity)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`capacity = :capacity${suffix}`, {
-            [`capacity${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "capacity",
+    values.capacity,
+  ) as SelectQueryBuilder<Gpu>;
 
   return resultQueryBuilder;
 }
@@ -340,61 +204,23 @@ function addSsdQuery(
 ) {
   let resultQueryBuilder = queryBuilder;
 
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "capacity",
+    values.capacity,
+  ) as SelectQueryBuilder<Ssd>;
 
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.capacity)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`capacity = :capacity${suffix}`, {
-            [`capacity${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "size",
+    values.size,
+  ) as SelectQueryBuilder<Ssd>;
 
-      return resultQb;
-    }),
-  );
-
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.size)) {
-        if (isSelected === true) {
-          const restoredKey = key.replaceAll("_", ".");
-          resultQb = resultQb.orWhere(`size = :size${suffix}`, {
-            [`size${suffix}`]: restoredKey,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
-
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.interface)) {
-        if (isSelected === true) {
-          const restoredKey = key.replaceAll("_", ".");
-          resultQb = resultQb.orWhere(`interface = :interface${suffix}`, {
-            [`interface${suffix}`]: restoredKey,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "interface",
+    values.interface,
+  ) as SelectQueryBuilder<Ssd>;
 
   return resultQueryBuilder;
 }
@@ -405,44 +231,17 @@ function addPsuQuery(
 ) {
   let resultQueryBuilder = queryBuilder;
 
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "capacity",
+    values.capacity,
+  ) as SelectQueryBuilder<Psu>;
 
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.capacity)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(`capacity = :capacity${suffix}`, {
-            [`capacity${suffix}`]: key,
-          });
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
-
-  resultQueryBuilder = resultQueryBuilder.andWhere(
-    new Brackets((qb) => {
-      let resultQb = qb;
-
-      let suffix = 0;
-      for (const [key, isSelected] of Object.entries(values.certification)) {
-        if (isSelected === true) {
-          resultQb = resultQb.orWhere(
-            `certification = :certification${suffix}`,
-            {
-              [`certification${suffix}`]: key,
-            },
-          );
-          suffix++;
-        }
-      }
-
-      return resultQb;
-    }),
-  );
+  resultQueryBuilder = addInCondition(
+    resultQueryBuilder,
+    "certification",
+    values.certification,
+  ) as SelectQueryBuilder<Psu>;
 
   return resultQueryBuilder;
 }

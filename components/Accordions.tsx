@@ -9,6 +9,157 @@ import { formatKb } from "@/utils/formatKb";
 import { Accordion, Checkbox, Group, Stack } from "@mantine/core";
 import { UseFormReturnType } from "@mantine/form";
 
+function CheckboxWithForm({
+  option,
+  form,
+  keyPrefix,
+  isNeedFormattedLabel,
+}: {
+  option: string | number;
+  form: UseFormReturnType<
+    filterOptions,
+    (values: filterOptions) => filterOptions
+  >;
+  keyPrefix: string;
+  isNeedFormattedLabel: boolean;
+}) {
+  const label =
+    typeof option === "number" && isNeedFormattedLabel
+      ? formatKb(option)
+      : option;
+
+  // useFormに意図しないキーで保存されるのを防ぐため、"."をエスケープする
+  const key =
+    typeof option === "string" && option.includes(".")
+      ? `${keyPrefix}.${option.replaceAll(".", "_")}`
+      : `${keyPrefix}.${option}`;
+
+  return (
+    <Checkbox
+      label={label}
+      key={form.key(key)}
+      {...form.getInputProps(key, {
+        type: "checkbox",
+      })}
+    />
+  );
+}
+
+function Checkboxes({
+  options,
+  columns,
+  form,
+  keyPrefix,
+  isNeedFormattedLabel = false,
+}: {
+  options: string[] | number[];
+  columns: 1 | 2 | 3;
+  form: UseFormReturnType<
+    filterOptions,
+    (values: filterOptions) => filterOptions
+  >;
+  keyPrefix: string;
+  isNeedFormattedLabel?: boolean;
+}) {
+  switch (columns) {
+    case 1:
+      return (
+        <Stack mt="sm" gap="sm">
+          {options.map((value) => (
+            <CheckboxWithForm
+              option={value}
+              form={form}
+              keyPrefix={keyPrefix}
+              isNeedFormattedLabel={isNeedFormattedLabel}
+              key={value}
+            />
+          ))}
+        </Stack>
+      );
+
+    case 2:
+      const half = Math.round(options.length / 2);
+
+      return (
+        <>
+          <Stack gap="sm">
+            {options
+              .filter((_, index) => index < half)
+              .map((value) => (
+                <CheckboxWithForm
+                  option={value}
+                  form={form}
+                  keyPrefix={keyPrefix}
+                  isNeedFormattedLabel={isNeedFormattedLabel}
+                  key={value}
+                />
+              ))}
+          </Stack>
+          <Stack gap="sm">
+            {options
+              .filter((_, index) => index >= half)
+              .map((value) => (
+                <CheckboxWithForm
+                  option={value}
+                  form={form}
+                  keyPrefix={keyPrefix}
+                  isNeedFormattedLabel={isNeedFormattedLabel}
+                  key={value}
+                />
+              ))}
+          </Stack>
+        </>
+      );
+
+    case 3:
+      const third = Math.round(options.length / 3);
+
+      return (
+        <>
+          <Stack gap="sm">
+            {options
+              .filter((_, index) => index < third)
+              .map((value) => (
+                <CheckboxWithForm
+                  option={value}
+                  form={form}
+                  keyPrefix={keyPrefix}
+                  isNeedFormattedLabel={isNeedFormattedLabel}
+                  key={value}
+                />
+              ))}
+          </Stack>
+          <Stack gap="sm">
+            {options
+              .filter((_, index) => index >= third && index < third * 2)
+              .map((value) => (
+                <CheckboxWithForm
+                  option={value}
+                  form={form}
+                  keyPrefix={keyPrefix}
+                  isNeedFormattedLabel={isNeedFormattedLabel}
+                  key={value}
+                />
+              ))}
+          </Stack>
+          <Stack gap="sm">
+            {options
+              .filter((_, index) => index >= third * 2)
+              .map((value) => (
+                <CheckboxWithForm
+                  option={value}
+                  form={form}
+                  keyPrefix={keyPrefix}
+                  isNeedFormattedLabel={isNeedFormattedLabel}
+                  key={value}
+                />
+              ))}
+          </Stack>
+        </>
+      );
+  }
+}
+
 function CpuAccordion(
   form: UseFormReturnType<
     filterOptions,
@@ -24,51 +175,12 @@ function CpuAccordion(
         <Accordion.Control>コア数</Accordion.Control>
         <Accordion.Panel>
           <Group mt="sm" gap="xl">
-            <Stack gap="sm">
-              {coreCountList.map((value, index) => {
-                if (index < 7) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`cpu.coreCount.${value}`)}
-                      {...form.getInputProps(`cpu.coreCount.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
-            <Stack gap="sm">
-              {coreCountList.map((value, index) => {
-                if (index >= 7 && index < 14) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`cpu.coreCount.${value}`)}
-                      {...form.getInputProps(`cpu.coreCount.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
-            <Stack gap="sm">
-              {coreCountList.map((value, index) => {
-                if (index >= 14) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`cpu.coreCount.${value}`)}
-                      {...form.getInputProps(`cpu.coreCount.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
+            <Checkboxes
+              options={coreCountList}
+              columns={3}
+              form={form}
+              keyPrefix={"cpu.coreCount"}
+            />
           </Group>
         </Accordion.Panel>
       </Accordion.Item>
@@ -76,36 +188,12 @@ function CpuAccordion(
         <Accordion.Control>ソケット</Accordion.Control>
         <Accordion.Panel>
           <Group mt="sm">
-            <Stack gap="sm">
-              {cpuSocketList.map((value, index) => {
-                if (index < 10) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`cpu.socket.${value}`)}
-                      {...form.getInputProps(`cpu.socket.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
-            <Stack gap="sm">
-              {cpuSocketList.map((value, index) => {
-                if (index >= 10) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`cpu.socket.${value}`)}
-                      {...form.getInputProps(`cpu.socket.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
+            <Checkboxes
+              options={cpuSocketList}
+              columns={2}
+              form={form}
+              keyPrefix={"cpu.socket"}
+            />
           </Group>
         </Accordion.Panel>
       </Accordion.Item>
@@ -141,98 +229,53 @@ function MemoryAccordion(
   const memoryStandardList = memoryJson.standard;
   const memoryInterfaceList = memoryJson.interface;
 
-  const memoryCapacityListLengthHalf = Math.floor(
-    memoryCapacityList.length / 2,
-  );
-
   return (
     <Accordion>
       <Accordion.Item key="memory-capacity" value="memory-capacity">
         <Accordion.Control>容量</Accordion.Control>
         <Accordion.Panel>
           <Group mt="sm" gap="xl">
-            <Stack gap="sm">
-              {memoryCapacityList.map((value, index) => {
-                if (index <= memoryCapacityListLengthHalf) {
-                  return (
-                    <Checkbox
-                      label={formatKb(value)}
-                      key={form.key(`memory.capacity.${value}`)}
-                      {...form.getInputProps(`memory.capacity.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
-            <Stack gap="sm">
-              {memoryCapacityList.map((value, index) => {
-                if (index > memoryCapacityListLengthHalf) {
-                  return (
-                    <Checkbox
-                      label={formatKb(value)}
-                      key={form.key(`memory.capacity.${value}`)}
-                      {...form.getInputProps(`memory.capacity.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
+            <Checkboxes
+              options={memoryCapacityList}
+              columns={2}
+              form={form}
+              keyPrefix={"memory.capacity"}
+              isNeedFormattedLabel={true}
+            />
           </Group>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item key="memory-pcs" value="memory-pcs">
         <Accordion.Control>枚数</Accordion.Control>
         <Accordion.Panel>
-          <Stack mt="sm" gap="sm">
-            {pcsList.map((value) => (
-              <Checkbox
-                label={value}
-                key={form.key(`memory.pcs.${value}`)}
-                {...form.getInputProps(`memory.pcs.${value}`, {
-                  type: "checkbox",
-                })}
-              />
-            ))}
-          </Stack>
+          <Checkboxes
+            options={pcsList}
+            columns={1}
+            form={form}
+            keyPrefix={"memory.pcs"}
+          />
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item key="memory-standard" value="memory-standard">
         <Accordion.Control>規格</Accordion.Control>
         <Accordion.Panel>
-          <Stack mt="sm" gap="sm">
-            {memoryStandardList.map((value) => (
-              <Checkbox
-                label={value}
-                key={form.key(`memory.standard.${value}`)}
-                {...form.getInputProps(`memory.standard.${value}`, {
-                  type: "checkbox",
-                })}
-              />
-            ))}
-          </Stack>
+          <Checkboxes
+            options={memoryStandardList}
+            columns={1}
+            form={form}
+            keyPrefix={"memory.standard"}
+          />
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item key="memory-interface" value="memory-interface">
         <Accordion.Control>インターフェース</Accordion.Control>
         <Accordion.Panel>
-          <Stack mt="sm" gap="sm">
-            {memoryInterfaceList.map((value) => {
-              const escapedValue = value.replaceAll(".", "_");
-              return (
-                <Checkbox
-                  label={value}
-                  key={form.key(`memory.interface.${escapedValue}`)}
-                  {...form.getInputProps(`memory.interface.${escapedValue}`, {
-                    type: "checkbox",
-                  })}
-                />
-              );
-            })}
-          </Stack>
+          <Checkboxes
+            options={memoryInterfaceList}
+            columns={1}
+            form={form}
+            keyPrefix={"memory.interface"}
+          />
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
@@ -258,53 +301,24 @@ function MotherboardAccordion(
       >
         <Accordion.Control>フォームファクタ</Accordion.Control>
         <Accordion.Panel>
-          <Stack mt="sm" gap="sm">
-            {formFactorList.map((value) => (
-              <Checkbox
-                label={value}
-                key={form.key(`motherboard.formFactor.${value}`)}
-                {...form.getInputProps(`motherboard.formFactor.${value}`, {
-                  type: "checkbox",
-                })}
-              />
-            ))}
-          </Stack>
+          <Checkboxes
+            options={formFactorList}
+            columns={1}
+            form={form}
+            keyPrefix={"motherboard.formFactor"}
+          />
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item key="motherboard-socket" value="motherboard-socket">
         <Accordion.Control>ソケット</Accordion.Control>
         <Accordion.Panel>
           <Group mt="sm" gap="xl">
-            <Stack gap="sm">
-              {motherboardSocketList.map((value, index) => {
-                if (index < 7) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`motherboard.socket.${value}`)}
-                      {...form.getInputProps(`motherboard.socket.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
-            <Stack gap="sm">
-              {motherboardSocketList.map((value, index) => {
-                if (index >= 7) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`motherboard.socket.${value}`)}
-                      {...form.getInputProps(`motherboard.socket.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
+            <Checkboxes
+              options={motherboardSocketList}
+              columns={2}
+              form={form}
+              keyPrefix={"motherboard.socket"}
+            />
           </Group>
         </Accordion.Panel>
       </Accordion.Item>
@@ -312,56 +326,24 @@ function MotherboardAccordion(
         <Accordion.Control>チップセット</Accordion.Control>
         <Accordion.Panel>
           <Group mt="sm" gap="xl">
-            <Stack gap="sm">
-              {chipsetList.map((value, index) => {
-                if (index < 28) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`motherboard.chipset.${value}`)}
-                      {...form.getInputProps(`motherboard.chipset.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
-            <Stack gap="sm">
-              {chipsetList.map((value, index) => {
-                if (index >= 28) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`motherboard.chipset.${value}`)}
-                      {...form.getInputProps(`motherboard.chipset.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
+            <Checkboxes
+              options={chipsetList}
+              columns={2}
+              form={form}
+              keyPrefix={"motherboard.chipset"}
+            />
           </Group>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item key="motherboard-memory" value="motherboard-memory">
         <Accordion.Control>メモリ</Accordion.Control>
         <Accordion.Panel>
-          <Stack mt="sm" gap="sm">
-            {motherboardMemoryList.map((value) => {
-              const escapedValue = value.replaceAll(".", "_");
-              return (
-                <Checkbox
-                  label={value}
-                  key={form.key(`motherboard.memory.${escapedValue}`)}
-                  {...form.getInputProps(`motherboard.memory.${escapedValue}`, {
-                    type: "checkbox",
-                  })}
-                />
-              );
-            })}
-          </Stack>
+          <Checkboxes
+            options={motherboardMemoryList}
+            columns={1}
+            form={form}
+            keyPrefix={"motherboard.memory"}
+          />
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
@@ -379,79 +361,40 @@ function GpuAccordion(
   const gpuStandardList = gpuJson.standard;
   const gpuCapacityList = gpuJson.capacity;
 
-  const gpuCapacityListLengthHalf = Math.floor(gpuCapacityList.length / 2);
-
   return (
     <Accordion>
       <Accordion.Item key="gpu-name" value="gpu-name">
         <Accordion.Control>GPU</Accordion.Control>
         <Accordion.Panel>
-          <Stack mt="sm" gap="sm">
-            {gpuNameList.map((value) => (
-              <Checkbox
-                label={value}
-                key={form.key(`gpu.gpuName.${value}`)}
-                {...form.getInputProps(`gpu.gpuName.${value}`, {
-                  type: "checkbox",
-                })}
-              />
-            ))}
-          </Stack>
+          <Checkboxes
+            options={gpuNameList}
+            columns={1}
+            form={form}
+            keyPrefix={"gpu.gpuName"}
+          />
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item key="gpu-bus-interface" value="gpu-bus-interfacey">
         <Accordion.Control>バスインターフェース</Accordion.Control>
         <Accordion.Panel>
-          <Stack mt="sm" gap="sm">
-            {busList.map((value) => {
-              const escapedValue = value.replaceAll(".", "_");
-              return (
-                <Checkbox
-                  label={value}
-                  key={form.key(`gpu.busInterface.${escapedValue}`)}
-                  {...form.getInputProps(`gpu.busInterface.${escapedValue}`, {
-                    type: "checkbox",
-                  })}
-                />
-              );
-            })}
-          </Stack>
+          <Checkboxes
+            options={busList}
+            columns={1}
+            form={form}
+            keyPrefix={"gpu.busInterface"}
+          />
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item key="gpu-standard" value="gpu-standard">
         <Accordion.Control>規格</Accordion.Control>
         <Accordion.Panel>
           <Group mt="sm" gap="xl">
-            <Stack gap="sm">
-              {gpuStandardList.map((value, index) => {
-                if (index < 5) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`gpu.standard.${value}`)}
-                      {...form.getInputProps(`gpu.standard.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
-            <Stack gap="sm">
-              {gpuStandardList.map((value, index) => {
-                if (index >= 5) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`gpu.standard.${value}`)}
-                      {...form.getInputProps(`gpu.standard.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
+            <Checkboxes
+              options={gpuStandardList}
+              columns={2}
+              form={form}
+              keyPrefix={"gpu.standard"}
+            />
           </Group>
         </Accordion.Panel>
       </Accordion.Item>
@@ -459,36 +402,13 @@ function GpuAccordion(
         <Accordion.Control>容量</Accordion.Control>
         <Accordion.Panel>
           <Group mt="sm" gap="xl">
-            <Stack gap="sm">
-              {gpuCapacityList.map((value, index) => {
-                if (index <= gpuCapacityListLengthHalf) {
-                  return (
-                    <Checkbox
-                      label={formatKb(value)}
-                      key={form.key(`gpu.capacity.${value}`)}
-                      {...form.getInputProps(`gpu.capacity.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
-            <Stack gap="sm">
-              {gpuCapacityList.map((value, index) => {
-                if (index > gpuCapacityListLengthHalf) {
-                  return (
-                    <Checkbox
-                      label={formatKb(value)}
-                      key={form.key(`gpu.capacity.${value}`)}
-                      {...form.getInputProps(`gpu.capacity.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
+            <Checkboxes
+              options={gpuCapacityList}
+              columns={2}
+              form={form}
+              keyPrefix={"gpu.capacity"}
+              isNeedFormattedLabel={true}
+            />
           </Group>
         </Accordion.Panel>
       </Accordion.Item>
@@ -506,80 +426,42 @@ function SsdAccordion(
   const sizeList = ssdJson.size;
   const ssdInterfaceList = ssdJson.interface;
 
-  const ssdCapacityListLengthHalf = Math.floor(ssdCapacityList.length / 2);
-
   return (
     <Accordion>
       <Accordion.Item key="ssd-capacity" value="ssd-capacity">
         <Accordion.Control>容量</Accordion.Control>
         <Accordion.Panel>
           <Group mt="sm" gap="xl">
-            <Stack gap="sm">
-              {ssdCapacityList.map((value, index) => {
-                if (index <= ssdCapacityListLengthHalf) {
-                  return (
-                    <Checkbox
-                      label={formatKb(value)}
-                      key={form.key(`ssd.capacity.${value}`)}
-                      {...form.getInputProps(`ssd.capacity.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
-            <Stack gap="sm">
-              {ssdCapacityList.map((value, index) => {
-                if (index > ssdCapacityListLengthHalf) {
-                  return (
-                    <Checkbox
-                      label={formatKb(value)}
-                      key={form.key(`ssd.capacity.${value}`)}
-                      {...form.getInputProps(`ssd.capacity.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
+            <Checkboxes
+              options={ssdCapacityList}
+              columns={2}
+              form={form}
+              keyPrefix={"ssd.capacity"}
+              isNeedFormattedLabel={true}
+            />
           </Group>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item key="ssd-size" value="ssd-size">
         <Accordion.Control>サイズ</Accordion.Control>
         <Accordion.Panel>
-          <Stack mt="sm" gap="sm">
-            {sizeList.map((value) => {
-              const escapedValue = value.replace(".", "_");
-              return (
-                <Checkbox
-                  label={value}
-                  key={form.key(`ssd.size.${escapedValue}`)}
-                  {...form.getInputProps(`ssd.size.${escapedValue}`, {
-                    type: "checkbox",
-                  })}
-                />
-              );
-            })}
-          </Stack>
+          <Checkboxes
+            options={sizeList}
+            columns={1}
+            form={form}
+            keyPrefix={"ssd.size"}
+          />
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item key="ssd-interface" value="ssd-interface">
         <Accordion.Control>インターフェース</Accordion.Control>
         <Accordion.Panel>
-          <Stack mt="sm" gap="sm">
-            {ssdInterfaceList.map((value) => (
-              <Checkbox
-                label={value}
-                key={form.key(`ssd.interface.${value}`)}
-                {...form.getInputProps(`ssd.interface.${value}`, {
-                  type: "checkbox",
-                })}
-              />
-            ))}
-          </Stack>
+          <Checkboxes
+            options={ssdInterfaceList}
+            columns={1}
+            form={form}
+            keyPrefix={"ssd.interface"}
+          />
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
@@ -595,79 +477,30 @@ function PsuAccordion(
   const psuCapacityList = psuJson.capacity;
   const psuCertificationList = psuJson.certification;
 
-  const psuCapacityListLengthHalf = Math.floor(psuCapacityList.length / 3);
-
   return (
     <Accordion>
       <Accordion.Item key="psu-capacity" value="psu-capacity">
         <Accordion.Control>容量</Accordion.Control>
         <Accordion.Panel>
           <Group mt="sm" gap="xl">
-            <Stack gap="sm">
-              {psuCapacityList.map((value, index) => {
-                if (index <= psuCapacityListLengthHalf) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`psu.capacity.${value}`)}
-                      {...form.getInputProps(`psu.capacity.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
-            <Stack gap="sm">
-              {psuCapacityList.map((value, index) => {
-                if (
-                  index > psuCapacityListLengthHalf &&
-                  index <= psuCapacityListLengthHalf * 2
-                ) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`psu.capacity.${value}`)}
-                      {...form.getInputProps(`psu.capacity.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
-            <Stack gap="sm">
-              {psuCapacityList.map((value, index) => {
-                if (index > psuCapacityListLengthHalf * 2) {
-                  return (
-                    <Checkbox
-                      label={value}
-                      key={form.key(`psu.capacity.${value}`)}
-                      {...form.getInputProps(`psu.capacity.${value}`, {
-                        type: "checkbox",
-                      })}
-                    />
-                  );
-                }
-              })}
-            </Stack>
+            <Checkboxes
+              options={psuCapacityList}
+              columns={3}
+              form={form}
+              keyPrefix={"psu.capacity"}
+            />
           </Group>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item key="psu-certification" value="psu-certification">
         <Accordion.Control>認証</Accordion.Control>
         <Accordion.Panel>
-          <Stack mt="sm" gap="sm">
-            {psuCertificationList.map((value) => (
-              <Checkbox
-                label={value}
-                key={form.key(`psu.certification.${value}`)}
-                {...form.getInputProps(`psu.certification.${value}`, {
-                  type: "checkbox",
-                })}
-              />
-            ))}
-          </Stack>
+          <Checkboxes
+            options={psuCertificationList}
+            columns={1}
+            form={form}
+            keyPrefix={"psu.certification"}
+          />
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
