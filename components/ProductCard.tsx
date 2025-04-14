@@ -1,5 +1,5 @@
 import { selectedProductsAtom } from "@/jotai/atom";
-import classes from "@/styles/ProductCardLink.module.scss";
+import classes from "@/styles/ProductCard.module.scss";
 import { productInfo, productType } from "@/types";
 import { ActionIcon, Box, Card, Group, Text } from "@mantine/core";
 import { useAtom } from "jotai";
