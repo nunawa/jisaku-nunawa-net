@@ -1,6 +1,6 @@
 "use client";
 
-import BuildTab from "@/components/BuildTab";
+import BuildMain from "@/components/BuildMain";
 import { ThemeDropdown } from "@/components/ThemeDropdown";
 import TotalPrice from "@/components/TotalPrice";
 import pages from "@/utils/pages.json";
@@ -58,7 +58,7 @@ export default function Cpu() {
         <NavLink key="build" label={<TotalPrice />} active />
       </AppShell.Navbar>
       <AppShell.Main>
-        <BuildTab />
+        <BuildMain />
       </AppShell.Main>
     </AppShell>
   );
