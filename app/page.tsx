@@ -22,7 +22,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { default as NextImage } from "next/image";
 import Link from "next/link";
-import background from "@/public/background.png";
+import background from "@/public/background.webp";
 
 const pageList = pages;
 
