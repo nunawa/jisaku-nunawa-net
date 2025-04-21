@@ -49,6 +49,7 @@
     "PCI-Express Gen4/Gen5",
     "PCI-Express Gen5",
     "SAS 12Gb/s",
-    "Serial ATA 6Gb/s"
+    "Serial ATA 6Gb/s",
+    "Thunderbolt"
   ]
 }
