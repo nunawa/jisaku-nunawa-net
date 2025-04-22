@@ -41,7 +41,6 @@
     "NVIDIA GeForce GT 1030",
     "NVIDIA GeForce GT 710",
     "NVIDIA GeForce GT 730 (64-bit GDDR5)",
-    "NVIDIA GeForce GTX 1660",
     "NVIDIA GeForce GTX 1660 SUPER",
     "NVIDIA GeForce GTX 1660 Ti",
     "NVIDIA GeForce RTX 2060",
@@ -56,6 +55,7 @@
     "NVIDIA GeForce RTX 4060 Ti",
     "NVIDIA GeForce RTX 4070",
     "NVIDIA GeForce RTX 4070 SUPER",
+    "NVIDIA GeForce RTX 5060 Ti",
     "NVIDIA GeForce RTX 5070",
     "NVIDIA GeForce RTX 5070 Ti",
     "NVIDIA GeForce RTX 5080",
@@ -89,7 +89,6 @@
     "NVIDIA RTX PRO 6000",
     "NVIDIA T1000",
     "NVIDIA T400",
-    "NVIDIA Tesla T4",
     "NVIDIAlGeForce RTX 4060"
   ],
   "bus_interface": [
