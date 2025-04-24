@@ -12,7 +12,7 @@ import { ActionIcon, Container, Group, Title } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   BsCheckLg,
@@ -54,6 +54,7 @@ export default function BuildMain() {
   const { buf } = useBuf();
   const [dataSource, setDatasource] = useState<DataSource>();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
     initSqlJs({
@@ -133,8 +134,9 @@ export default function BuildMain() {
       }
 
       setSelectedProducts(newSelectedProducts);
+      router.replace("/build");
     })();
-  }, [dataSource, searchParams, setSelectedProducts]);
+  }, [dataSource, router, searchParams, setSelectedProducts]);
 
   const generateShareUrl = () => {
     const params = new URLSearchParams();
