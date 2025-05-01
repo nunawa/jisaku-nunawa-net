@@ -10,7 +10,7 @@ import Link from "next/link";
 
 const pageList = pages;
 
-export default function Cpu() {
+export default function Page() {
   const [opened, { toggle }] = useDisclosure();
 
   return (
