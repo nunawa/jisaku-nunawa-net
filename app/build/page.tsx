@@ -4,9 +4,18 @@ import BuildMain from "@/components/BuildMain";
 import { ThemeButton } from "@/components/ThemeButton";
 import TotalPrice from "@/components/TotalPrice";
 import pages from "@/utils/pages.json";
-import { Anchor, AppShell, Burger, Group, NavLink } from "@mantine/core";
+import {
+  Anchor,
+  AppShell,
+  Burger,
+  Center,
+  Group,
+  Loader,
+  NavLink,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
+import { Suspense } from "react";
 
 const pageList = pages;
 
@@ -58,7 +67,15 @@ export default function Page() {
         <NavLink key="build" label={<TotalPrice />} active />
       </AppShell.Navbar>
       <AppShell.Main>
-        <BuildMain />
+        <Suspense
+          fallback={
+            <Center h="100vh">
+              <Loader color="blue" />
+            </Center>
+          }
+        >
+          <BuildMain />
+        </Suspense>
       </AppShell.Main>
     </AppShell>
   );
