@@ -11,25 +11,28 @@ This report documents several efficiency opportunities identified in the jisaku-
 **Location**: `components/Accordions.tsx`, lines 64-160 in the `Checkboxes` component
 
 **Issue**: The component performs multiple `.filter()` operations on the same array to split it into columns:
+
 - For 2 columns: 2 filter operations (O(2n))
 - For 3 columns: 3 filter operations (O(3n))
 - Each filter operation iterates through the entire array
 
 **Current Implementation**:
+
 ```typescript
 // 2 columns case
 const half = Math.round(options.length / 2);
-options.filter((_, index) => index < half)        // First iteration
-options.filter((_, index) => index >= half)       // Second iteration
+options.filter((_, index) => index < half); // First iteration
+options.filter((_, index) => index >= half); // Second iteration
 
-// 3 columns case  
+// 3 columns case
 const third = Math.round(options.length / 3);
-options.filter((_, index) => index < third)                    // First iteration
-options.filter((_, index) => index >= third && index < third * 2) // Second iteration
-options.filter((_, index) => index >= third * 2)               // Third iteration
+options.filter((_, index) => index < third); // First iteration
+options.filter((_, index) => index >= third && index < third * 2); // Second iteration
+options.filter((_, index) => index >= third * 2); // Third iteration
 ```
 
-**Performance Impact**: 
+**Performance Impact**:
+
 - Time complexity: O(n × columns) instead of O(n)
 - For arrays with 100+ PC parts, this creates 200-300 unnecessary iterations
 - Affects all accordion components (CPU, Memory, Motherboard, GPU, SSD, PSU)
@@ -43,13 +46,15 @@ options.filter((_, index) => index >= third * 2)               // Third iteratio
 **Issue**: Uses division operations for unit conversion that could be optimized
 
 **Current Implementation**:
+
 ```typescript
 const m = kb / 1000;
-const g = m / 1000;  
+const g = m / 1000;
 const t = g / 1000;
 ```
 
-**Optimization Opportunity**: 
+**Optimization Opportunity**:
+
 - Use bit shifting for powers of 2 where applicable
 - Reduce redundant calculations
 - Cache conversion factors
@@ -57,11 +62,13 @@ const t = g / 1000;
 ### 3. Missing React Performance Optimizations (MEDIUM IMPACT)
 
 **Issue**: No usage of React performance optimization hooks found:
+
 - No `useMemo` for expensive calculations
 - No `useCallback` for event handlers passed to child components
 - No `React.memo` for components that could benefit from memoization
 
 **Affected Components**:
+
 - `Accordions.tsx`: Large component with many checkboxes
 - `FilterOption.tsx`: Complex filtering logic
 - `ProductCard.tsx`: Rendered in lists
@@ -71,6 +78,7 @@ const t = g / 1000;
 **Location**: `components/FilterOption.tsx`, line 60-62
 
 **Issue**: Chained array methods create multiple iterations:
+
 ```typescript
 const selectedValues = Object.entries(values)
   .filter(([, isSelected]) => isSelected)
@@ -84,6 +92,7 @@ const selectedValues = Object.entries(values)
 **Location**: `components/FilterOption.tsx`, lines 38-46
 
 **Issue**: Character-by-character string building in loop
+
 ```typescript
 for (let i = 0; i < length; i++) {
   result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -95,23 +104,28 @@ for (let i = 0; i < length; i++) {
 ## Performance Impact Analysis
 
 ### High Impact Issues
+
 1. **Array Filtering in Accordions**: Affects user experience during filtering operations, especially with large datasets
 
-### Medium Impact Issues  
+### Medium Impact Issues
+
 2. **formatKb Function**: Called frequently for displaying storage/memory sizes
 3. **Missing React Optimizations**: Could prevent unnecessary re-renders
 
 ### Low Impact Issues
+
 4. **Object Operations**: Minor performance gain
 5. **Random String Generation**: Rarely called, minimal impact
 
 ## Recommendations
 
 ### Immediate Actions (Implemented)
+
 - ✅ Fix array filtering inefficiency in Accordions.tsx
 - ✅ Document all findings in this report
 
 ### Future Improvements
+
 - Add React.memo to frequently rendered components
 - Implement useMemo for expensive calculations in FilterOption
 - Optimize formatKb function with better algorithms
@@ -123,8 +137,8 @@ The array filtering fix replaces multiple filter operations with a single forEac
 
 ```typescript
 // Before: O(n × columns)
-options.filter((_, index) => index < half)
-options.filter((_, index) => index >= half)
+options.filter((_, index) => index < half);
+options.filter((_, index) => index >= half);
 
 // After: O(n)
 const columnArrays = [[], []];
