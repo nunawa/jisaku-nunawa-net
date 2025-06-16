@@ -112,7 +112,11 @@ function Checkboxes({
     }
 
     case 3: {
-      const columnArrays: [(string | number)[], (string | number)[], (string | number)[]] = [[], [], []];
+      const columnArrays: [
+        (string | number)[],
+        (string | number)[],
+        (string | number)[],
+      ] = [[], [], []];
       options.forEach((value, index) => {
         columnArrays[index % 3].push(value);
       });
