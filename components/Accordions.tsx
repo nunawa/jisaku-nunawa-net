@@ -78,10 +78,11 @@ function Checkboxes({
       );
 
     case 2: {
-      const columnArrays: [(string | number)[], (string | number)[]] = [[], []];
-      options.forEach((value, index) => {
-        columnArrays[index % 2].push(value);
-      });
+      const half = Math.round(options.length / 2);
+      const columnArrays: [(string | number)[], (string | number)[]] = [
+        options.slice(0, half),
+        options.slice(half),
+      ];
 
       return (
         <>
@@ -112,14 +113,16 @@ function Checkboxes({
     }
 
     case 3: {
+      const third = Math.round(options.length / 3);
       const columnArrays: [
         (string | number)[],
         (string | number)[],
         (string | number)[],
-      ] = [[], [], []];
-      options.forEach((value, index) => {
-        columnArrays[index % 3].push(value);
-      });
+      ] = [
+        options.slice(0, third),
+        options.slice(third, third * 2),
+        options.slice(third * 2),
+      ];
 
       return (
         <>
