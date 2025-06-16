@@ -2,7 +2,6 @@
   "gpu_name": [
     "AMD Radeon Pro W5500",
     "AMD Radeon Pro W5500X",
-    "AMD Radeon Pro W6400",
     "AMD Radeon Pro W7700",
     "AMD Radeon RX 550",
     "AMD Radeon RX 5500 XT",
@@ -27,6 +26,7 @@
     "AMD Radeon RX 7800M",
     "AMD Radeon RX 7900 XT",
     "AMD Radeon RX 7900 XTX",
+    "AMD Radeon RX 9060 XT",
     "AMD Radeon RX 9070",
     "AMD Radeon RX 9070 XT",
     "AMD Vega10",
@@ -37,7 +37,6 @@
     "Intel Arc A770",
     "Intel Arc B570",
     "Intel Arc B580",
-    "NVIDIA A30",
     "NVIDIA A800",
     "NVIDIA GeForce GT 1030",
     "NVIDIA GeForce GT 710",
