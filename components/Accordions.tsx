@@ -77,86 +77,84 @@ function Checkboxes({
         </Stack>
       );
 
-    case 2:
-      const half = Math.round(options.length / 2);
+    case 2: {
+      const columnArrays: [(string | number)[], (string | number)[]] = [[], []];
+      options.forEach((value, index) => {
+        columnArrays[index % 2].push(value);
+      });
 
       return (
         <>
           <Stack gap="sm">
-            {options
-              .filter((_, index) => index < half)
-              .map((value) => (
-                <CheckboxWithForm
-                  option={value}
-                  form={form}
-                  keyPrefix={keyPrefix}
-                  isNeedFormattedLabel={isNeedFormattedLabel}
-                  key={value}
-                />
-              ))}
+            {columnArrays[0].map((value) => (
+              <CheckboxWithForm
+                option={value}
+                form={form}
+                keyPrefix={keyPrefix}
+                isNeedFormattedLabel={isNeedFormattedLabel}
+                key={value}
+              />
+            ))}
           </Stack>
           <Stack gap="sm">
-            {options
-              .filter((_, index) => index >= half)
-              .map((value) => (
-                <CheckboxWithForm
-                  option={value}
-                  form={form}
-                  keyPrefix={keyPrefix}
-                  isNeedFormattedLabel={isNeedFormattedLabel}
-                  key={value}
-                />
-              ))}
+            {columnArrays[1].map((value) => (
+              <CheckboxWithForm
+                option={value}
+                form={form}
+                keyPrefix={keyPrefix}
+                isNeedFormattedLabel={isNeedFormattedLabel}
+                key={value}
+              />
+            ))}
           </Stack>
         </>
       );
+    }
 
-    case 3:
-      const third = Math.round(options.length / 3);
+    case 3: {
+      const columnArrays: [(string | number)[], (string | number)[], (string | number)[]] = [[], [], []];
+      options.forEach((value, index) => {
+        columnArrays[index % 3].push(value);
+      });
 
       return (
         <>
           <Stack gap="sm">
-            {options
-              .filter((_, index) => index < third)
-              .map((value) => (
-                <CheckboxWithForm
-                  option={value}
-                  form={form}
-                  keyPrefix={keyPrefix}
-                  isNeedFormattedLabel={isNeedFormattedLabel}
-                  key={value}
-                />
-              ))}
+            {columnArrays[0].map((value) => (
+              <CheckboxWithForm
+                option={value}
+                form={form}
+                keyPrefix={keyPrefix}
+                isNeedFormattedLabel={isNeedFormattedLabel}
+                key={value}
+              />
+            ))}
           </Stack>
           <Stack gap="sm">
-            {options
-              .filter((_, index) => index >= third && index < third * 2)
-              .map((value) => (
-                <CheckboxWithForm
-                  option={value}
-                  form={form}
-                  keyPrefix={keyPrefix}
-                  isNeedFormattedLabel={isNeedFormattedLabel}
-                  key={value}
-                />
-              ))}
+            {columnArrays[1].map((value) => (
+              <CheckboxWithForm
+                option={value}
+                form={form}
+                keyPrefix={keyPrefix}
+                isNeedFormattedLabel={isNeedFormattedLabel}
+                key={value}
+              />
+            ))}
           </Stack>
           <Stack gap="sm">
-            {options
-              .filter((_, index) => index >= third * 2)
-              .map((value) => (
-                <CheckboxWithForm
-                  option={value}
-                  form={form}
-                  keyPrefix={keyPrefix}
-                  isNeedFormattedLabel={isNeedFormattedLabel}
-                  key={value}
-                />
-              ))}
+            {columnArrays[2].map((value) => (
+              <CheckboxWithForm
+                option={value}
+                form={form}
+                keyPrefix={keyPrefix}
+                isNeedFormattedLabel={isNeedFormattedLabel}
+                key={value}
+              />
+            ))}
           </Stack>
         </>
       );
+    }
   }
 }
 
