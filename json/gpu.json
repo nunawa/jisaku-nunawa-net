@@ -2,6 +2,7 @@
   "gpu_name": [
     "AMD Radeon Pro W5500",
     "AMD Radeon Pro W5500X",
+    "AMD Radeon Pro W6400",
     "AMD Radeon Pro W7700",
     "AMD Radeon RX 550",
     "AMD Radeon RX 5500 XT",
@@ -54,6 +55,8 @@
     "NVIDIA GeForce RTX 4060 Ti",
     "NVIDIA GeForce RTX 4070",
     "NVIDIA GeForce RTX 4070 SUPER",
+    "NVIDIA GeForce RTX 4080",
+    "NVIDIA GeForce RTX 4090",
     "NVIDIA GeForce RTX 5060",
     "NVIDIA GeForce RTX 5060 Ti",
     "NVIDIA GeForce RTX 5070",
@@ -88,7 +91,6 @@
     "NVIDIA RTX PRO 6000",
     "NVIDIA T1000",
     "NVIDIA T400",
-    "NVIDIA Tesla T4",
     "NVIDIAlGeForce RTX 4060"
   ],
   "bus_interface": [
