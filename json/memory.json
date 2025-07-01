@@ -19,11 +19,11 @@
     8
   ],
   "standard": [
-    "DDR SDRAM",
-    "DDR2 SDRAM",
-    "DDR3 SDRAM",
-    "DDR4 SDRAM",
-    "DDR5 SDRAM"
+    "DDR",
+    "DDR2",
+    "DDR3",
+    "DDR4",
+    "DDR5"
   ],
   "interface": [
     "DIMM",
