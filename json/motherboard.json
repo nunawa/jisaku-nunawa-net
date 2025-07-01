@@ -4,7 +4,7 @@
     "CEB",
     "Extended",
     "MicroATX",
-    "Mini ITX",
+    "Mini-ITX",
     "SSI EEB"
   ],
   "socket": [
@@ -19,13 +19,13 @@
     "LGA4189",
     "LGA4677",
     "LGA4710",
+    "Socket AM4",
+    "Socket AM5",
     "Socket SP3",
     "Socket SP5",
     "Socket SP6",
-    "Socket sWRX8",
-    "SocketAM4",
-    "SocketAM5",
-    "SocketsTR5"
+    "Socket sTR5",
+    "Socket sWRX8"
   ],
   "chipset": [
     "AMDA520",
