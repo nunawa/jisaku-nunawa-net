@@ -30,7 +30,7 @@ function checkCpuMotherboardCompatibility(
   if (cpu.socket !== motherboard.socket) {
     return {
       type: "cpu-motherboard",
-      message: `CPUソケット「${cpu.socket}」とマザーボードソケット「${motherboard.socket}」が互換性がありません`,
+      message: `CPUソケット「${cpu.socket}」とマザーボードの対応CPUソケット「${motherboard.socket}」に互換性がありません`,
       severity: "error",
     };
   }
@@ -53,7 +53,7 @@ function checkMotherboardMemoryCompatibility(
   if (!motherboard.memory.includes(memory.standard)) {
     return {
       type: "motherboard-memory",
-      message: `メモリ規格「${memory.standard}」はマザーボードのメモリサポート「${motherboard.memory}」と互換性がありません`,
+      message: `メモリの規格「${memory.standard}」はマザーボードの対応メモリ規格「${motherboard.memory}」と互換性がありません`,
       severity: "error",
     };
   }
@@ -80,7 +80,7 @@ function checkMotherboardCaseCompatibility(
     if (!supportedFormFactors.includes(motherboard.form_factor)) {
       return {
         type: "motherboard-case",
-        message: `マザーボードフォームファクタ「${motherboard.form_factor}」はPCケースの対応フォームファクタ「${supportedFormFactors.join(", ")}」と互換性がありません`,
+        message: `マザーボードのフォームファクタ「${motherboard.form_factor}」はPCケースの対応フォームファクタ「${supportedFormFactors.join(", ")}」と互換性がありません`,
         severity: "error",
       };
     }
