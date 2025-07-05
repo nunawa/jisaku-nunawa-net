@@ -1,6 +1,7 @@
 import { productType } from "@/types";
 import pages from "@/utils/pages.json";
 import { Container, Title } from "@mantine/core";
+import CompatibilityWarnings from "./CompatibilityWarnings";
 import { ProductCard } from "./ProductCard";
 import TotalPrice from "./TotalPrice";
 
@@ -26,6 +27,7 @@ export default function BuildMain() {
 
   return (
     <Container mt="sm" mb="xl">
+      <CompatibilityWarnings />
       {buildList}
     </Container>
   );
