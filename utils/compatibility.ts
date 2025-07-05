@@ -19,7 +19,7 @@ export interface SelectedParts {
 /**
  * Check if CPU socket is compatible with Motherboard socket
  */
-export function checkCpuMotherboardCompatibility(
+function checkCpuMotherboardCompatibility(
   cpu: Cpu | null,
   motherboard: Motherboard | null,
 ): CompatibilityIssue | null {
@@ -41,7 +41,7 @@ export function checkCpuMotherboardCompatibility(
 /**
  * Check if Memory standard is compatible with Motherboard memory support
  */
-export function checkMotherboardMemoryCompatibility(
+function checkMotherboardMemoryCompatibility(
   motherboard: Motherboard | null,
   memory: Memory | null,
 ): CompatibilityIssue | null {
@@ -64,7 +64,7 @@ export function checkMotherboardMemoryCompatibility(
 /**
  * Check if Motherboard form factor is compatible with Case supported motherboard form factors
  */
-export function checkMotherboardCaseCompatibility(
+function checkMotherboardCaseCompatibility(
   motherboard: Motherboard | null,
   pcCase: Case | null,
 ): CompatibilityIssue | null {
