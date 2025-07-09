@@ -1,10 +1,10 @@
 import { selectedProductsAtom } from "@/jotai/atom";
 import classes from "@/styles/ProductCard.module.scss";
 import { productInfo, productType } from "@/types";
-import { ActionIcon, Box, Card, Group, Text } from "@mantine/core";
+import { ActionIcon, Avatar, Box, Card, Group, Text } from "@mantine/core";
 import { useAtom } from "jotai";
 import Link from "next/dist/client/link";
-import { BsPlusLg, BsTrashFill } from "react-icons/bs";
+import { BsPlusLg, BsTrashFill, BsX } from "react-icons/bs";
 import ProductCardText from "./ProductCardText";
 
 function CommonCard({
@@ -54,10 +54,21 @@ function CommonCard({
         </Group>
       </Card.Section>
 
-      <Text mt="xs" size="lg" fw={500}>
-        ￥{product.price?.toLocaleString()}
-      </Text>
-      <ProductCardText type={type} product={product} />
+      <Group mt="xs" gap="xs" wrap="nowrap" align="flex-start">
+        <Avatar
+          src={`https://img1.kakaku.k-img.com/images/productimage/m/${product.id}.jpg`}
+          radius="sm"
+          size="58px"
+        >
+          <BsX />
+        </Avatar>
+        <Box style={{ flex: 1, minWidth: 0 }}>
+          <Text size="lg" fw={500}>
+            ￥{product.price?.toLocaleString()}
+          </Text>
+          <ProductCardText type={type} product={product} />
+        </Box>
+      </Group>
     </Card>
   );
 }
