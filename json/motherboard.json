@@ -1,11 +1,11 @@
 {
   "form_factor": [
     "ATX",
-    "CEB",
-    "Extended",
+    "Extended ATX",
     "MicroATX",
     "Mini-ITX",
-    "SSI EEB"
+    "SSI-CEB",
+    "SSI-EEB"
   ],
   "socket": [
     "LGA1151",
@@ -81,7 +81,6 @@
     "INTELW680",
     "INTELW790",
     "INTELX299",
-    "INTELZ490",
     "INTELZ690",
     "INTELZ790",
     "INTELZ890"
