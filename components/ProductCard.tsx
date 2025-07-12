@@ -54,6 +54,7 @@ function CommonCard({
       <Group mt="xs" gap="xs" wrap="nowrap" align="flex-start">
         <Avatar
           src={`https://img1.kakaku.k-img.com/images/smartphone/icv/112x84_${product.id}.jpg`}
+          alt={product.name ?? "商品画像"}
           radius="sm"
           size="84px"
         >
