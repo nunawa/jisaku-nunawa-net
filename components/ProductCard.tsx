@@ -38,27 +38,24 @@ function CommonCard({
 
   return (
     <Card withBorder shadow="sm" padding="sm" mb="sm" key={product.id}>
-      <Card.Section withBorder inheritPadding py="xs">
-        <Group justify="space-between">
-          <Box className={classes.boxList}>
-            <Link
-              href={"https://kakaku.com/item/" + product.id}
-              rel="noreferrer"
-              target="_blank"
-              className={classes.link}
-            >
-              {product.manufacturer} {product.name}
-            </Link>
-          </Box>
-          {actionIcon}
-        </Group>
-      </Card.Section>
-
+      <Group justify="space-between">
+        <Box className={classes.boxList}>
+          <Link
+            href={"https://kakaku.com/item/" + product.id}
+            rel="noreferrer"
+            target="_blank"
+            className={classes.link}
+          >
+            {product.manufacturer} {product.name}
+          </Link>
+        </Box>
+        {actionIcon}
+      </Group>
       <Group mt="xs" gap="xs" wrap="nowrap" align="flex-start">
         <Avatar
-          src={`https://img1.kakaku.k-img.com/images/productimage/m/${product.id}.jpg`}
+          src={`https://img1.kakaku.k-img.com/images/smartphone/icv/112x84_${product.id}.jpg`}
           radius="sm"
-          size="58px"
+          size="84px"
         >
           <BsX />
         </Avatar>
