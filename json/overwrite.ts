@@ -236,6 +236,8 @@ async function overwriteSsd(dataSource: DataSource) {
     .where("capacity != ''")
     // 100GB未満の製品は除外
     .andWhere("capacity >= 100000000")
+    // 外付けSSDは除外
+    .andWhere("interface NOT LIKE '%USB%'")
     .orderBy("capacity")
     .getRawMany();
 
