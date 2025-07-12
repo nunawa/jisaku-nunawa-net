@@ -1,7 +1,7 @@
 {
   "gpu_name": [
-    "AMD Radeon Pro W5500",
     "AMD Radeon Pro W5500X",
+    "AMD Radeon Pro W6400",
     "AMD Radeon Pro W7700",
     "AMD Radeon RX 550",
     "AMD Radeon RX 5500 XT",
@@ -41,7 +41,6 @@
     "NVIDIA GeForce GT 1030",
     "NVIDIA GeForce GT 710",
     "NVIDIA GeForce GT 730 (64-bit GDDR5)",
-    "NVIDIA GeForce GTX 1660 SUPER",
     "NVIDIA GeForce GTX 1660 Ti",
     "NVIDIA GeForce RTX 3050",
     "NVIDIA GeForce RTX 3060",
@@ -54,7 +53,7 @@
     "NVIDIA GeForce RTX 4060 Ti",
     "NVIDIA GeForce RTX 4070",
     "NVIDIA GeForce RTX 4070 SUPER",
-    "NVIDIA GeForce RTX 4080",
+    "NVIDIA GeForce RTX 5050",
     "NVIDIA GeForce RTX 5060",
     "NVIDIA GeForce RTX 5060 Ti",
     "NVIDIA GeForce RTX 5070",
