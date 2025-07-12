@@ -1,10 +1,10 @@
 import { selectedProductsAtom } from "@/jotai/atom";
 import classes from "@/styles/ProductCard.module.scss";
 import { productInfo, productType } from "@/types";
-import { ActionIcon, Box, Card, Group, Text } from "@mantine/core";
+import { ActionIcon, Avatar, Box, Card, Group, Text } from "@mantine/core";
 import { useAtom } from "jotai";
 import Link from "next/dist/client/link";
-import { BsPlusLg, BsTrashFill } from "react-icons/bs";
+import { BsPlusLg, BsTrashFill, BsX } from "react-icons/bs";
 import ProductCardText from "./ProductCardText";
 
 function CommonCard({
@@ -38,26 +38,35 @@ function CommonCard({
 
   return (
     <Card withBorder shadow="sm" padding="sm" mb="sm" key={product.id}>
-      <Card.Section withBorder inheritPadding py="xs">
-        <Group justify="space-between">
-          <Box className={classes.boxList}>
-            <Link
-              href={"https://kakaku.com/item/" + product.id}
-              rel="noreferrer"
-              target="_blank"
-              className={classes.link}
-            >
-              {product.manufacturer} {product.name}
-            </Link>
-          </Box>
-          {actionIcon}
-        </Group>
-      </Card.Section>
-
-      <Text mt="xs" size="lg" fw={500}>
-        ￥{product.price?.toLocaleString()}
-      </Text>
-      <ProductCardText type={type} product={product} />
+      <Group justify="space-between">
+        <Box className={classes.boxList}>
+          <Link
+            href={"https://kakaku.com/item/" + product.id}
+            rel="noreferrer"
+            target="_blank"
+            className={classes.link}
+          >
+            {product.manufacturer} {product.name}
+          </Link>
+        </Box>
+        {actionIcon}
+      </Group>
+      <Group mt="xs" gap="xs" wrap="nowrap" align="flex-start">
+        <Avatar
+          src={`https://img1.kakaku.k-img.com/images/smartphone/icv/112x84_${product.id}.jpg`}
+          alt={product.name ?? "商品画像"}
+          radius="sm"
+          size="84px"
+        >
+          <BsX />
+        </Avatar>
+        <Box style={{ flex: 1, minWidth: 0 }}>
+          <Text size="lg" fw={500}>
+            ￥{product.price?.toLocaleString()}
+          </Text>
+          <ProductCardText type={type} product={product} />
+        </Box>
+      </Group>
     </Card>
   );
 }
