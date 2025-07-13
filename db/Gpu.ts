@@ -33,9 +33,6 @@ export class Gpu {
   bus_interface!: string | null;
 
   @Column("text", { nullable: true })
-  slot!: string | null;
-
-  @Column("text", { nullable: true })
   standard!: string | null;
 
   @Column("text", { nullable: true })
