@@ -30,6 +30,7 @@
   "chipset": [
     "AMDA520",
     "AMDA620",
+    "AMDA620A",
     "AMDB450",
     "AMDB550",
     "AMDB650",
@@ -66,7 +67,6 @@
     "INTELH410",
     "INTELH510",
     "INTELH610",
-    "INTELH670",
     "INTELH770",
     "INTELH810",
     "INTELQ170",
