@@ -9,11 +9,9 @@
   ],
   "socket": [
     "LGA1151",
-    "LGA1155",
     "LGA1200",
     "LGA1700",
     "LGA1851",
-    "LGA2011",
     "LGA2066",
     "LGA3647",
     "LGA4189",
@@ -79,7 +77,6 @@
     "INTELW580",
     "INTELW680",
     "INTELW790",
-    "INTELX299",
     "INTELZ690",
     "INTELZ790",
     "INTELZ890"
