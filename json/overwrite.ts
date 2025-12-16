@@ -17,7 +17,7 @@ import fs from "fs";
 import { Psu } from "@/db/Psu";
 
 declare global {
-  var SQL: initSqlJs.SqlJsStatic;
+  var SQL: initSqlJs.SqlJsStatic; // eslint-disable-line no-var
 }
 
 async function overwriteCpu(dataSource: DataSource) {
