@@ -11,18 +11,18 @@
     "format:write": "prettier --write ."
   },
   "dependencies": {
-    "@mantine/core": "^7.17.3",
-    "@mantine/form": "^7.17.3",
-    "@mantine/hooks": "^7.17.3",
-    "jotai": "^2.12.2",
-    "next": "15.2.4",
+    "@mantine/core": "^8.3.10",
+    "@mantine/form": "^8.3.10",
+    "@mantine/hooks": "^8.3.10",
+    "jotai": "^2.16.0",
+    "next": "16.0.10",
     "react": "^19",
     "react-dom": "^19",
     "react-icons": "^5.5.0",
     "reflect-metadata": "^0.2.2",
     "sql.js": "^1.13.0",
-    "swr": "^2.3.3",
-    "typeorm": "^0.3.22"
+    "swr": "^2.3.8",
+    "typeorm": "^0.3.28"
   },
   "devDependencies": {
     "@types/node": "^22",
@@ -30,14 +30,14 @@
     "@types/react-dom": "^19",
     "@types/sql.js": "^1.4.9",
     "eslint": "^9",
-    "eslint-config-next": "15.2.4",
-    "eslint-config-prettier": "^10.1.1",
-    "postcss": "^8.5.3",
-    "postcss-preset-mantine": "^1.17.0",
+    "eslint-config-next": "16.0.10",
+    "eslint-config-prettier": "^10.1.8",
+    "postcss": "^8.5.6",
+    "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
-    "prettier": "3.5.3",
-    "sass": "^1.86.3",
-    "tsx": "^4.19.3",
+    "prettier": "3.7.4",
+    "sass": "^1.97.0",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   },
   "engines": {
